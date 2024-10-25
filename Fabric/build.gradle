@@ -15,6 +15,7 @@ dependencies {
 
     modImplementation libs.sparkweave.fabric
     modImplementation fabric.bundles.cca
+	modImplementation fabric.satin
     modImplementation libs.resourcefulconfig.fabric
 
     modCompileOnly fabric.modmenu
@@ -22,6 +23,9 @@ dependencies {
 
     modCompileOnly "${libs.emi.fabric.get()}:api"
     modLocalRuntime libs.emi.fabric
+
+	include fabric.bundles.cca
+	include fabric.satin
 }
 
 repositories {
