@@ -18,7 +18,7 @@ plugins {
     id 'net.neoforged.moddev.repositories' version '2.0.34-beta'
 }
 
-rootProject.name = 'ExampleMod'
+rootProject.name = 'Devotion'
 include 'Common', 'Fabric', 'NeoForge'
 
 dependencyResolutionManagement {
