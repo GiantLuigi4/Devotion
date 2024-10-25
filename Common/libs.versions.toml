@@ -20,6 +20,7 @@ jetbrains_annotations = "25.0.0"
 sparkweave = "0.502.0" # https://www.curseforge.com/minecraft/mc-mods/sparkweave/files/all
 resourcefulconfig = "3.0.4" # https://www.curseforge.com/minecraft/mc-mods/resourceful-config/files/all
 emi = "1.1.14+1.21.1" # https://www.curseforge.com/minecraft/mc-mods/emi/files/all
+common_network = "1.0.17-beta.2-1.21.1" # https://www.curseforge.com/minecraft/mc-mods/common-network/files/all
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -44,6 +45,10 @@ resourcefulconfig_neoforge = { module = "com.teamresourceful.resourcefulconfig:r
 emi = { module = "dev.emi:emi-xplat-mojmap", version.ref = "emi" }
 emi_fabric = { module = "dev.emi:emi-fabric", version.ref = "emi" }
 emi_neoforge = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
+
+common_network = { module = "mysticdrew:common-networking-common", version.ref = "common_network" }
+common_network_fabric = { module = "mysticdrew:common-networking-fabric", version.ref = "common_network" }
+common_network_neoforge = { module = "mysticdrew:common-networking-neoforge", version.ref = "common_network" }
 
 [bundles]
 mixin = ["mixin", "mixin_extras", "asm", "asm_analysis", "asm_commons", "asm_tree", "asm_util"]

@@ -6,8 +6,8 @@ import net.fabricmc.api.ModInitializer;
 @CalledByReflection
 public class Main implements ModInitializer {
 
-    @Override
-    public void onInitialize() {
+	@Override
+	public void onInitialize() {
 
-    }
+	}
 }

@@ -1,6 +1,6 @@
 [versions]
 # The latest versions are available at https://lambdaurora.dev/tools/import_quilt.html
-loom = "1.7-SNAPSHOT"
+loom = "1.8.5"
 
 fabric_loader = "0.16.5"
 fabric_api = "0.105.0+1.21.1"
@@ -16,13 +16,13 @@ fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fab
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 cca_base = { module = "org.ladysnake.cardinal-components-api:cardinal-components-base", version.ref = "cca" }
 cca_entity = { module = "org.ladysnake.cardinal-components-api:cardinal-components-entity", version.ref = "cca" }
-cca_chunk = { module = "org.ladysnake.cardinal-components-api:cardinal-components-chunk", version.ref = "cca" }
+cca_scoreboard = { module = "org.ladysnake.cardinal-components-api:cardinal-components-scoreboard", version.ref = "cca" }
 cca_world = { module = "org.ladysnake.cardinal-components-api:cardinal-components-world", version.ref = "cca" }
 satin = { module = "org.ladysnake:satin", version.ref = "satin" }
 
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]
-cca = [ "cca_base", "cca_entity", "cca_chunk", "cca_world" ]
+cca = ["cca_base", "cca_entity", "cca_scoreboard", "cca_world"]
 
 [plugins]
 loom = { id = "fabric-loom", version.ref = "loom" }

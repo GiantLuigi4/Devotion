@@ -5,9 +5,8 @@ import net.fabricmc.api.ClientModInitializer;
 
 @CalledByReflection
 public class Client implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
 
-    @Override
-    public void onInitializeClient() {
-
-    }
+	}
 }
