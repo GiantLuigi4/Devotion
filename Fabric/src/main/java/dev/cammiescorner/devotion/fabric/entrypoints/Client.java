@@ -1,4 +1,4 @@
-package dev.upcraft.examplemod.fabric.entrypoints;
+package dev.cammiescorner.devotion.fabric.entrypoints;
 
 import dev.upcraft.sparkweave.api.annotation.CalledByReflection;
 import net.fabricmc.api.ClientModInitializer;

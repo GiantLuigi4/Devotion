@@ -1,12 +1,11 @@
-package dev.upcraft.examplemod.neoforge.entrypoints;
+package dev.cammiescorner.devotion.neoforge.entrypoints;
 
-import dev.upcraft.examplemod.ExampleMod;
+import dev.cammiescorner.devotion.Devotion;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
-@Mod(ExampleMod.MODID)
+@Mod(Devotion.MOD_ID)
 public class Main {
-
     public Main(IEventBus modBus) {
 
     }

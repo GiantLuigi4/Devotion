@@ -16,8 +16,12 @@
   "license": "${license_url}",
   "icon": "icon.png",
   "entrypoints": {
-    "main": ["dev.upcraft.examplemod.fabric.entrypoints.Main"],
-    "client": ["dev.upcraft.examplemod.fabric.entrypoints.Client"]
+    "main": [
+		"dev.cammiescorner.devotion.fabric.entrypoints.Main"
+	],
+    "client": [
+		"dev.cammiescorner.devotion.fabric.entrypoints.Client"
+	]
   },
   "custom": {
     "mc-publish": {
