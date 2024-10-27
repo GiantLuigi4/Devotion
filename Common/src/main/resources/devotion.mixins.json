@@ -7,7 +7,7 @@
 	"mixins": [
 	],
 	"client": [
-		"client.ShaderInstanceMixin"
+		"client.LivingEntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
