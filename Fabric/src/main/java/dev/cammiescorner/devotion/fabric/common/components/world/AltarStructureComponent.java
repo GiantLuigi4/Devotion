@@ -43,6 +43,6 @@ public class AltarStructureComponent implements AutoSyncedComponent {
 
 	public void setStructureMap(StructureMapData data) {
 		this.data = data;
-		DevotionComponents.ALTAR_STRUCTURE_COMPONENT.sync(scoreboard);
+		DevotionComponents.ALTAR_STRUCTURE.sync(scoreboard);
 	}
 }

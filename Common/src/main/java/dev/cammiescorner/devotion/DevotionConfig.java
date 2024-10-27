@@ -1,7 +1,7 @@
 package dev.cammiescorner.devotion;
 
-import com.teamresourceful.resourcefulconfig.api.annotations.Config;
-import com.teamresourceful.resourcefulconfig.api.annotations.ConfigInfo;
+import com.teamresourceful.resourcefulconfig.api.annotations.*;
+import com.teamresourceful.resourcefulconfig.api.types.options.EntryType;
 
 @ConfigInfo(
 	title = "Devotion",
@@ -28,7 +28,29 @@ import com.teamresourceful.resourcefulconfig.api.annotations.ConfigInfo;
 		)
 	}
 )
-@Config(value = Devotion.MOD_ID)
+@Config(
+	value = Devotion.MOD_ID,
+	categories = {
+		DevotionConfig.Client.class
+	}
+)
 public class DevotionConfig {
+	@Category(value = "Client")
+	public static class Client {
+		@ConfigEntry(
+			type = EntryType.FLOAT,
+			id = "auraSharpness",
+			translation = ""
+		)
+		@ConfigOption.Range(min = 0, max = 20)
+		public static float auraSharpness = 6f;
 
+		@ConfigEntry(
+			type = EntryType.FLOAT,
+			id = "auraGradiant",
+			translation = ""
+		)
+		@ConfigOption.Range(min = 0, max = 20)
+		public static float auraGradiant = 3f;
+	}
 }

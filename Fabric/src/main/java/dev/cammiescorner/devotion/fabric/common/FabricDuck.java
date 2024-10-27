@@ -8,6 +8,6 @@ import net.minecraft.server.MinecraftServer;
 public class FabricDuck implements Duck {
 	@Override
 	public void setStructureMap(MinecraftServer server, StructureMapData data) {
-		server.getScoreboard().getComponent(DevotionComponents.ALTAR_STRUCTURE_COMPONENT).setStructureMap(data);
+		server.getScoreboard().getComponent(DevotionComponents.ALTAR_STRUCTURE).setStructureMap(data);
 	}
 }

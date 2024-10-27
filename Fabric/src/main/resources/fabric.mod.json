@@ -17,10 +17,10 @@
 	"icon": "icon.png",
 	"entrypoints": {
 		"main": [
-			"dev.cammiescorner.devotion.fabric.entrypoints.Main"
+			"dev.cammiescorner.devotion.fabric.entrypoints.FabricMain"
 		],
 		"client": [
-			"dev.cammiescorner.devotion.fabric.entrypoints.Client"
+			"dev.cammiescorner.devotion.fabric.entrypoints.FabricClient"
 		],
 		"cardinal-components": [
 			"dev.cammiescorner.devotion.fabric.common.registries.DevotionComponents"
@@ -41,7 +41,8 @@
 			]
 		},
 		"cardinal-components": [
-			"devotion:altar_structure"
+			"devotion:altar_structure",
+			"devotion:aura"
 		]
 	},
 	"depends": {
@@ -52,7 +53,8 @@
 		"sparkweave": "*",
 		"resourcefulconfig": "*",
 		"cardinal-components-entity": "^6.1.1",
-		"cardinal-components-world": "^6.1.1",
+		"cardinal-components-block": "^6.1.1",
+		"cardinal-components-scoreboard": "^6.1.1",
 		"satin": "^2.0.0"
 	},
 	"environment": "*",
