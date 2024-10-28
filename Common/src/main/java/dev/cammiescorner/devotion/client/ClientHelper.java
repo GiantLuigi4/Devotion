@@ -15,7 +15,7 @@ public class ClientHelper {
 	}
 
 	public static RenderType auraRenderType(ResourceLocation texture) {
-		return duck.auraRenderType(texture);
+		return AuraEffectManager.INSTANCE.auraRenderType.apply(texture);
 	}
 
 	public static RenderType auraRenderType(RenderType base) {

@@ -5,9 +5,13 @@
 	"refmap": "${mod_id}.refmap.json",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"client.WindowMixin"
 	],
 	"client": [
-		"client.LivingEntityRendererMixin"
+		"client.GameRendererMixin",
+		"client.LevelRendererMixin",
+		"client.LivingEntityRendererMixin",
+		"client.ShaderInstanceMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
