@@ -1,5 +1,7 @@
 package dev.cammiescorner.devotion.mixin.client;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.datafixers.util.Pair;
 import dev.cammiescorner.devotion.client.AuraEffectManager;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
@@ -13,7 +15,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
@@ -24,13 +28,13 @@ public class GameRendererMixin {
 		AuraEffectManager.INSTANCE.renderShader(deltaTracker.getGameTimeDeltaPartialTick(renderLevel));
 	}
 
-	@Inject(method = "reloadShaders", at = @At("RETURN"))
-	private void onReload(ResourceProvider resourceProvider, CallbackInfo info) {
+	@Inject(method = "reloadShaders", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;loadBlurEffect(Lnet/minecraft/server/packs/resources/ResourceProvider;)V"))
+	private void onReload(ResourceProvider resourceProvider, CallbackInfo info, @Local(ordinal = 1) List<Pair<ShaderInstance, Consumer<ShaderInstance>>> programs) {
 		try {
 			AuraEffectManager.INSTANCE.initCoreShader(resourceProvider);
 			AuraEffectManager.INSTANCE.initPostShader();
 
-			shaders.put(AuraEffectManager.INSTANCE.auraShader.getName(), AuraEffectManager.INSTANCE.auraShader);
+			programs.add(Pair.of(AuraEffectManager.INSTANCE.auraShader, shaderInstance -> {}));
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);

@@ -66,7 +66,7 @@ public class AuraEffectManager {
 		DevotionClient.client.getMainRenderTarget().bindWrite(false);
 		int depthTexturePtr = DevotionClient.client.getMainRenderTarget().getDepthTextureId();
 
-		if(depthTexturePtr > -1) {
+		if(depthTexturePtr != -1) {
 			auraRenderTarget.bindWrite(false);
 			GlStateManager._glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_TEXTURE_2D, depthTexturePtr, 0);
 		}

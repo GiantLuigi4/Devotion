@@ -13,11 +13,11 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.List;
 
 public class AuraRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-	private final RenderLayer<T, M>[] otherFeatureRenderers;
+	private final List<RenderLayer<T, M>> otherFeatureRenderers;
 
 	public AuraRenderLayer(RenderLayerParent<T, M> renderer, List<RenderLayer<T, M>> otherFeatureRenderers) {
 		super(renderer);
-		this.otherFeatureRenderers = otherFeatureRenderers.toArray(new RenderLayer[0]);
+		this.otherFeatureRenderers = List.copyOf(otherFeatureRenderers);
 	}
 
 	@Override
