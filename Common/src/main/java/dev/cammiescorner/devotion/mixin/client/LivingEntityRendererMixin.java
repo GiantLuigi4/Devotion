@@ -1,10 +1,9 @@
 package dev.cammiescorner.devotion.mixin.client;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.cammiescorner.devotion.client.renderers.entity.layers.AuraRenderLayer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -19,8 +18,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
 
@@ -36,11 +36,23 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 		auraLayer = new AuraRenderLayer<>(this, layers);
 	}
 
+	@ModifyArgs(
+		method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/RenderLayer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/Entity;FFFFFF)V")
+	)
+	private void stealArgs(Args args, @Share("limbSwing") LocalFloatRef limbSwing, @Share("limbSwingAmount") LocalFloatRef limbSwingAmount, @Share("ageInTicks") LocalFloatRef ageInTicks, @Share("netHeadYaw") LocalFloatRef netHeadYaw, @Share("headPitch") LocalFloatRef headPitch) {
+		limbSwing.set(args.get(4));
+		limbSwingAmount.set(args.get(5));
+		ageInTicks.set(args.get(7));
+		netHeadYaw.set(args.get(8));
+		headPitch.set(args.get(9));
+	}
+
 	@Inject(
 		method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/world/entity/LivingEntity;ZZZ)Lnet/minecraft/client/renderer/RenderType;")
 	)
-	private void renderAura(T entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo info, @Local(name = "f5") LocalFloatRef limbSwing, @Local(name = "f4") LocalFloatRef limbSwingAmount, @Local(name = "f9") LocalFloatRef ageInTicks, @Local(name = "f2") LocalFloatRef netHeadYaw, @Local(name = "f6") LocalFloatRef headPitch) {
+	private void renderAura(T entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo info, @Share("limbSwing") LocalFloatRef limbSwing, @Share("limbSwingAmount") LocalFloatRef limbSwingAmount, @Share("ageInTicks") LocalFloatRef ageInTicks, @Share("netHeadYaw") LocalFloatRef netHeadYaw, @Share("headPitch") LocalFloatRef headPitch) {
 		if(!entity.isSpectator()) {
 			auraLayer.render(poseStack, buffer, packedLight, entity, limbSwing.get(), limbSwingAmount.get(), partialTicks, ageInTicks.get(), netHeadYaw.get(), headPitch.get());
 		}
