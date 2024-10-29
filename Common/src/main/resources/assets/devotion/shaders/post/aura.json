@@ -5,7 +5,7 @@
 	],
 	"passes": [
 		{
-			"name": "wobble",
+			"name": "devotion:wobble",
 			"intarget": "auras",
 			"outtarget": "swap",
 			"uniforms": [
@@ -20,12 +20,12 @@
 			]
 		},
 		{
-			"name": "blobs_with_alpha",
+			"name": "devotion:blobs_with_alpha",
 			"intarget": "swap",
 			"outtarget": "auras"
 		},
 		{
-			"name": "transparent_centre",
+			"name": "devotion:transparent_centre",
 			"intarget": "auras",
 			"outtarget": "swap"
 		},

@@ -1,11 +1,9 @@
 package dev.cammiescorner.devotion.client.renderers;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.cammiescorner.devotion.client.AuraEffectManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
@@ -40,12 +38,6 @@ public class AuraVertexBufferSource implements MultiBufferSource {
 
 				@Override
 				public VertexConsumer setNormal(float normalX, float normalY, float normalZ) { return this; }
-
-				@Override
-				public void putBulkData(PoseStack.Pose pose, BakedQuad quad, float[] brightness, float red, float green, float blue, float alpha, int[] lightmap, int packedOverlay, boolean readAlpha) { }
-
-				@Override
-				public void putBulkData(PoseStack.Pose pose, BakedQuad quad, float red, float green, float blue, float alpha, int packedLight, int packedOverlay) { }
 			};
 	}
 
@@ -80,29 +72,27 @@ public class AuraVertexBufferSource implements MultiBufferSource {
 
 		@Override
 		public VertexConsumer addVertex(float x, float y, float z) {
-			delegate.addVertex(x, y, z).setColor(color);
-			return this;
+			return delegate.addVertex(x, y, z);
 		}
 
 		@Override
 		public VertexConsumer setColor(int red, int green, int blue, int alpha) {
-			return this;
+			return delegate.setColor(this.color);
 		}
 
 		@Override
 		public VertexConsumer setUv(float u, float v) {
-			delegate.setUv(u, v);
-			return this;
+			return delegate.setUv(u, v);
 		}
 
 		@Override
 		public VertexConsumer setUv1(int u, int v) {
-			return this;
+			return delegate.setUv1(u, v);
 		}
 
 		@Override
 		public VertexConsumer setUv2(int u, int v) {
-			return this;
+			return delegate.setUv2(u, v);
 		}
 
 		@Override

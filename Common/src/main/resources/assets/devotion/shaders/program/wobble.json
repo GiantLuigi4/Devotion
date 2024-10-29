@@ -1,6 +1,6 @@
 {
 	"vertex": "sobel",
-	"fragment": "wobble",
+	"fragment": "devotion:wobble",
 	"attributes": [ "Position" ],
 	"samplers": [
 		{ "name": "DiffuseSampler" }

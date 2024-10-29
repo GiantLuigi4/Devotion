@@ -1,6 +1,6 @@
 {
-	"vertex": "screen_size_aware",
-	"fragment": "transparent_centre",
+	"vertex": "devotion:screen_size_aware",
+	"fragment": "devotion:transparent_centre",
 	"attributes": [ "Position" ],
 	"samplers": [
 		{ "name": "DiffuseSampler" }

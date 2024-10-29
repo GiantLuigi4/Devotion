@@ -4,8 +4,8 @@
 		"srcrgb": "one",
 		"dstrgb": "zero"
 	},
-	"vertex": "screen_size_aware_blobs",
-	"fragment": "blobs_with_alpha",
+	"vertex": "devotion:screen_size_aware_blobs",
+	"fragment": "devotion:blobs_with_alpha",
 	"attributes": [ "Position" ],
 	"samplers": [
 		{ "name": "DiffuseSampler" }
