@@ -6,122 +6,153 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.cammiescorner.devotion.Devotion;
-import dev.cammiescorner.devotion.DevotionClient;
 import dev.cammiescorner.devotion.DevotionConfig;
+import dev.cammiescorner.velvet.api.event.EntitiesPreRenderCallback;
+import dev.cammiescorner.velvet.api.event.ShaderEffectRenderCallback;
+import dev.cammiescorner.velvet.api.managed.ManagedCoreShader;
+import dev.cammiescorner.velvet.api.managed.ManagedRenderTarget;
+import dev.cammiescorner.velvet.api.managed.ManagedShaderEffect;
+import dev.cammiescorner.velvet.api.managed.ShaderEffectManager;
 import net.minecraft.Util;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceProvider;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.function.Function;
 
-public class AuraEffectManager {
-	public static final AuraEffectManager INSTANCE = new AuraEffectManager();
-	public static final RenderStateShard.OutputStateShard AURA_OUTPUT = new RenderStateShard.OutputStateShard("devotion:aura_output", AuraEffectManager.INSTANCE::startAuraRenderTarget, AuraEffectManager.INSTANCE::stopAuraRenderTarget);
-	public PostChain postEffect;
-	public RenderTarget auraRenderTarget;
-	public Function<ResourceLocation, RenderType> auraRenderType;
-	public ShaderInstance auraShader;
-	public boolean auraBufferCleared;
+import static dev.cammiescorner.devotion.DevotionClient.client;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 
-	public void startAuraRenderTarget() {
+public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffectRenderCallback {
+	public static final AuraEffectManager INSTANCE = new AuraEffectManager();
+	public final ManagedCoreShader auraCoreShader = ShaderEffectManager.getInstance().manageCoreShader(Devotion.id("rendertype_aura"));
+	private final ManagedShaderEffect auraPostShader = ShaderEffectManager.getInstance().manage(Devotion.id("shaders/post/aura.json"), this::assignDepthTexture);
+	private final ManagedRenderTarget auraRenderTarget = auraPostShader.getTarget("auras");
+	private boolean auraBufferCleared;
+
+	@Override
+	public void beforeEntitiesRender(Camera camera, Frustum frustum, float tickDelta) {
+		auraBufferCleared = false;
+	}
+
+	@Override
+	public void renderShaderEffects(float tickDelta) {
+		if(this.auraBufferCleared) {
+			auraPostShader.setUniformValue("TransStepGranularity", DevotionConfig.Client.auraGradiant);
+			auraPostShader.setUniformValue("BlobsStepGranularity", DevotionConfig.Client.auraSharpness);
+			auraPostShader.render(tickDelta);
+			client.getMainRenderTarget().bindWrite(true);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+			auraRenderTarget.draw();
+			RenderSystem.disableBlend();
+		}
+	}
+
+	/**
+	 * Binds aura render target for use and clears it if necessary.
+	 */
+	public void beginAuraRenderTargetUse() {
+		RenderTarget auraRenderTarget = this.auraRenderTarget.getRenderTarget();
+
 		if(auraRenderTarget != null) {
 			auraRenderTarget.bindWrite(false);
 
 			if(!auraBufferCleared) {
-				float[] clearChannels = auraRenderTarget.clearChannels;
-				RenderSystem.clearColor(clearChannels[0], clearChannels[1], clearChannels[2], clearChannels[3]);
-				RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT, Minecraft.ON_OSX);
+				// clear render target colour (but not depth)
+				float[] clearColor = auraRenderTarget.clearChannels;
+				RenderSystem.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+				RenderSystem.clear(GL_COLOR_BUFFER_BIT, Minecraft.ON_OSX);
 
 				auraBufferCleared = true;
 			}
 		}
 	}
 
-	public void stopAuraRenderTarget() {
-		DevotionClient.client.getMainRenderTarget().bindWrite(false);
+	/**
+	 * Unbinds aura render target for use and undoes changes made in {@link #beginAuraRenderTargetUse()}.
+	 */
+	private void endAuraRenderTargetUse() {
+		client.getMainRenderTarget().bindWrite(false);
 	}
 
-	public void renderShader(float partialTicks) {
-		if(auraBufferCleared) {
-			postEffect.setUniform("TransStepGranularity", DevotionConfig.Client.auraGradiant);
-			postEffect.setUniform("BlobsStepGranularity", DevotionConfig.Client.auraSharpness);
-			postEffect.process(partialTicks);
-			DevotionClient.client.getMainRenderTarget().bindWrite(true);
-			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			auraRenderTarget.blitToScreen(DevotionClient.client.getWindow().getWidth(), DevotionClient.client.getWindow().getHeight(), false);
-			RenderSystem.disableBlend();
+	/**
+	 * Makes the aura render target use the same depth texture as the main render target. Run when the aura post shader
+	 * is initialised.
+	 *
+	 * @param managedShaderEffect shader effect being initialised
+	 */
+	private void assignDepthTexture(ManagedShaderEffect managedShaderEffect) {
+		client.getMainRenderTarget().bindWrite(false);
+		int depthTexturePtr = client.getMainRenderTarget().getDepthTextureId();
+
+		if(depthTexturePtr > -1) {
+			auraRenderTarget.beginWrite(false);
+			GlStateManager._glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexturePtr, 0);
 		}
 	}
 
-	public void assignDepthTexture() {
-		DevotionClient.client.getMainRenderTarget().bindWrite(false);
-		int depthTexturePtr = DevotionClient.client.getMainRenderTarget().getDepthTextureId();
-
-		if(depthTexturePtr != -1) {
-			auraRenderTarget.bindWrite(false);
-			GlStateManager._glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_TEXTURE_2D, depthTexturePtr, 0);
-		}
+	/**
+	 * Gets the {@link RenderType} for rendering auras with a given texture
+	 *
+	 * @param texture the identifier of the texture to use
+	 * @return the render layer
+	 */
+	public static RenderType getRenderType(ResourceLocation texture) {
+		return texture == null ? getRenderType() : AuraRenderType.AURA_TYPE.apply(texture);
 	}
 
-	public void initCoreShader(ResourceProvider provider) throws IOException {
-		if(auraShader != null) {
-			try {
-				auraShader.close();
-				auraShader = null;
-			}
-			catch(Exception e) {
-				throw new RuntimeException("Failed to release core aura shader", e);
-			}
-		}
-
-		auraShader = new ShaderInstance(provider, Devotion.id("rendertype_aura").toString(), DefaultVertexFormat.POSITION_TEX_COLOR);
+	/**
+	 * Gets the {@link RenderType} for rendering auras with the same texture as a given render layer
+	 *
+	 * @param base the render layer to take the texture from
+	 * @return the render layer
+	 */
+	public static RenderType getRenderType(@NotNull RenderType base) {
+		return AuraRenderType.getRenderTypeWithTextureFrom(base);
 	}
 
-	public void initPostShader() throws IOException {
-		if(postEffect != null) {
-			try {
-				postEffect.close();
-				postEffect = null;
-			}
-			catch(Exception e) {
-				throw new RuntimeException("Failed to release post aura shader", e);
-			}
-		}
-
-		postEffect = new PostChain(DevotionClient.client.getTextureManager(), DevotionClient.client.getResourceManager(), DevotionClient.client.getMainRenderTarget(), Devotion.id("shaders/post/aura.json"));
-		postEffect.resize(DevotionClient.client.getWindow().getWidth(), DevotionClient.client.getWindow().getHeight());
-		postEffect.addTempTarget("devotion:aura_render_target", DevotionClient.client.getWindow().getWidth(), DevotionClient.client.getWindow().getHeight());
-		auraRenderTarget = postEffect.getTempTarget("devotion:aura_render_target");
-		assignDepthTexture();
+	/**
+	 * Gets the {@link RenderType} for rendering auras with a default texture
+	 *
+	 * @return the render layer
+	 */
+	public static RenderType getRenderType() {
+		return AuraRenderType.DEFAULT_AURA_TYPE;
 	}
 
-	public void initShaderInstance(ShaderInstance shaderInstance) {
-		RenderStateShard.ShaderStateShard auraShaderState = new RenderStateShard.ShaderStateShard(() -> shaderInstance);
-		auraShader = shaderInstance;
+	/**
+	 * Helper for the creating and holding the aura render layers and target
+	 */
+	private static final class AuraRenderType extends RenderType {
+		// have to extend RenderLayer to access a few of these things
+		private static final OutputStateShard AURA_TARGET = new OutputStateShard("devotion:aura_target", AuraEffectManager.INSTANCE::beginAuraRenderTargetUse, AuraEffectManager.INSTANCE::endAuraRenderTargetUse);
+		private static final Function<ResourceLocation, RenderType> AURA_TYPE = Util.memoize(id -> RenderType.create("aura", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, false, true, CompositeState.builder().setShaderState(new ShaderStateShard(AuraEffectManager.INSTANCE.auraCoreShader::getProgram)).setWriteMaskState(COLOR_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(AURA_TARGET).setTextureState(new TextureStateShard(id, false, false)).createCompositeState(false)));
+		private static final ResourceLocation WHITE_TEXTURE = ResourceLocation.withDefaultNamespace("misc/white.png");
+		private static final RenderType DEFAULT_AURA_TYPE = AURA_TYPE.apply(WHITE_TEXTURE);
 
-		auraRenderType = Util.memoize(texture -> RenderType.create(
-			"devotion:aura",
-			DefaultVertexFormat.POSITION_TEX_COLOR,
-			VertexFormat.Mode.QUADS,
-			256,
-			false,
-			true,
-			RenderType.CompositeState.builder()
-				.setShaderState(auraShaderState)
-				.setWriteMaskState(RenderStateShard.COLOR_WRITE)
-				.setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(AURA_OUTPUT)
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-				.createCompositeState(false)
-		));
+		// no need to create instances of this
+		private AuraRenderType(String name, VertexFormat vertexFormat, VertexFormat.Mode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
+			super(name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, startAction, endAction);
+		}
+
+		/**
+		 * Extracts the texture from a render layer and creates an aura render layer with it.
+		 *
+		 * @param base the render layer to take the texture from
+		 * @return the aura render layer
+		 */
+		private static RenderType getRenderTypeWithTextureFrom(RenderType base) {
+			if(base instanceof RenderType.CompositeRenderType compositeRenderType)
+				return AURA_TYPE.apply(compositeRenderType.state().textureState.cutoutTexture().orElse(WHITE_TEXTURE));
+			else
+				return DEFAULT_AURA_TYPE;
+		}
 	}
 }

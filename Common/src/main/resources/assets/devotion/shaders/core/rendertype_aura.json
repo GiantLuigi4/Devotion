@@ -5,7 +5,7 @@
 		"dstrgb": "1-srcalpha"
 	},
 	"vertex": "rendertype_outline",
-	"fragment": "devotion:rendertype_aura",
+	"fragment": "rendertype_aura",
 	"attributes": [
 		"Position",
 		"Color",

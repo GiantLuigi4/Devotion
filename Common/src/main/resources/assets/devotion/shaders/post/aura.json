@@ -1,12 +1,12 @@
 {
 	"targets": [
 		"swap",
-		"devotion:aura_render_target"
+		"auras"
 	],
 	"passes": [
 		{
-			"name": "devotion:wobble",
-			"intarget": "devotion:aura_render_target",
+			"name": "wobble",
+			"intarget": "auras",
 			"outtarget": "swap",
 			"uniforms": [
 				{
@@ -20,20 +20,20 @@
 			]
 		},
 		{
-			"name": "devotion:blobs_with_alpha",
+			"name": "blobs_with_alpha",
 			"intarget": "swap",
-			"outtarget": "devotion:aura_render_target"
+			"outtarget": "auras"
 		},
 		{
-			"name": "devotion:transparent_centre",
-			"intarget": "devotion:aura_render_target",
+			"name": "transparent_centre",
+			"intarget": "auras",
 			"outtarget": "swap"
 		},
 		{
 			"_comment": "// FIXME: blit doesn't work here for some reason",
 			"name": "blit",
 			"intarget": "swap",
-			"outtarget": "devotion:aura_render_target"
+			"outtarget": "auras"
 		}
 	]
 }

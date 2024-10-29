@@ -2,7 +2,7 @@ package dev.cammiescorner.devotion.client.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.cammiescorner.devotion.client.ClientHelper;
+import dev.cammiescorner.devotion.client.AuraEffectManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,7 +20,7 @@ public class AuraVertexBufferSource implements MultiBufferSource {
 	@Override
 	public VertexConsumer getBuffer(RenderType renderType) {
 		if(renderType.outline().isPresent())
-			return new AuraVertexConsumer(bufferSource.getBuffer(ClientHelper.auraRenderType(renderType)), color);
+			return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType(renderType)), color);
 		else
 			return new VertexConsumer() {
 				@Override
@@ -50,7 +50,11 @@ public class AuraVertexBufferSource implements MultiBufferSource {
 	}
 
 	public VertexConsumer getBuffer(ResourceLocation texture) {
-		return new AuraVertexConsumer(bufferSource.getBuffer(ClientHelper.auraRenderType(texture)), color);
+		return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType(texture)), color);
+	}
+
+	public VertexConsumer getBuffer() {
+		return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType()), color);
 	}
 
 	public void setColor(int color, int alpha) {

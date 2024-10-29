@@ -26,17 +26,17 @@ public class AuraRenderLayer<T extends LivingEntity, M extends EntityModel<T>> e
 		float scale = 1f;
 		EntityDimensions dimensions = entity.getDimensions(entity.getPose());
 
-		AuraVertexBufferSource auraConsumerProvider = new AuraVertexBufferSource(bufferSource);
-		auraConsumerProvider.setColor(255, 255, 255, (int) (aura * 255));
+		AuraVertexBufferSource auraBufferSource = new AuraVertexBufferSource(bufferSource);
+		auraBufferSource.setColor(255, 255, 255, (int) (aura * 255));
 
 		poseStack.pushPose();
 		poseStack.scale(scale, scale, scale);
 
 		for(RenderLayer<T, M> renderer : otherFeatureRenderers)
-			renderer.render(poseStack, auraConsumerProvider, light, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
+			renderer.render(poseStack, auraBufferSource, light, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
 
 		poseStack.translate(0D, -((dimensions.height() * scale) * 0.5D - dimensions.height() * 0.5D), 0D);
-		getParentModel().renderToBuffer(poseStack, auraConsumerProvider.getBuffer(getTextureLocation(entity)), light, OverlayTexture.NO_OVERLAY, 0xffffffff);
+		getParentModel().renderToBuffer(poseStack, auraBufferSource.getBuffer(getTextureLocation(entity)), light, OverlayTexture.NO_OVERLAY, 0xffffffff);
 
 		poseStack.popPose();
 	}

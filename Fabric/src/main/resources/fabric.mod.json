@@ -55,7 +55,7 @@
 		"cardinal-components-entity": "^6.1.1",
 		"cardinal-components-block": "^6.1.1",
 		"cardinal-components-scoreboard": "^6.1.1",
-		"satin": "^2.0.0"
+		"velvet": "^0.1.0"
 	},
 	"environment": "*",
 	"accessWidener": "${mod_id}.accesswidener",

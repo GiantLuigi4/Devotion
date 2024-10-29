@@ -18,6 +18,7 @@ jetbrains_annotations = "25.0.0"
 
 # other dependencies
 sparkweave = "0.502.0" # https://www.curseforge.com/minecraft/mc-mods/sparkweave/files/all
+velvet = "0.1.0"
 resourcefulconfig = "3.0.4" # https://www.curseforge.com/minecraft/mc-mods/resourceful-config/files/all
 emi = "1.1.14+1.21.1" # https://www.curseforge.com/minecraft/mc-mods/emi/files/all
 common_network = "1.0.17-beta.2-1.21.1" # https://www.curseforge.com/minecraft/mc-mods/common-network/files/all
@@ -37,6 +38,9 @@ jetbrains_annotations = { module = "org.jetbrains:annotations", version.ref = "j
 sparkweave = { module = "dev.upcraft.sparkweave:Sparkweave-Common", version.ref = "sparkweave" }
 sparkweave_fabric = { module = "dev.upcraft.sparkweave:Sparkweave-Fabric", version.ref = "sparkweave" }
 sparkweave_neoforge = { module = "dev.upcraft.sparkweave:Sparkweave-NeoForge", version.ref = "sparkweave" }
+velvet = { module = "dev.cammiescorner.velvet:Velvet-Common", version.ref = "velvet" }
+velvet_fabric = { module = "dev.cammiescorner.velvet:Velvet-Fabric", version.ref = "velvet" }
+velvet_neoforge = { module = "dev.cammiescorner.velvet:Velvet-NeoForge", version.ref = "velvet" }
 
 resourcefulconfig = { module = "com.teamresourceful.resourcefulconfig:resourcefulconfig-common-1.21", version.ref = "resourcefulconfig" }
 resourcefulconfig_fabric = { module = "com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21", version.ref = "resourcefulconfig" }

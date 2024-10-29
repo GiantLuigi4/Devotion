@@ -11,6 +11,7 @@ dependencies {
 	compileOnly project(":Common")
 
 	implementation libs.sparkweave.neoforge
+	implementation libs.velvet.neoforge
 	implementation libs.resourcefulconfig.neoforge
 	implementation libs.common.network.neoforge
 

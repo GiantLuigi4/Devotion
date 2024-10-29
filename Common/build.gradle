@@ -9,6 +9,7 @@ dependencies {
 	compileOnly libs.jetbrains.annotations
 
 	compileOnly libs.sparkweave
+	compileOnly libs.velvet
 	compileOnly libs.resourcefulconfig
 	compileOnly libs.common.network
 

@@ -14,8 +14,8 @@ dependencies {
 	modImplementation fabric.fabric.api
 
 	modImplementation libs.sparkweave.fabric
+	modImplementation libs.velvet.fabric
 	modImplementation fabric.bundles.cca
-	modImplementation fabric.satin
 	modImplementation libs.resourcefulconfig.fabric
 	modImplementation libs.common.network.fabric
 
@@ -26,7 +26,7 @@ dependencies {
 	modLocalRuntime libs.emi.fabric
 
 	include fabric.bundles.cca
-	include fabric.satin
+	include libs.velvet.fabric
 }
 
 repositories {
