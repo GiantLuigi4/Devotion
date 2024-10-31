@@ -17,7 +17,7 @@ void main(){
     float step = max(1, ceil(Radius/BlobsStepGranularity));
     for(float u = 0.0; u <= Radius; u += step) {
         for(float v = 0.0; v <= Radius; v += step) {
-            if (maxVal.a <= 0) {
+            if(maxVal.a <= 0) {
                 float weight = (((sqrt(u * u + v * v) / (Radius)) > 1.0) ? 0.0 : 1.0);
 
                 vec4 leftDown = texture(DiffuseSampler, texCoord + vec2(-u * oneTexel.x, -v * oneTexel.y));

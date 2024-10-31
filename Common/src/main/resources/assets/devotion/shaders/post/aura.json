@@ -31,9 +31,10 @@
 		},
 		{
 			"_comment": "// FIXME: blit doesn't work here for some reason",
-			"name": "blit",
+			"name": "entity_outline_box_blur",
 			"intarget": "swap",
-			"outtarget": "auras"
+			"outtarget": "auras",
+			"use_linear_filter": true
 		}
 	]
 }
