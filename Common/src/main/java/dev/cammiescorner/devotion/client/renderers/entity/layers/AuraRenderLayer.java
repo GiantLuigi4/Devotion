@@ -27,8 +27,7 @@ public class AuraRenderLayer<T extends LivingEntity, M extends EntityModel<T>> e
 
 		if(aura > 0f) {
 			EntityDimensions dimensions = entity.getDimensions(entity.getPose());
-			AuraVertexBufferSource auraBufferSource = new AuraVertexBufferSource(bufferSource);
-			auraBufferSource.setColor(255, 255, 255, (int) (aura * 255));
+			AuraVertexBufferSource auraBufferSource = new AuraVertexBufferSource(bufferSource, 255, 255, 255, (int) (aura * 255));
 
 			poseStack.pushPose();
 			poseStack.scale(scale, scale, scale);
