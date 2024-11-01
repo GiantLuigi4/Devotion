@@ -5,6 +5,7 @@ import dev.cammiescorner.devotion.common.registries.DevotionTags;
 import dev.upcraft.sparkweave.api.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -19,7 +20,7 @@ public class MainHelper {
 		return state.is(DevotionTags.ALTAR_PALETTE);
 	}
 
-	public void constructStructureMap(MinecraftServer server) {
+	public static void constructStructureMap(MinecraftServer server) {
 		StructureTemplate structureTemplate = server.getStructureManager().getOrCreate(Devotion.id("altar"));
 		StructurePlaceSettings placementData = new StructurePlaceSettings();
 		BlockPos pos = BlockPos.ZERO;
@@ -35,5 +36,33 @@ public class MainHelper {
 				map.put(info.pos().subtract(pos), info.state());
 
 		duck.setStructureMap(server, new StructureMapData(map, offsetX, offsetZ));
+	}
+
+	public static float getAura(LivingEntity entity) {
+		return duck.getAura(entity);
+	}
+
+	public static void setAura(LivingEntity entity, float amount) {
+		duck.setAura(entity, amount);
+	}
+
+	public static Color getAuraColor(LivingEntity entity) {
+		return duck.getAuraColor(entity);
+	}
+
+	public static void setAuraColor(LivingEntity entity, Color color) {
+		duck.setAuraColor(entity, color);
+	}
+
+	public static float getAuraAlpha(LivingEntity entity) {
+		return duck.getAuraAlpha(entity);
+	}
+
+	public static boolean drainAura(LivingEntity entity, float amount, boolean simulate) {
+		return duck.drainAura(entity, amount, simulate);
+	}
+
+	public static boolean regenAura(LivingEntity entity, float amount, boolean simulate) {
+		return duck.regenAura(entity, amount, simulate);
 	}
 }

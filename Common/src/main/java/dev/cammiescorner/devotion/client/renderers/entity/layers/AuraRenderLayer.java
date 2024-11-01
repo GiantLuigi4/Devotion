@@ -2,6 +2,7 @@ package dev.cammiescorner.devotion.client.renderers.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.cammiescorner.devotion.client.renderers.AuraVertexBufferSource;
+import dev.cammiescorner.devotion.common.MainHelper;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -22,12 +23,12 @@ public class AuraRenderLayer<T extends LivingEntity, M extends EntityModel<T>> e
 
 	@Override
 	public void render(PoseStack poseStack, MultiBufferSource bufferSource, int light, T entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
-		float aura = 1f;
+		float aura = MainHelper.getAura(entity);
 		float scale = 1f;
 
 		if(aura > 0f) {
 			EntityDimensions dimensions = entity.getDimensions(entity.getPose());
-			AuraVertexBufferSource auraBufferSource = new AuraVertexBufferSource(bufferSource, 255, 255, 255, (int) (aura * 255));
+			AuraVertexBufferSource auraBufferSource = new AuraVertexBufferSource(bufferSource, 255, 255, 255, (int) (MainHelper.getAuraAlpha(entity) * 255));
 
 			poseStack.pushPose();
 			poseStack.scale(scale, scale, scale);
@@ -35,8 +36,8 @@ public class AuraRenderLayer<T extends LivingEntity, M extends EntityModel<T>> e
 			for(RenderLayer<T, M> renderer : otherFeatureRenderers)
 				renderer.render(poseStack, auraBufferSource, light, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
 
-			poseStack.translate(0D, -((dimensions.height() * scale) * 0.5D - dimensions.height() * 0.5D), 0D);
-			getParentModel().renderToBuffer(poseStack, auraBufferSource.getBuffer(getTextureLocation(entity)), light, OverlayTexture.NO_OVERLAY, 0xffffffff);
+			poseStack.translate(0, -((dimensions.height() * scale) * 0.5 - dimensions.height() * 0.5), 0);
+			getParentModel().renderToBuffer(poseStack, auraBufferSource.getBuffer(getTextureLocation(entity)), light, OverlayTexture.NO_OVERLAY, MainHelper.getAuraColor(entity).getDecimal());
 
 			poseStack.popPose();
 		}

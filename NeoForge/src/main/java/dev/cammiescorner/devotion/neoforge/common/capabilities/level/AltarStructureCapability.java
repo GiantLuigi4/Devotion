@@ -1,4 +1,4 @@
-package dev.cammiescorner.devotion.neoforge.common.capabilities;
+package dev.cammiescorner.devotion.neoforge.common.capabilities.level;
 
 import com.mojang.datafixers.util.Pair;
 import commonnetwork.api.Network;
