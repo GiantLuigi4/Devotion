@@ -6,7 +6,7 @@
 
 ---
 
-\[insert description here at some point whenever you want to]
+[insert description here at some point whenever you want to]
 
 ---
 
