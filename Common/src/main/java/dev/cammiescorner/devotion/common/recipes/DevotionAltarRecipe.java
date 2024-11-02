@@ -9,11 +9,8 @@ import dev.cammiescorner.devotion.common.blocks.entities.AltarBlockEntity;
 import dev.cammiescorner.devotion.common.registries.DevotionRecipes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -94,15 +91,14 @@ public class DevotionAltarRecipe implements Recipe<AltarBlockEntity> {
 	}
 
 	public static class Serializer implements RecipeSerializer<DevotionAltarRecipe> {
-		MapCodec<DevotionAltarRecipe> CODEC = RecordCodecBuilder.mapCodec(recipe -> {
+		MapCodec<DevotionAltarRecipe> CODEC = RecordCodecBuilder.mapCodec(recipe ->
 			recipe.group(
 				Codec.STRING.optionalFieldOf("group", "").forGetter(DevotionAltarRecipe::getGroup),
 				Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(Recipe::getIngredients),
 				Codec.INT.fieldOf("power").forGetter(DevotionAltarRecipe::getPower),
 				ConfiguredAltarAction.CODEC.fieldOf("result").forGetter(DevotionAltarRecipe::getResult),
 				Research.CODEC.listOf().fieldOf("prerequisites").forGetter(DevotionAltarRecipe::getRequiredResearch)
-			).apply(recipe, DevotionAltarRecipe::new);
-		}, null);
+			).apply(recipe, DevotionAltarRecipe::new));
 
 		@Override
 		public MapCodec<DevotionAltarRecipe> codec() {
