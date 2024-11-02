@@ -5,54 +5,62 @@ import dev.cammiescorner.devotion.client.AuraEffectManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 
 public class AuraVertexBufferSource implements MultiBufferSource {
 	private final MultiBufferSource bufferSource;
-	private final int color;
+	private final int red;
+	private final int green;
+	private final int blue;
+	private final int alpha;
 
 	public AuraVertexBufferSource(MultiBufferSource bufferSource, int red, int green, int blue, int alpha) {
 		this.bufferSource = bufferSource;
-		this.color = FastColor.ARGB32.color(alpha, red, green, blue);
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		this.alpha = alpha;
 	}
 
 	@Override
 	public VertexConsumer getBuffer(RenderType renderType) {
 		if(renderType.outline().isPresent())
-			return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType(renderType)), color);
+			return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType(renderType)), red, green, blue, alpha);
 		else
 			return new DummyVertexConsumer();
 	}
 
-	public VertexConsumer getBuffer(ResourceLocation texture) {
-		return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType(texture)), color);
+	public AuraVertexConsumer getBuffer(ResourceLocation texture) {
+		return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType(texture)), red, green, blue, alpha);
 	}
 
-	public VertexConsumer getBuffer() {
-		return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType()), color);
+	public AuraVertexConsumer getBuffer() {
+		return new AuraVertexConsumer(bufferSource.getBuffer(AuraEffectManager.getRenderType()), red, green, blue, alpha);
 	}
 
 	public static class AuraVertexConsumer implements VertexConsumer {
 		private final VertexConsumer delegate;
-		private final int color;
-
-		public AuraVertexConsumer(VertexConsumer delegate, int color) {
-			this.delegate = delegate;
-			this.color = color;
-		}
+		private final int red;
+		private final int green;
+		private final int blue;
+		private final int alpha;
 
 		public AuraVertexConsumer(VertexConsumer delegate, int red, int green, int blue, int alpha) {
-			this(delegate, FastColor.ARGB32.color(alpha, red, green, blue));
+			this.delegate = delegate;
+			this.red = red;
+			this.green = green;
+			this.blue = blue;
+			this.alpha = alpha;
 		}
 
 		@Override
 		public VertexConsumer addVertex(float x, float y, float z) {
-			delegate.addVertex(x, y, z).setColor(color);
+			delegate.addVertex(x, y, z);
 			return this;
 		}
 
 		@Override
 		public VertexConsumer setColor(int red, int green, int blue, int alpha) {
+			delegate.setColor(this.red, this.green, this.blue, this.alpha);
 			return this;
 		}
 
@@ -75,6 +83,11 @@ public class AuraVertexBufferSource implements MultiBufferSource {
 		@Override
 		public VertexConsumer setNormal(float normalX, float normalY, float normalZ) {
 			return this;
+		}
+
+		@Override
+		public void addVertex(float x, float y, float z, int color, float u, float v, int packedOverlay, int packedLight, float normalX, float normalY, float normalZ) {
+			delegate.addVertex(x, y, z).setColor(this.red, this.green, this.blue, this.alpha).setUv(u, v);
 		}
 	}
 
