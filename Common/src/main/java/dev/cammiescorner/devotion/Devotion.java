@@ -5,6 +5,9 @@ import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientBoundAltarStructurePacket;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientBoundDataPacket;
 import dev.cammiescorner.devotion.common.registries.DevotionAttributes;
+import dev.cammiescorner.devotion.common.registries.DevotionData;
+import dev.cammiescorner.devotion.common.registries.DevotionItems;
+import dev.cammiescorner.devotion.common.registries.DevotionMaterials;
 import dev.upcraft.sparkweave.api.entrypoint.MainEntryPoint;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
@@ -19,7 +22,10 @@ public class Devotion implements MainEntryPoint {
 		CONFIGURATOR.register(DevotionConfig.class);
 		RegistryService registryService = RegistryService.get();
 
+		DevotionItems.ITEMS.accept(registryService);
+		DevotionMaterials.ARMOR_MATERIALS.accept(registryService);
 		DevotionAttributes.ATTRIBUTES.accept(registryService);
+		DevotionData.DATA_COMPONENTS.accept(registryService);
 		Network.registerPacket(ClientBoundAltarStructurePacket.TYPE, ClientBoundAltarStructurePacket.class, ClientBoundAltarStructurePacket.CODEC, ClientBoundAltarStructurePacket::handle);
 		Network.registerPacket(ClientBoundDataPacket.TYPE, ClientBoundDataPacket.class, ClientBoundDataPacket.CODEC, ClientBoundDataPacket::handle);
 	}

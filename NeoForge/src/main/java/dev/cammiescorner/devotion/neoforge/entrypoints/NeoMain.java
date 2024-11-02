@@ -2,11 +2,9 @@ package dev.cammiescorner.devotion.neoforge.entrypoints;
 
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraCapability;
-import net.minecraft.world.entity.EntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.EntityCapability;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 @Mod(Devotion.MOD_ID)
 public class NeoMain {
@@ -15,8 +13,6 @@ public class NeoMain {
 	);
 
 	public NeoMain(IEventBus modBus) {
-		modBus.addListener((RegisterCapabilitiesEvent event) -> {
-			event.registerEntity(AURA, EntityType.PLAYER, (entity, unused) -> new AuraCapability(entity, AuraCapability.MAX_AURA, 0xffffff));
-		});
+
 	}
 }

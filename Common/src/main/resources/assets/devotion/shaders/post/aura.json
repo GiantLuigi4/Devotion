@@ -31,10 +31,15 @@
 		},
 		{
 			"_comment": "// FIXME: blit doesn't work here for some reason",
-			"name": "entity_outline_box_blur",
+			"name": "box_blur",
 			"intarget": "swap",
 			"outtarget": "auras",
-			"use_linear_filter": true
+			"uniforms": [
+				{
+					"name": "Radius",
+					"values": [ 0.0 ]
+				}
+			]
 		}
 	]
 }
