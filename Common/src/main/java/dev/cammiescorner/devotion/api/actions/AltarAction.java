@@ -15,9 +15,5 @@ public abstract class AltarAction {
 
 	public abstract ConfiguredAltarAction create(RegistryFriendlyByteBuf buf);
 
-	public boolean requiresPlayer() {
-		return false;
-	}
-
 	public abstract MapCodec<ConfiguredAltarAction> codec();
 }

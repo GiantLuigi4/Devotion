@@ -7,6 +7,7 @@ import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.Graph;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
+import dev.cammiescorner.devotion.common.StructureMapData;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientBoundAltarStructurePacket;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientBoundDataPacket;
 import dev.cammiescorner.devotion.common.registries.*;
@@ -41,6 +42,8 @@ public class Devotion implements MainEntryPoint {
 			}
 		}
 	});
+
+	public static StructureMapData data = StructureMapData.empty();
 
 	@Override
 	public void onInitialize(ModContainer mod) {

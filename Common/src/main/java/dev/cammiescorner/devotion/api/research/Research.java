@@ -5,6 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.cammiescorner.devotion.Devotion;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +25,8 @@ public class Research {
 		Codec.BOOL.fieldOf("hidden").forGetter(Research::isHidden),
 		ItemStack.CODEC.fieldOf("icon").forGetter(Research::getIcon)
 	).apply(researchInstance, Research::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Research>> HOLDER_STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY_KEY);
+	public static final StreamCodec<RegistryFriendlyByteBuf, Research> OBJ_STREAM_CODEC = ByteBufCodecs.registry(REGISTRY_KEY);
 	private final Set<Research> parents = new HashSet<>();
 	private final Difficulty difficulty;
 	private final ItemStack icon;

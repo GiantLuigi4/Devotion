@@ -16,6 +16,10 @@ import java.util.List;
 public class MainHelper {
 	private static final Duck duck = Services.getService(Duck.class);
 
+	public static StructureMapData getStructureMapData() {
+		return Devotion.data;
+	}
+
 	public static boolean isValidAltarBlock(BlockState state) {
 		return state.is(DevotionTags.ALTAR_PALETTE);
 	}

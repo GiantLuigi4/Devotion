@@ -17,7 +17,6 @@ public class DevotionClient implements ClientEntryPoint {
 	private static final ResourceLocation CONJURER_MAGE_ROBES = Devotion.id("textures/entity/armor/conjurer_mage_robes.png");
 	private static final ResourceLocation MANIPULATOR_MAGE_ROBES = Devotion.id("textures/entity/armor/manipulator_mage_robes.png");
 	public static final Minecraft client = Minecraft.getInstance();
-	public static StructureMapData data = StructureMapData.empty();
 
 	@Override
 	public void onInitializeClient(ModContainer mod) {
