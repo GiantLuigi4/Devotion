@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.actions.ConfiguredAltarAction;
 import dev.cammiescorner.devotion.api.research.Research;
-import dev.cammiescorner.devotion.common.blocks.entities.AltarBlockEntity;
+import dev.cammiescorner.devotion.common.blocks.entities.AltarFocusBlockEntity;
 import dev.cammiescorner.devotion.common.registries.DevotionRecipes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DevotionAltarRecipe implements Recipe<AltarBlockEntity> {
+public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 	private final String group;
 	private final List<Ingredient> input;
 	private final int power;
@@ -44,7 +44,7 @@ public class DevotionAltarRecipe implements Recipe<AltarBlockEntity> {
 	}
 
 	@Override
-	public boolean matches(AltarBlockEntity altar, Level level) {
+	public boolean matches(AltarFocusBlockEntity altar, Level level) {
 		StackedContents matcher = new StackedContents();
 
 		int i = 0;
@@ -63,7 +63,7 @@ public class DevotionAltarRecipe implements Recipe<AltarBlockEntity> {
 	}
 
 	@Override
-	public ItemStack assemble(AltarBlockEntity input, HolderLookup.Provider registries) {
+	public ItemStack assemble(AltarFocusBlockEntity input, HolderLookup.Provider registries) {
 		return ItemStack.EMPTY;
 	}
 
@@ -92,7 +92,7 @@ public class DevotionAltarRecipe implements Recipe<AltarBlockEntity> {
 		return DevotionRecipes.ALTAR_TYPE.get();
 	}
 
-	public void assemble(ServerLevel world, @Nullable ServerPlayer player, AltarBlockEntity altar) {
+	public void assemble(ServerLevel world, @Nullable ServerPlayer player, AltarFocusBlockEntity altar) {
 		result.value().run(world, player, altar);
 		altar.clearContent();
 	}

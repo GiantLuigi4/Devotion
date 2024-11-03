@@ -50,12 +50,20 @@ public class Devotion implements MainEntryPoint {
 		CONFIGURATOR.register(DevotionConfig.class);
 		RegistryService registryService = RegistryService.get();
 
+		// Registries that add gameplay features (e.g. items, blocks, and entities) //
 		DevotionItems.ITEMS.accept(registryService);
+		DevotionBlocks.BLOCKS.accept(registryService);
+		DevotionBlocks.BLOCK_ENTITIES.accept(registryService);
+		DevotionAltarActions.ACTIONS.accept(registryService);
+
+		// Registries that supplement gameplay features (e.g. data components, materials, and recipes //
+		DevotionCreativeTabs.CREATIVE_TABS.accept(registryService);
 		DevotionMaterials.ARMOR_MATERIALS.accept(registryService);
-		DevotionAttributes.ATTRIBUTES.accept(registryService);
 		DevotionData.DATA_COMPONENTS.accept(registryService);
+		DevotionAttributes.ATTRIBUTES.accept(registryService);
 		DevotionRecipes.RECIPE_SERIALIZERS.accept(registryService);
 		DevotionRecipes.RECIPE_TYPES.accept(registryService);
+
 		Network.registerPacket(ClientBoundAltarStructurePacket.TYPE, ClientBoundAltarStructurePacket.class, ClientBoundAltarStructurePacket.CODEC, ClientBoundAltarStructurePacket::handle);
 		Network.registerPacket(ClientBoundDataPacket.TYPE, ClientBoundDataPacket.class, ClientBoundDataPacket.CODEC, ClientBoundDataPacket::handle);
 	}

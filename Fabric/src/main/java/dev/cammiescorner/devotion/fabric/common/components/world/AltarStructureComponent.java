@@ -1,7 +1,7 @@
 package dev.cammiescorner.devotion.fabric.common.components.world;
 
 import com.mojang.datafixers.util.Pair;
-import dev.cammiescorner.devotion.DevotionClient;
+import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.common.StructureMapData;
 import dev.cammiescorner.devotion.fabric.common.registries.DevotionComponents;
 import net.fabricmc.api.EnvType;
@@ -38,7 +38,7 @@ public class AltarStructureComponent implements AutoSyncedComponent {
 	@Override
 	public void applySyncPacket(RegistryFriendlyByteBuf buf) {
 		AutoSyncedComponent.super.applySyncPacket(buf);
-		DevotionClient.data = data;
+		Devotion.data = data;
 	}
 
 	public void setStructureMap(StructureMapData data) {

@@ -15,24 +15,24 @@ public class MageRobesModel<T extends LivingEntity> extends HumanoidModel<T> {
 	public final ModelPart closedHood;
 	public final ModelPart cloak;
 	public final ModelPart openHood;
-	public final ModelPart leftSleeve;
-	public final ModelPart rightSleeve;
-	public final ModelPart belt;
 	public final ModelPart garb;
-	public final ModelPart leftShoe;
+	public final ModelPart rightSleeve;
+	public final ModelPart leftSleeve;
+	public final ModelPart belt;
 	public final ModelPart rightShoe;
+	public final ModelPart leftShoe;
 
 	public MageRobesModel(ModelPart root) {
 		super(root, RenderType::armorCutoutNoCull);
 		closedHood = head.getChild("closedHood");
 		cloak = body.getChild("cloak");
 		openHood = cloak.getChild("openHood");
-		leftSleeve = leftArm.getChild("leftSleeve");
-		rightSleeve = rightArm.getChild("rightSleeve");
 		garb = body.getChild("garb");
+		rightSleeve = rightArm.getChild("rightSleeve");
+		leftSleeve = leftArm.getChild("leftSleeve");
 		belt = body.getChild("belt");
-		leftShoe = leftLeg.getChild("leftShoe");
 		rightShoe = rightLeg.getChild("rightShoe");
+		leftShoe = leftLeg.getChild("leftShoe");
 	}
 
 	public static LayerDefinition createBodyLayer() {

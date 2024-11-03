@@ -4,6 +4,7 @@ import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.common.MainHelper;
 import dev.cammiescorner.devotion.common.StructureMapData;
 import dev.cammiescorner.devotion.common.recipes.DevotionAltarRecipe;
+import dev.cammiescorner.devotion.common.registries.DevotionBlocks;
 import dev.upcraft.sparkweave.api.registry.RegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class AltarBlockEntity extends BlockEntity implements RecipeInput, Container {
+public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, Container {
 	public static final List<BlockPos> AMETHYST_POS_LIST = List.of(
 		new BlockPos(0, 1, -3), new BlockPos(3, 1, -3), new BlockPos(3, 1, 0), new BlockPos(3, 1, 3),
 		new BlockPos(0, 1, 3), new BlockPos(-3, 1, 3), new BlockPos(-3, 1, 0), new BlockPos(-3, 1, -3)
@@ -52,12 +53,11 @@ public class AltarBlockEntity extends BlockEntity implements RecipeInput, Contai
 	private DevotionAltarRecipe recipe;
 	private ResourceLocation recipeId;
 
-	public AltarBlockEntity(BlockPos pos, BlockState blockState) {
-		// TODO register AltarBlockEntity type
-		super(null, pos, blockState);
+	public AltarFocusBlockEntity(BlockPos pos, BlockState blockState) {
+		super(DevotionBlocks.ALTAR_ENTITY.get(), pos, blockState);
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, AltarBlockEntity altar) {
+	public static void tick(Level level, BlockPos pos, BlockState state, AltarFocusBlockEntity altar) {
 		if(!level.isClientSide() && altar.isCompleted()) {
 			if(altar.recipeId != null) {
 				Optional<RecipeHolder<?>> optional = level.getRecipeManager().byKey(altar.recipeId);

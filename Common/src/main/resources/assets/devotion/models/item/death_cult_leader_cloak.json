@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "devotion:item/death_cult_leader_cloak"
+    }
+}

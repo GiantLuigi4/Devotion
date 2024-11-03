@@ -1,0 +1,14 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "devotion:item/death_cultist_hood_open"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "devotion:closed_hood": 1
+            },
+            "model": "devotion:item/death_cultist_hood_closed"
+        }
+    ]
+}

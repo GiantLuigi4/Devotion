@@ -1,0 +1,41 @@
+{
+	"itemGroup.devotion.main_tab": "Devotion",
+
+	"item.devotion.basic_mage_hood": "Basic Mage Hood",
+	"item.devotion.basic_mage_robe": "Basic Mage Robe",
+	"item.devotion.basic_mage_belt": "Basic Mage Belt",
+	"item.devotion.basic_mage_boots": "Basic Mage Boots",
+	"item.devotion.enhancer_mage_hood": "Enhancer Mage Hood",
+	"item.devotion.enhancer_mage_robe": "Enhancer Mage Robe",
+	"item.devotion.enhancer_mage_belt": "Enhancer Mage Belt",
+	"item.devotion.enhancer_mage_boots": "Enhancer Mage Boots",
+	"item.devotion.transmuter_mage_hood": "Transmuter Mage Hood",
+	"item.devotion.transmuter_mage_robe": "Transmuter Mage Robe",
+	"item.devotion.transmuter_mage_belt": "Transmuter Mage Belt",
+	"item.devotion.transmuter_mage_boots": "Transmuter Mage Boots",
+	"item.devotion.emitter_mage_hood": "Emitter Mage Hood",
+	"item.devotion.emitter_mage_robe": "Emitter Mage Robe",
+	"item.devotion.emitter_mage_belt": "Emitter Mage Belt",
+	"item.devotion.emitter_mage_boots": "Emitter Mage Boots",
+	"item.devotion.conjurer_mage_hood": "Conjurer Mage Hood",
+	"item.devotion.conjurer_mage_robe": "Conjurer Mage Robe",
+	"item.devotion.conjurer_mage_belt": "Conjurer Mage Belt",
+	"item.devotion.conjurer_mage_boots": "Conjurer Mage Boots",
+	"item.devotion.manipulator_mage_hood": "Manipulator Mage Hood",
+	"item.devotion.manipulator_mage_robe": "Manipulator Mage Robe",
+	"item.devotion.manipulator_mage_belt": "Manipulator Mage Belt",
+	"item.devotion.manipulator_mage_boots": "Manipulator Mage Boots",
+
+	"item.devotion.death_cultist_hood": "Death Cultist Hood",
+	"item.devotion.death_cultist_robe": "Death Cultist Robe",
+	"item.devotion.death_cultist_leggings": "Death Cultist Belt",
+	"item.devotion.death_cultist_boots": "Death Cultist Boots",
+	"item.devotion.death_cult_leader_headdress": "Death Cult Leader Headdress",
+	"item.devotion.death_cult_leader_cloak": "Death Cult Leader Cloak",
+	"item.devotion.death_cult_leader_gambeson": "Death Cult Leader Gambeson",
+	"item.devotion.death_cult_leader_boots": "Death Cult Leader Boots",
+
+	"block.devotion.altar_focus": "Altar Focus",
+
+	"tag.item.devotion.hoods": "Hoods"
+}
