@@ -9,6 +9,7 @@ import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultLeaderA
 import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultistRobesRenderer;
 import dev.cammiescorner.devotion.client.renderers.entity.armor.MageRobesRenderer;
 import dev.cammiescorner.devotion.common.networking.c2s.ServerboundOpenCloseHoodPacket;
+import dev.cammiescorner.devotion.common.registries.DevotionData;
 import dev.cammiescorner.devotion.common.registries.DevotionItems;
 import dev.cammiescorner.velvet.api.event.EntitiesPreRenderCallback;
 import dev.cammiescorner.velvet.api.event.ShaderEffectRenderCallback;
@@ -19,11 +20,10 @@ import dev.upcraft.sparkweave.api.platform.ModContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+
+import java.util.List;
 
 public class DevotionClient implements ClientEntryPoint {
 	private static final ResourceLocation BASIC_MAGE_ROBES = Devotion.id("textures/entity/armor/basic_mage_robes.png");
@@ -58,11 +58,11 @@ public class DevotionClient implements ClientEntryPoint {
 
 		Network.registerPacket(ServerboundOpenCloseHoodPacket.TYPE, ServerboundOpenCloseHoodPacket.class, ServerboundOpenCloseHoodPacket.CODEC, ServerboundOpenCloseHoodPacket::handle);
 
-//		createItemPropertyForTag(DevotionTags.HOODS, Devotion.id("closed_hood"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.CLOSED_HOOD.get(), false) ? 1f : 0f);
+		createItemPropertyForList(Devotion.HOOD_ITEMS, Devotion.id("closed_hood"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.CLOSED_HOOD.get(), false) ? 1f : 0f);
 	}
 
-	private static void createItemPropertyForTag(TagKey<Item> itemTag, ResourceLocation name, ClampedItemPropertyFunction property) {
-		for(Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTag(itemTag).orElseThrow())
-			ItemProperties.register(itemHolder.value(), name, property);
+	private static void createItemPropertyForList(List<Item> items, ResourceLocation name, ClampedItemPropertyFunction property) {
+		for(Item item : items)
+			ItemProperties.register(item, name, property);
 	}
 }
