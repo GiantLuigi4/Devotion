@@ -74,7 +74,7 @@ public class Devotion implements MainEntryPoint {
 
 		ItemMenuInteractionEvent.EVENT.register((menu, player, level, clickAction, slot, slotStack, cursorStack) -> {
 			if(clickAction == ClickAction.SECONDARY && cursorStack.isEmpty() && slotStack.is(DevotionTags.HOODS)) {
-				Network.getNetworkHandler().sendToServer(new ServerboundOpenCloseHoodPacket(slotStack));
+				Network.getNetworkHandler().sendToServer(new ServerboundOpenCloseHoodPacket(slot.getContainerSlot()));
 
 //				DataComponentType<Boolean> hoodData = DevotionData.CLOSED_HOOD.get();
 //				slotStack.set(hoodData, !slotStack.getOrDefault(hoodData, false));
