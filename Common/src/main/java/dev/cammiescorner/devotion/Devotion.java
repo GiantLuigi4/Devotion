@@ -8,14 +8,19 @@ import dev.cammiescorner.devotion.api.Graph;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.StructureMapData;
-import dev.cammiescorner.devotion.common.networking.s2c.ClientBoundAltarStructurePacket;
-import dev.cammiescorner.devotion.common.networking.s2c.ClientBoundDataPacket;
+import dev.cammiescorner.devotion.common.networking.c2s.ServerboundOpenCloseHoodPacket;
+import dev.cammiescorner.devotion.common.networking.s2c.ClientboundAltarStructurePacket;
+import dev.cammiescorner.devotion.common.networking.s2c.ClientboundDataPacket;
 import dev.cammiescorner.devotion.common.registries.*;
 import dev.upcraft.sparkweave.api.entrypoint.MainEntryPoint;
+import dev.upcraft.sparkweave.api.event.ItemMenuInteractionEvent;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.item.Equipable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +69,24 @@ public class Devotion implements MainEntryPoint {
 		DevotionRecipes.RECIPE_SERIALIZERS.accept(registryService);
 		DevotionRecipes.RECIPE_TYPES.accept(registryService);
 
-		Network.registerPacket(ClientBoundAltarStructurePacket.TYPE, ClientBoundAltarStructurePacket.class, ClientBoundAltarStructurePacket.CODEC, ClientBoundAltarStructurePacket::handle);
-		Network.registerPacket(ClientBoundDataPacket.TYPE, ClientBoundDataPacket.class, ClientBoundDataPacket.CODEC, ClientBoundDataPacket::handle);
+		Network.registerPacket(ClientboundAltarStructurePacket.TYPE, ClientboundAltarStructurePacket.class, ClientboundAltarStructurePacket.CODEC, ClientboundAltarStructurePacket::handle);
+		Network.registerPacket(ClientboundDataPacket.TYPE, ClientboundDataPacket.class, ClientboundDataPacket.CODEC, ClientboundDataPacket::handle);
+
+		ItemMenuInteractionEvent.EVENT.register((menu, player, level, clickAction, slot, slotStack, cursorStack) -> {
+			if(clickAction == ClickAction.SECONDARY && cursorStack.isEmpty() && slotStack.is(DevotionTags.HOODS)) {
+				Network.getNetworkHandler().sendToServer(new ServerboundOpenCloseHoodPacket(slotStack));
+
+//				DataComponentType<Boolean> hoodData = DevotionData.CLOSED_HOOD.get();
+//				slotStack.set(hoodData, !slotStack.getOrDefault(hoodData, false));
+
+				if(slotStack.getItem() instanceof Equipable equipable && !player.getItemBySlot(equipable.getEquipmentSlot()).equals(slotStack))
+					level.playSeededSound(player, player.getX(), player.getY(), player.getZ(), equipable.getEquipSound().value(), SoundSource.NEUTRAL, 1f, 1f, player.getRandom().nextLong());
+
+				return true;
+			}
+
+			return false;
+		});
 	}
 
 	public static ResourceLocation id(String name) {

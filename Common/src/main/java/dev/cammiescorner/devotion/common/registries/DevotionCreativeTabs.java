@@ -11,5 +11,5 @@ import net.minecraft.world.item.ItemStack;
 public class DevotionCreativeTabs {
 	public static final RegistryHandler<CreativeModeTab> CREATIVE_TABS = RegistryHandler.create(Registries.CREATIVE_MODE_TAB, Devotion.MOD_ID);
 
-	public static final RegistrySupplier<CreativeModeTab> DEVOTION_TAB = CREATIVE_TABS.register("main_tab", () -> CreativeTabHelper.newBuilder(Devotion.id("main_tab")).icon(() -> new ItemStack(DevotionItems.ALTAR_FOCUS.get())).displayItems((parameters, output) -> CreativeTabHelper.addRegistryEntries(parameters, output, DevotionItems.ITEMS)).build());
+	public static final RegistrySupplier<CreativeModeTab> DEVOTION_TAB = CREATIVE_TABS.register("main_tab", () -> CreativeTabHelper.newBuilder(Devotion.id("main_tab")).icon(() -> new ItemStack(DevotionItems.BASIC_MAGE_HOOD.get())).displayItems((parameters, output) -> CreativeTabHelper.addRegistryEntries(parameters, output, DevotionItems.ITEMS)).build());
 }

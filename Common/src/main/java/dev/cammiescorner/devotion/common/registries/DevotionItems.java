@@ -43,6 +43,6 @@ public class DevotionItems {
 	public static final RegistrySupplier<Item> DEATH_CULTIST_BOOTS = ITEMS.register("death_cultist_boots", () -> new MageRobesItem(ArmorItem.Type.BOOTS, new Item.Properties()));
 	public static final RegistrySupplier<Item> DEATH_CULT_LEADER_HEADDRESS = ITEMS.register("death_cult_leader_headdress", () -> new MageRobesItem(ArmorItem.Type.HELMET, new Item.Properties(), AuraType.NONE, AuraType.values()));
 	public static final RegistrySupplier<Item> DEATH_CULT_LEADER_CLOAK = ITEMS.register("death_cult_leader_cloak", () -> new MageRobesItem(ArmorItem.Type.CHESTPLATE, new Item.Properties(), AuraType.NONE, AuraType.values()));
-	public static final RegistrySupplier<Item> DEATH_CULT_LEADER_GAMBESON = ITEMS.register("death_cult_leader_gambeson", () -> new MageRobesItem(ArmorItem.Type.LEGGINGS, new Item.Properties(), AuraType.NONE, AuraType.values()));
+	public static final RegistrySupplier<Item> DEATH_CULT_LEADER_LEGGINGS = ITEMS.register("death_cult_leader_leggings", () -> new MageRobesItem(ArmorItem.Type.LEGGINGS, new Item.Properties(), AuraType.NONE, AuraType.values()));
 	public static final RegistrySupplier<Item> DEATH_CULT_LEADER_BOOTS = ITEMS.register("death_cult_leader_boots", () -> new MageRobesItem(ArmorItem.Type.BOOTS, new Item.Properties(), AuraType.NONE, AuraType.values()));
 }

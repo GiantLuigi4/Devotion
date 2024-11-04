@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.common.StructureMapData;
-import dev.cammiescorner.devotion.common.networking.s2c.ClientBoundAltarStructurePacket;
+import dev.cammiescorner.devotion.common.networking.s2c.ClientboundAltarStructurePacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -43,6 +43,6 @@ public class AltarStructureCapability extends SavedData {
 
 	public void setStructureMap(StructureMapData data) {
 		this.data = data;
-		Network.getNetworkHandler().sendToAllClients(new ClientBoundAltarStructurePacket(data), level.getServer());
+		Network.getNetworkHandler().sendToAllClients(new ClientboundAltarStructurePacket(data), level.getServer());
 	}
 }

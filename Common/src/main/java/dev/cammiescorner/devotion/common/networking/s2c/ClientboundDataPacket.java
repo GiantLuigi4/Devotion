@@ -11,9 +11,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.LivingEntity;
 
-public record ClientBoundDataPacket(int entityId, float aura, int auraColor) implements CustomPacketPayload {
-	public static final Type<ClientBoundAltarStructurePacket> TYPE = new Type<>(Devotion.id("aura"));
-	public static final StreamCodec<? extends FriendlyByteBuf, ClientBoundDataPacket> CODEC = StreamCodec.of((buffer, value) -> {
+public record ClientboundDataPacket(int entityId, float aura, int auraColor) implements CustomPacketPayload {
+	public static final Type<ClientboundAltarStructurePacket> TYPE = new Type<>(Devotion.id("aura"));
+	public static final StreamCodec<? extends FriendlyByteBuf, ClientboundDataPacket> CODEC = StreamCodec.of((buffer, value) -> {
 		buffer.writeVarInt(value.entityId);
 		buffer.writeFloat(value.aura);
 		buffer.writeVarInt(value.auraColor);
@@ -22,7 +22,7 @@ public record ClientBoundDataPacket(int entityId, float aura, int auraColor) imp
 		float aura = buffer.readFloat();
 		int auraColor = buffer.readVarInt();
 
-		return new ClientBoundDataPacket(entityId, aura, auraColor);
+		return new ClientboundDataPacket(entityId, aura, auraColor);
 	});
 
 	@Override
@@ -30,7 +30,7 @@ public record ClientBoundDataPacket(int entityId, float aura, int auraColor) imp
 		return TYPE;
 	}
 
-	public static void handle(PacketContext<ClientBoundDataPacket> context) {
+	public static void handle(PacketContext<ClientboundDataPacket> context) {
 		ClientLevel level = Minecraft.getInstance().level;
 		int entityId = context.message().entityId;
 		float aura = context.message().aura;

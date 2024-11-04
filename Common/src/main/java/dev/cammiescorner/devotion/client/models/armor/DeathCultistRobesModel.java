@@ -50,22 +50,16 @@ public class DeathCultistRobesModel<T extends LivingEntity> extends HumanoidMode
 		PartDefinition cube_r1 = closedHood.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(24, 80).addBox(3.6f, -6f, -3.5f, 3f, 7f, 7f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, -0.351f));
 		PartDefinition cube_r2 = closedHood.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(17, 94).addBox(-6.6f, -6f, -3.5f, 3f, 7f, 7f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0.351f));
 		
-		PartDefinition cloak = body.addOrReplaceChild("cloak", CubeListBuilder.create(), PartPose.offset(0f, 0f, 0f));
-		PartDefinition cube_r3 = cloak.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(15, 108).addBox(-4f, -1f, -1f, 8f, 6f, 1f, new CubeDeformation(0f)), PartPose.offsetAndRotation(0f, 0f, 3f, 0.2182f, 0f, 0f));
-		PartDefinition openHood = cloak.addOrReplaceChild("openHood", CubeListBuilder.create(), PartPose.offset(0f, 0f, 0f));
-		PartDefinition cube_r4 = openHood.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(30, 117).addBox(-5f, -4f, -1f, 10f, 4f, 7f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 2f, 0f, 0.1745f, 0f, 0f));
+		PartDefinition cloak = body.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(15, 108).addBox(-4f, -1f, -1f, 8f, 6f, 1f, new CubeDeformation(0f)), PartPose.offsetAndRotation(0f, 0f, 3f, 0.2182f, 0f, 0f));
+		PartDefinition openHood = cloak.addOrReplaceChild("openHood", CubeListBuilder.create().texOffs(30, 117).addBox(-5f, -4f, -1f, 10f, 4f, 7f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 2f, 0f, 0.1745f, 0f, 0f));
 		PartDefinition garb = body.addOrReplaceChild("garb", CubeListBuilder.create().texOffs(45, 105).addBox(-3f, -3f, -2f, 6f, 3f, 1f, new CubeDeformation(0.4f)).texOffs(0, 80).addBox(-4f, -12f, -2f, 8f, 11f, 4f, new CubeDeformation(0.3f)), PartPose.offset(0f, 12f, 0f));
 		PartDefinition cube_r5 = garb.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(0, 120).addBox(-2f, 0.5f, -4f, 4f, 4f, 4f, new CubeDeformation(-0.5f)), PartPose.offsetAndRotation(0f, -12f, 0f, 0.1745f, 0f, 0f));
 		PartDefinition backCover = garb.addOrReplaceChild("backCover", CubeListBuilder.create().texOffs(37, 78).addBox(-4f, 0f, 0f, 8f, 8f, 1f, new CubeDeformation(0.35f)), PartPose.offsetAndRotation(0f, -1f, 1f, 0.2618f, 0f, 0f));
-		PartDefinition rightCover = garb.addOrReplaceChild("rightCover", CubeListBuilder.create(), PartPose.offset(0f, 0f, 0f));
-		PartDefinition cube_r6 = rightCover.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(51, 83).addBox(-1.2f, -1f, -2f, 1f, 8f, 4f, new CubeDeformation(0.35f)), PartPose.offsetAndRotation(-3f, 0f, 0f, 0f, 0f, 0.2618f));
-		PartDefinition leftCover = garb.addOrReplaceChild("leftCover", CubeListBuilder.create(), PartPose.offset(0f, 0f, 0f));
-		PartDefinition cube_r7 = leftCover.addOrReplaceChild("cube_r7", CubeListBuilder.create().texOffs(16, 115).addBox(0.2f, -1f, -2f, 1f, 8f, 4f, new CubeDeformation(0.35f)), PartPose.offsetAndRotation(3f, 0f, 0f, 0f, 0f, -0.2618f));
+		PartDefinition rightCover = garb.addOrReplaceChild("rightCover", CubeListBuilder.create().texOffs(51, 83).addBox(-1.2f, -1f, -2f, 1f, 8f, 4f, new CubeDeformation(0.35f)), PartPose.offsetAndRotation(-3f, 0f, 0f, 0f, 0f, 0.2618f));
+		PartDefinition leftCover = garb.addOrReplaceChild("leftCover", CubeListBuilder.create().texOffs(16, 115).addBox(0.2f, -1f, -2f, 1f, 8f, 4f, new CubeDeformation(0.35f)), PartPose.offsetAndRotation(3f, 0f, 0f, 0f, 0f, -0.2618f));
 		
-		PartDefinition rightSleeve = rightArm.addOrReplaceChild("rightSleeve", CubeListBuilder.create(), PartPose.offset(0f, 0f, 0f));
-		PartDefinition cube_r8 = rightSleeve.addOrReplaceChild("cube_r8", CubeListBuilder.create().texOffs(32, 64).addBox(-3f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
-		PartDefinition leftSleeve = leftArm.addOrReplaceChild("leftSleeve", CubeListBuilder.create(), PartPose.offset(2f, 0f, 0f));
-		PartDefinition cube_r9 = leftSleeve.addOrReplaceChild("cube_r9", CubeListBuilder.create().texOffs(0, 95).addBox(-1f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(-2f, 0f, 0f, 0f, 0f, 0f));
+		PartDefinition rightSleeve = rightArm.addOrReplaceChild("rightSleeve", CubeListBuilder.create().texOffs(32, 64).addBox(-3f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
+		PartDefinition leftSleeve = leftArm.addOrReplaceChild("leftSleeve", CubeListBuilder.create().texOffs(0, 95).addBox(-1f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
 		
 		PartDefinition rightShoe = rightLeg.addOrReplaceChild("rightShoe", CubeListBuilder.create().texOffs(48, 64).addBox(-2f, 7f, -2f, 4f, 5f, 4f, new CubeDeformation(0.4f)), PartPose.offset(-0.2f, 0f, 0f));
 		PartDefinition rightLegSleeve = rightLeg.addOrReplaceChild("rightLegSleeve", CubeListBuilder.create().texOffs(37, 94).addBox(-2f, 0f, -2f, 4f, 7f, 4f, new CubeDeformation(0.3f)), PartPose.offset(-0.1f, 0f, 0f));

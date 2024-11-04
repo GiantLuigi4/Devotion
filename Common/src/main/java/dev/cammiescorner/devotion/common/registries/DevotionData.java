@@ -14,6 +14,7 @@ public class DevotionData {
 	public static final RegistrySupplier<DataComponentType<Boolean>> CLOSED_HOOD = DATA_COMPONENTS.register("closed_hood", () -> DataComponentType.<Boolean>builder()
 		.persistent(Codec.BOOL)
 		.networkSynchronized(ByteBufCodecs.BOOL)
+		.cacheEncoding()
 		.build()
 	);
 }
