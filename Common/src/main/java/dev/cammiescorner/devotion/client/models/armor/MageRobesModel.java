@@ -18,6 +18,8 @@ public class MageRobesModel<T extends LivingEntity> extends HumanoidModel<T> {
 	public final ModelPart garb;
 	public final ModelPart rightSleeve;
 	public final ModelPart leftSleeve;
+	public final ModelPart rightSleeveSlim;
+	public final ModelPart leftSleeveSlim;
 	public final ModelPart belt;
 	public final ModelPart rightShoe;
 	public final ModelPart leftShoe;
@@ -30,6 +32,8 @@ public class MageRobesModel<T extends LivingEntity> extends HumanoidModel<T> {
 		garb = body.getChild("garb");
 		rightSleeve = rightArm.getChild("rightSleeve");
 		leftSleeve = leftArm.getChild("leftSleeve");
+		rightSleeveSlim = rightArm.getChild("rightSleeveSlim");
+		leftSleeveSlim = leftArm.getChild("leftSleeveSlim");
 		belt = body.getChild("belt");
 		rightShoe = rightLeg.getChild("rightShoe");
 		leftShoe = leftLeg.getChild("leftShoe");
@@ -58,7 +62,9 @@ public class MageRobesModel<T extends LivingEntity> extends HumanoidModel<T> {
 		PartDefinition leftCover = garb.addOrReplaceChild("leftCover", CubeListBuilder.create().texOffs(48, 64).addBox(0f, -1f, -2f, 1f, 8f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(3f, 0f, 0f, 0f, 0f, -0.2618f));
 
 		PartDefinition rightSleeve = rightArm.addOrReplaceChild("rightSleeve", CubeListBuilder.create().texOffs(0, 106).addBox(-3f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
+		PartDefinition rightSleeveSlim = rightArm.addOrReplaceChild("rightSleeveSlim", CubeListBuilder.create().texOffs(0, 106).addBox(-2f, -2f, -2f, 3f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
 		PartDefinition leftSleeve = leftArm.addOrReplaceChild("leftSleeve", CubeListBuilder.create().texOffs(32, 64).addBox(-1f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
+		PartDefinition leftSleeveSlim = leftArm.addOrReplaceChild("leftSleeveSlim", CubeListBuilder.create().texOffs(33, 64).addBox(-1f, -2f, -2f, 3f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
 
 		PartDefinition belt = body.addOrReplaceChild("belt", CubeListBuilder.create().texOffs(41, 80).addBox(-3f, -3f, -2f, 6f, 3f, 1f, new CubeDeformation(0.2f)), PartPose.offset(0f, 12f, 0f));
 

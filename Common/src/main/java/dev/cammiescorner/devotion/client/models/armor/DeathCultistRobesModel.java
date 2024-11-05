@@ -18,6 +18,8 @@ public class DeathCultistRobesModel<T extends LivingEntity> extends HumanoidMode
 	public final ModelPart garb;
 	public final ModelPart rightSleeve;
 	public final ModelPart leftSleeve;
+	public final ModelPart rightSleeveSlim;
+	public final ModelPart leftSleeveSlim;
 	public final ModelPart rightPantLeg;
 	public final ModelPart leftPantLeg;
 	public final ModelPart rightShoe;
@@ -31,6 +33,8 @@ public class DeathCultistRobesModel<T extends LivingEntity> extends HumanoidMode
 		garb = body.getChild("garb");
 		rightSleeve = rightArm.getChild("rightSleeve");
 		leftSleeve = leftArm.getChild("leftSleeve");
+		rightSleeveSlim = rightArm.getChild("rightSleeveSlim");
+		leftSleeveSlim = leftArm.getChild("leftSleeveSlim");
 		rightPantLeg = rightLeg.getChild("rightLegSleeve");
 		leftPantLeg = leftLeg.getChild("leftLegSleeve");
 		rightShoe = rightLeg.getChild("rightShoe");
@@ -60,6 +64,8 @@ public class DeathCultistRobesModel<T extends LivingEntity> extends HumanoidMode
 		
 		PartDefinition rightSleeve = rightArm.addOrReplaceChild("rightSleeve", CubeListBuilder.create().texOffs(32, 64).addBox(-3f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
 		PartDefinition leftSleeve = leftArm.addOrReplaceChild("leftSleeve", CubeListBuilder.create().texOffs(0, 95).addBox(-1f, -2f, -2f, 4f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
+		PartDefinition rightSleeveSlim = rightArm.addOrReplaceChild("rightSleeveSlim", CubeListBuilder.create().texOffs(32, 64).addBox(-2f, -2f, -2f, 3f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
+		PartDefinition leftSleeveSlim = leftArm.addOrReplaceChild("leftSleeveSlim", CubeListBuilder.create().texOffs(1, 95).addBox(-1f, -2f, -2f, 3f, 10f, 4f, new CubeDeformation(0.3f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0f, 0f));
 		
 		PartDefinition rightShoe = rightLeg.addOrReplaceChild("rightShoe", CubeListBuilder.create().texOffs(48, 64).addBox(-2f, 7f, -2f, 4f, 5f, 4f, new CubeDeformation(0.4f)), PartPose.offset(-0.2f, 0f, 0f));
 		PartDefinition rightLegSleeve = rightLeg.addOrReplaceChild("rightLegSleeve", CubeListBuilder.create().texOffs(37, 94).addBox(-2f, 0f, -2f, 4f, 7f, 4f, new CubeDeformation(0.3f)), PartPose.offset(-0.1f, 0f, 0f));
