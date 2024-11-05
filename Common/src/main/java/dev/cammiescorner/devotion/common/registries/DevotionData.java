@@ -2,6 +2,7 @@ package dev.cammiescorner.devotion.common.registries;
 
 import com.mojang.serialization.Codec;
 import dev.cammiescorner.devotion.Devotion;
+import dev.cammiescorner.devotion.api.research.Research;
 import dev.upcraft.sparkweave.api.registry.RegistryHandler;
 import dev.upcraft.sparkweave.api.registry.RegistrySupplier;
 import net.minecraft.core.component.DataComponentType;
@@ -14,6 +15,18 @@ public class DevotionData {
 	public static final RegistrySupplier<DataComponentType<Boolean>> CLOSED_HOOD = DATA_COMPONENTS.register("closed_hood", () -> DataComponentType.<Boolean>builder()
 		.persistent(Codec.BOOL)
 		.networkSynchronized(ByteBufCodecs.BOOL)
+		.cacheEncoding()
+		.build()
+	);
+	public static final RegistrySupplier<DataComponentType<Boolean>> SCROLL_COMPLETED = DATA_COMPONENTS.register("scroll_completed", () -> DataComponentType.<Boolean>builder()
+		.persistent(Codec.BOOL)
+		.networkSynchronized(ByteBufCodecs.BOOL)
+		.cacheEncoding()
+		.build()
+	);
+	public static final RegistrySupplier<DataComponentType<Research>> RESEARCH = DATA_COMPONENTS.register("research", () -> DataComponentType.<Research>builder()
+		.persistent(Research.DIRECT_CODEC)
+		.networkSynchronized(Research.OBJ_STREAM_CODEC)
 		.cacheEncoding()
 		.build()
 	);
