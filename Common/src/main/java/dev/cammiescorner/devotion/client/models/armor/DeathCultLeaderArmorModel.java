@@ -46,8 +46,8 @@ public class DeathCultLeaderArmorModel<T extends LivingEntity> extends HumanoidM
 
 		PartDefinition hood = head.addOrReplaceChild("hood", CubeListBuilder.create().texOffs(79, 55).addBox(-5f, -9f, -4.25f, 10f, 9f, 9f, new CubeDeformation(0.55f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0.1309f, 0f, 0f));
 		PartDefinition skull = head.addOrReplaceChild("skull", CubeListBuilder.create().texOffs(72, 93).addBox(-4f, -8f, -4f, 8f, 7f, 8f, new CubeDeformation(0.4f)).texOffs(96, 100).addBox(-4f, -7.1f, -4f, 8f, 4f, 8f, new CubeDeformation(0.35f)), PartPose.offset(0f, 0f, 0f));
-		PartDefinition cube_r1 = skull.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(106, 73).addBox(-9f, -12f, -2f, 7f, 3f, 3f, new CubeDeformation(0f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, -0.6545f, 0.7854f));
-		PartDefinition cube_r2 = skull.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(78, 47).addBox(2f, -12f, -2f, 7f, 3f, 3f, new CubeDeformation(0f)), PartPose.offsetAndRotation(0f, 0f, 0f, 0f, 0.6545f, -0.7854f));
+		PartDefinition rightHorn = skull.addOrReplaceChild("rightHorn", CubeListBuilder.create().texOffs(78, 47).addBox(2f, -12f, -2f, 7f, 3f, 3f, new CubeDeformation(0f)), PartPose.offsetAndRotation(0f, 1f, 0f, 0f, 0.6545f, -0.7854f));
+		PartDefinition leftHorn = skull.addOrReplaceChild("leftHorn", CubeListBuilder.create().texOffs(106, 73).addBox(-9f, -12f, -2f, 7f, 3f, 3f, new CubeDeformation(0f)), PartPose.offsetAndRotation(0f, 1f, 0f, 0f, -0.6545f, 0.7854f));
 
 		PartDefinition gambeson = body.addOrReplaceChild("gambeson", CubeListBuilder.create().texOffs(46, 101).addBox(-4f, 1f, -2f, 8f, 13f, 4f, new CubeDeformation(0.9f)), PartPose.offset(0f, 0f, 0f));
 		PartDefinition cloak = body.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(70, 108).addBox(-4f, -2f, 0f, 8f, 18f, 2f, new CubeDeformation(0.2f)), PartPose.offsetAndRotation(0f, 2f, 2f, 0.1309f, 0f, 0f));

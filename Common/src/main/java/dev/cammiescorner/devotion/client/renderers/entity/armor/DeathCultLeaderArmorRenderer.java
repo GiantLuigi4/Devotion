@@ -35,7 +35,7 @@ public class DeathCultLeaderArmorRenderer extends CustomHumanoidModelArmorRender
 
 		model.setAllVisible(true);
 		model.skull.visible = slot == EquipmentSlot.HEAD;
-		model.hood.visible = slot == EquipmentSlot.HEAD;
+		model.hood.visible = wearingCloak && slot == EquipmentSlot.HEAD;
 		model.cloak.visible = slot == EquipmentSlot.CHEST;
 		model.gambeson.visible = wearingCloak && slot == EquipmentSlot.LEGS;
 		model.rightCuisse.visible = slot == EquipmentSlot.LEGS;
