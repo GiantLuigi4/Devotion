@@ -6,17 +6,14 @@ import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.registries.DevotionData;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LecternBlock;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,19 +22,12 @@ import java.util.random.RandomGenerator;
 
 public class ResearchScroll extends Item {
 	public ResearchScroll() {
-		super(new Properties().stacksTo(1));
+		super(new Properties().stacksTo(1).component(DevotionData.RESEARCH.get(), Research.getById(Devotion.id("empty"))));
 	}
 
 	@Override
-	public InteractionResult useOn(UseOnContext context) {
-		Level world = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		BlockState state = world.getBlockState(pos);
-
-		if(state.is(Blocks.LECTERN))
-			return LecternBlock.tryPlaceBook(context.getPlayer(), world, pos, state, context.getItemInHand()) ? InteractionResult.sidedSuccess(world.isClientSide()) : InteractionResult.PASS;
-
-		return InteractionResult.PASS;
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+		return super.use(level, player, usedHand);
 	}
 
 	@Override
