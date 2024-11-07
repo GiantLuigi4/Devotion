@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix4fStack;
 
 import static dev.cammiescorner.devotion.DevotionClient.client;
 
@@ -36,7 +35,6 @@ public class TabWidget extends AbstractButton {
 	protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		PoseStack poseStack = guiGraphics.pose();
-		Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
 		int u = 0;
 
 		if(client.screen instanceof ScriptsOfDevotionScreen guideBookScreen) {

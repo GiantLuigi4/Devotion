@@ -65,7 +65,7 @@ public class Devotion implements MainEntryPoint {
 	public void onInitialize(ModContainer mod) {
 		CONFIGURATOR.register(DevotionConfig.class);
 		RegistryService registryService = RegistryService.get();
-
+		
 		// Registries that add gameplay features (e.g. items, blocks, and entities) //
 		DevotionItems.ITEMS.accept(registryService);
 		DevotionBlocks.BLOCKS.accept(registryService);

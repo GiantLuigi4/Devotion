@@ -108,6 +108,7 @@ public class ResearchScrollItem extends Item {
 		RiddleData riddleData = new RiddleData(path.stream().map(auraTypeNode -> Pair.of(auraTypeNode.obj, random.nextInt(9))).toList());
 
 		stack.set(DevotionData.RIDDLE_DATA.get(), riddleData);
+		stack.set(DevotionData.RESEARCH.get(), research);
 
 		return stack;
 	}

@@ -8,7 +8,6 @@ import dev.cammiescorner.devotion.common.MainHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -113,8 +112,12 @@ public class ResearchWidget extends AbstractButton {
 		else
 			guiGraphics.blit(TEXTURE, getX() + 7, getY() + 7, 0, 32, 16, 16);
 
-		if(isHoveredOrFocused())
-			guiGraphics.renderTooltip(client.font, Screen.getTooltipFromItem(client, stack), stack.getTooltipImage(), mouseX, mouseY);
+		if(isHovered() && active) {
+			poseStack.pushPose();
+			poseStack.translate(-offsetX, -offsetY, 0);
+			guiGraphics.renderTooltip(client.font, Component.translatable(research.getTranslationKey()), mouseX, mouseY);
+			poseStack.popPose();
+		}
 	}
 
 	public void setOffset(float x, float y) {

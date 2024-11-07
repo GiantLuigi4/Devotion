@@ -76,7 +76,7 @@ public class ScriptsOfDevotionScreen extends Screen {
 
 	@Override
 	public boolean isPauseScreen() {
-		return super.isPauseScreen();
+		return false;
 	}
 
 	@Override
