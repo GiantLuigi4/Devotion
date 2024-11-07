@@ -2,6 +2,7 @@ package dev.cammiescorner.devotion.fabric.common.registries;
 
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.fabric.common.components.entity.AuraComponent;
+import dev.cammiescorner.devotion.fabric.common.components.entity.KnownResearchComponent;
 import dev.cammiescorner.devotion.fabric.common.components.world.AltarStructureComponent;
 import net.minecraft.world.entity.player.Player;
 import org.ladysnake.cca.api.v3.component.Component;
@@ -16,6 +17,7 @@ import org.ladysnake.cca.api.v3.scoreboard.ScoreboardComponentInitializer;
 public class DevotionComponents implements EntityComponentInitializer, ScoreboardComponentInitializer {
 	// Entity Components
 	public static final ComponentKey<AuraComponent> AURA = createComponent("aura", AuraComponent.class);
+	public static final ComponentKey<KnownResearchComponent> KNOWN_RESEARCH = createComponent("knownResearch", KnownResearchComponent.class);
 
 	// BlockEntity Components
 
@@ -25,6 +27,7 @@ public class DevotionComponents implements EntityComponentInitializer, Scoreboar
 	@Override
 	public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
 		registry.beginRegistration(Player.class, AURA).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(AuraComponent::new);
+		registry.beginRegistration(Player.class, KNOWN_RESEARCH).respawnStrategy(RespawnCopyStrategy.ALWAYS_COPY).end(KnownResearchComponent::new);
 	}
 
 	@Override

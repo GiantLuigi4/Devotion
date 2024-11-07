@@ -1,17 +1,21 @@
 package dev.cammiescorner.devotion.common;
 
 import dev.cammiescorner.devotion.Devotion;
+import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.common.registries.DevotionTags;
 import dev.upcraft.sparkweave.api.platform.Services;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class MainHelper {
 	private static final Duck duck = Services.getService(Duck.class);
@@ -68,5 +72,17 @@ public class MainHelper {
 
 	public static boolean regenAura(LivingEntity entity, float amount, boolean simulate) {
 		return duck.regenAura(entity, amount, simulate);
+	}
+
+	public static Set<ResourceLocation> getResearchIds(Player player) {
+		return duck.getResearchIds(player);
+	}
+
+	public static boolean giveResearch(Player player, Research research, boolean simulate) {
+		return duck.giveResearch(player, research, simulate);
+	}
+
+	public static boolean revokeResearch(Player player, Research research, boolean simulate) {
+		return duck.revokeResearch(player, research, simulate);
 	}
 }
