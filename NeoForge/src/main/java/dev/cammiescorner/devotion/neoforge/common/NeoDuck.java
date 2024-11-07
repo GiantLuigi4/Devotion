@@ -5,6 +5,7 @@ import dev.cammiescorner.devotion.common.Color;
 import dev.cammiescorner.devotion.common.Duck;
 import dev.cammiescorner.devotion.common.StructureMapData;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraCapability;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.KnownResearchCapability;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.level.AltarStructureCapability;
 import dev.cammiescorner.devotion.neoforge.entrypoints.NeoMain;
 import net.minecraft.resources.ResourceLocation;
@@ -59,16 +60,16 @@ public class NeoDuck implements Duck {
 
 	@Override
 	public Set<ResourceLocation> getResearchIds(Player player) {
-		return Set.of();
+		return player.getCapability(NeoMain.KNOWN_RESEARCH) instanceof KnownResearchCapability capability ? capability.getResearchIds() : Set.of();
 	}
 
 	@Override
 	public boolean giveResearch(Player player, Research research, boolean simulate) {
-		return false;
+		return player.getCapability(NeoMain.KNOWN_RESEARCH) instanceof KnownResearchCapability capability && capability.giveResearch(research, simulate);
 	}
 
 	@Override
 	public boolean revokeResearch(Player player, Research research, boolean simulate) {
-		return false;
+		return player.getCapability(NeoMain.KNOWN_RESEARCH) instanceof KnownResearchCapability capability && capability.revokeResearch(research, simulate);
 	}
 }

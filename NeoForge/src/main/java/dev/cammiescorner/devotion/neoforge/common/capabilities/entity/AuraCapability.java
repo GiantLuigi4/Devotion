@@ -3,11 +3,13 @@ package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.common.Color;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientboundDataPacket;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.SerializableCapability;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
-public class AuraCapability {
+public class AuraCapability implements SerializableCapability {
 	public static final float MAX_AURA = 100;
 	private final LivingEntity entity;
 	private float aura;
@@ -17,6 +19,18 @@ public class AuraCapability {
 		this.entity = entity;
 		this.aura = aura;
 		this.auraColor = auraColor;
+	}
+
+	@Override
+	public void readFromNbt(CompoundTag tag) {
+		aura = tag.getFloat("Aura");
+		auraColor = tag.getInt("AuraColor");
+	}
+
+	@Override
+	public void writeToNbt(CompoundTag tag) {
+		tag.putFloat("Aura", aura);
+		tag.putInt("AuraColor", auraColor);
 	}
 
 	public float getAura() {

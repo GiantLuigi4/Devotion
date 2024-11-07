@@ -1,7 +1,6 @@
 package dev.cammiescorner.devotion.neoforge.mixin;
 
-import dev.cammiescorner.devotion.common.Color;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraCapability;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.SerializableCapability;
 import dev.cammiescorner.devotion.neoforge.entrypoints.NeoMain;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -19,21 +18,19 @@ public abstract class LivingEntityMixin extends Entity {
 
 	@Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
 	private void addCapabilityData(CompoundTag compound, CallbackInfo info) {
-		AuraCapability capability = getCapability(NeoMain.AURA);
+		if(getCapability(NeoMain.AURA) instanceof SerializableCapability capability)
+			capability.writeToNbt(compound);
 
-		if(capability != null) {
-			compound.putFloat("Aura", capability.getAura());
-			compound.putInt("AuraColor", capability.getAuraColor().getDecimal());
-		}
+		if(getCapability(NeoMain.KNOWN_RESEARCH) instanceof SerializableCapability capability)
+			capability.writeToNbt(compound);
 	}
 
 	@Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
 	private void readCapabilityData(CompoundTag compound, CallbackInfo info) {
-		AuraCapability capability = getCapability(NeoMain.AURA);
+		if(getCapability(NeoMain.AURA) instanceof SerializableCapability capability)
+			capability.readFromNbt(compound);
 
-		if(capability != null) {
-			capability.setAura(compound.getFloat("Aura"), false);
-			capability.setAuraColor(new Color(compound.getInt("AuraColor")), false);
-		}
+		if(getCapability(NeoMain.KNOWN_RESEARCH) instanceof SerializableCapability capability)
+			capability.readFromNbt(compound);
 	}
 }
