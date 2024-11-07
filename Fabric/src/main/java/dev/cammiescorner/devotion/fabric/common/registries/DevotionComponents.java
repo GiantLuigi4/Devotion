@@ -17,7 +17,7 @@ import org.ladysnake.cca.api.v3.scoreboard.ScoreboardComponentInitializer;
 public class DevotionComponents implements EntityComponentInitializer, ScoreboardComponentInitializer {
 	// Entity Components
 	public static final ComponentKey<AuraComponent> AURA = createComponent("aura", AuraComponent.class);
-	public static final ComponentKey<KnownResearchComponent> KNOWN_RESEARCH = createComponent("knownResearch", KnownResearchComponent.class);
+	public static final ComponentKey<KnownResearchComponent> KNOWN_RESEARCH = createComponent("known_research", KnownResearchComponent.class);
 
 	// BlockEntity Components
 

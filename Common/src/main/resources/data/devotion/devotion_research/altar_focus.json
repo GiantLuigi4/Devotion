@@ -1,0 +1,8 @@
+{
+    "item_icon": "devotion:altar_focus",
+    "difficulty": "easy",
+    "parents": [
+        "devotion:root",
+        "devotion:research"
+    ]
+}

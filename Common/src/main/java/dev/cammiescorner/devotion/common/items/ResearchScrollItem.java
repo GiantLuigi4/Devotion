@@ -12,6 +12,7 @@ import dev.cammiescorner.devotion.common.registries.DevotionItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -22,10 +23,9 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.random.RandomGenerator;
 
-public class ResearchScroll extends Item {
-	public ResearchScroll() {
+public class ResearchScrollItem extends Item {
+	public ResearchScrollItem() {
 		super(new Properties().stacksTo(1).component(DevotionData.RESEARCH.get(), Research.getById(Devotion.id("empty"))));
 	}
 
@@ -75,7 +75,7 @@ public class ResearchScroll extends Item {
 		return stack.getOrDefault(DevotionData.SCROLL_COMPLETED.get(), false);
 	}
 
-	public static ItemStack createScroll(Research research, RandomGenerator random) {
+	public static ItemStack createScroll(Research research, RandomSource random) {
 		List<Graph.Node<AuraType>> path = new ArrayList<>();
 		HashSet<Graph.Edge<AuraType>> visitedEdges = new HashSet<>();
 		Research.Difficulty difficulty = research != null ? research.getDifficulty() : Research.Difficulty.EASY;
