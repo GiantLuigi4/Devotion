@@ -2,7 +2,7 @@ package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 
 import com.google.common.collect.ImmutableSet;
 import dev.cammiescorner.devotion.api.research.Research;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.SerializableCapability;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.SyncedCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.HashSet;
 import java.util.Set;
 
-public class KnownResearchCapability implements SerializableCapability {
+public class KnownResearchCapability implements SyncedCapability {
 	private final Set<ResourceLocation> researchIds = new HashSet<>();
 	private final Player player;
 

@@ -3,13 +3,13 @@ package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.common.Color;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientboundDataPacket;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.SerializableCapability;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.SyncedCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
-public class AuraCapability implements SerializableCapability {
+public class AuraCapability implements SyncedCapability {
 	public static final float MAX_AURA = 100;
 	private final LivingEntity entity;
 	private float aura;
