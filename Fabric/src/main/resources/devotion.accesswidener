@@ -16,3 +16,5 @@ accessible method net/minecraft/client/renderer/RenderStateShard$EmptyTextureSta
 accessible method net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
 accessible method net/minecraft/client/renderer/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
 accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)V
+accessible method net/minecraft/core/registries/BuiltInRegistries registerSimple (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/core/registries/BuiltInRegistries$RegistryBootstrap;)Lnet/minecraft/core/Registry;
+accessible method net/minecraft/core/Registry registerForHolder (Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceKey;Ljava/lang/Object;)Lnet/minecraft/core/Holder$Reference;
