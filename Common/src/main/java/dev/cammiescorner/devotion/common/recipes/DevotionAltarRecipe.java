@@ -139,7 +139,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 				buffer.writeVarInt(recipe.getRequiredResearch().size());
 
 				for(Holder<Research> researchHolder : recipe.getRequiredResearch())
-					Research.HOLDER_STREAM_CODEC.encode(buffer, researchHolder);
+					Research.STREAM_CODEC.encode(buffer, researchHolder);
 			},
 			buffer -> {
 				List<Ingredient> ingredients = new ArrayList<>();
@@ -156,7 +156,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 				int researchSize = buffer.readVarInt();
 
 				for(int i = 0; i < researchSize; i++)
-					requiredResearch.add(Research.HOLDER_STREAM_CODEC.decode(buffer));
+					requiredResearch.add(Research.STREAM_CODEC.decode(buffer));
 
 				return new DevotionAltarRecipe(group, ingredients, power, requiresPlayer, action, requiredResearch);
 			}

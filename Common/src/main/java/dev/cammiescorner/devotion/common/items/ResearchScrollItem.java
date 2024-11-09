@@ -10,6 +10,8 @@ import dev.cammiescorner.devotion.common.MainHelper;
 import dev.cammiescorner.devotion.common.registries.DevotionData;
 import dev.cammiescorner.devotion.common.registries.DevotionItems;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
@@ -26,7 +28,7 @@ import java.util.List;
 
 public class ResearchScrollItem extends Item {
 	public ResearchScrollItem() {
-		super(new Properties().stacksTo(1).component(DevotionData.RESEARCH.get(), Research.getById(Devotion.id("empty"))));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
@@ -35,10 +37,10 @@ public class ResearchScrollItem extends Item {
 			ItemStack stack = player.getItemInHand(usedHand);
 
 			if(stack.getOrDefault(DevotionData.SCROLL_COMPLETED.get(), false) && stack.has(DevotionData.RESEARCH.get())) {
-				Research research = stack.get(DevotionData.RESEARCH.get());
+				Holder<Research> research = stack.get(DevotionData.RESEARCH.get());
 
-				if(MainHelper.getResearchIds(player).containsAll(research.getParentIds())) {
-					if(MainHelper.giveResearch(player, research, false)) {
+				if(research != null && MainHelper.getResearchIds(player).containsAll(research.value().parentIds())) {
+					if(MainHelper.giveResearch(player, research.value(), false)) {
 						stack.consume(1, player);
 						return InteractionResultHolder.success(stack);
 					}
@@ -62,10 +64,10 @@ public class ResearchScrollItem extends Item {
 
 	@Override
 	public Component getName(ItemStack stack) {
-		DataComponentType<Research> data = DevotionData.RESEARCH.get();
+		DataComponentType<Holder<Research>> data = DevotionData.RESEARCH.get();
 
-		if(stack.get(data) instanceof Research research)
-			return super.getName(stack).copy().append(" (").append(Component.translatable(research.getTranslationKey())).append(")");
+		if(stack.get(data) instanceof Holder<Research> research)
+			return super.getName(stack).copy().append(" (").append(Component.translatable(Util.makeDescriptionId("devotion_research", research.unwrapKey().orElseThrow().location()))).append(")");
 
 		return super.getName(stack);
 	}
@@ -75,10 +77,10 @@ public class ResearchScrollItem extends Item {
 		return stack.getOrDefault(DevotionData.SCROLL_COMPLETED.get(), false);
 	}
 
-	public static ItemStack createScroll(Research research, RandomSource random) {
+	public static ItemStack createScroll(Holder<Research> research, RandomSource random) {
 		List<Graph.Node<AuraType>> path = new ArrayList<>();
 		HashSet<Graph.Edge<AuraType>> visitedEdges = new HashSet<>();
-		Research.Difficulty difficulty = research != null ? research.getDifficulty() : Research.Difficulty.EASY;
+		Research.Difficulty difficulty = research != null ? research.value().difficulty() : Research.Difficulty.EASY;
 		int maxRiddles = difficulty == Research.Difficulty.EASY ? 4 : difficulty == Research.Difficulty.NORMAL ? 6 : 8;
 
 		// pick random starting node

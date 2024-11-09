@@ -1,5 +1,7 @@
 {
-    "item_icon": "devotion:enhancer_mage_hood",
+	"item_icon": {
+		"id": "devotion:enhancer_mage_hood"
+	},
     "difficulty": "hard",
     "parents": [
         "devotion:basic_mage_armor"

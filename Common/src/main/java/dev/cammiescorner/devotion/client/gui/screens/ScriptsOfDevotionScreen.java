@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -286,11 +287,11 @@ public class ScriptsOfDevotionScreen extends Screen {
 	private List<ResearchWidget> getParents(ResearchWidget widget, List<ResearchWidget> drawables) {
 		List<ResearchWidget> parents = new ArrayList<>();
 
-		if(widget.visible && widget.getResearch() != null) {
-			Research research = widget.getResearch();
+		if(widget.visible) {
+			Holder.Reference<Research> research = widget.getResearch();
 
 			for(ResearchWidget parent : drawables)
-				if(parent.visible && research.getParents().contains(parent.getResearch()))
+				if(parent.visible && research.value().parentIds().contains(parent.getResearch().key().location()))
 					parents.add(parent);
 		}
 

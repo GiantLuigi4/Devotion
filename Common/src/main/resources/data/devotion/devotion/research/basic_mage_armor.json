@@ -1,5 +1,7 @@
 {
-    "item_icon": "devotion:basic_mage_hood",
+	"item_icon": {
+		"id": "devotion:basic_mage_hood"
+	},
     "difficulty": "normal",
     "parents": [
         "devotion:altar_focus"

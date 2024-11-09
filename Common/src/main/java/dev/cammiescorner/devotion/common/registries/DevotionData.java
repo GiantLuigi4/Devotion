@@ -6,6 +6,7 @@ import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.research.RiddleData;
 import dev.upcraft.sparkweave.api.registry.RegistryHandler;
 import dev.upcraft.sparkweave.api.registry.RegistrySupplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -25,9 +26,9 @@ public class DevotionData {
 		.cacheEncoding()
 		.build()
 	);
-	public static final RegistrySupplier<DataComponentType<Research>> RESEARCH = DATA_COMPONENTS.register("research", () -> DataComponentType.<Research>builder()
-		.persistent(Research.DIRECT_CODEC)
-		.networkSynchronized(Research.OBJ_STREAM_CODEC)
+	public static final RegistrySupplier<DataComponentType<Holder<Research>>> RESEARCH = DATA_COMPONENTS.register("research", () -> DataComponentType.<Holder<Research>>builder()
+		.persistent(Research.CODEC)
+		.networkSynchronized(Research.STREAM_CODEC)
 		.cacheEncoding()
 		.build()
 	);

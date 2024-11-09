@@ -8,14 +8,12 @@ import dev.cammiescorner.devotion.api.Graph;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.StructureMapData;
-import dev.cammiescorner.devotion.common.data.ResearchReloadListener;
 import dev.cammiescorner.devotion.common.networking.c2s.ServerboundOpenCloseHoodPacket;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientboundAltarStructurePacket;
 import dev.cammiescorner.devotion.common.networking.s2c.ClientboundDataPacket;
 import dev.cammiescorner.devotion.common.registries.*;
 import dev.upcraft.sparkweave.api.entrypoint.MainEntryPoint;
 import dev.upcraft.sparkweave.api.event.ItemMenuInteractionEvent;
-import dev.upcraft.sparkweave.api.event.LifeCycleEvents;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
 import net.minecraft.Util;
@@ -99,8 +97,6 @@ public class Devotion implements MainEntryPoint {
 
 			return false;
 		});
-
-		LifeCycleEvents.SERVER_STARTED.register(ResearchReloadListener::verifyResearchInRecipes);
 	}
 
 	public static ResourceLocation id(String name) {

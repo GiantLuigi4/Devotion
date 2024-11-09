@@ -2,6 +2,7 @@ package dev.cammiescorner.devotion;
 
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.events.ScriptsOfDevotionScreenCallback;
+import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.client.AuraEffectManager;
 import dev.cammiescorner.devotion.client.gui.widgets.ResearchWidget;
 import dev.cammiescorner.devotion.client.models.armor.DeathCultLeaderArmorModel;
@@ -25,6 +26,7 @@ import dev.upcraft.sparkweave.api.platform.ModContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -91,12 +93,12 @@ public class DevotionClient implements ClientEntryPoint {
 		Player player = client.player;
 
 		if(player != null) {
-			ResourceLocation researchId = widget.getResearch().getId();
+			ResourceKey<Research> researchKey = widget.getResearch().key();
 
-			if(MainHelper.getResearchIds(player).contains(researchId))
+			if(MainHelper.getResearchIds(player).contains(researchKey.location()))
 				return;
 
-			Network.getNetworkHandler().sendToServer(new ServerboundGiveResearchScrollPacket(researchId));
+			Network.getNetworkHandler().sendToServer(new ServerboundGiveResearchScrollPacket(researchKey));
 		}
 	}
 

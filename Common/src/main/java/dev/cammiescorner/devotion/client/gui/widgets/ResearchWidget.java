@@ -5,10 +5,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.common.MainHelper;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,32 +22,31 @@ import static dev.cammiescorner.devotion.DevotionClient.client;
 
 public class ResearchWidget extends AbstractButton {
 	public static final ResourceLocation TEXTURE = Devotion.id("textures/gui/scripts_of_devotion_icons.png");
-	private final Research research;
+	private final RegistryAccess access = client.player.registryAccess();
+	private final Holder.Reference<Research> research;
 	private final OnPress onPress;
 	private float offsetX = 0, offsetY = 0;
 
 	public ResearchWidget(int x, int y, ResourceLocation researchId, OnPress onPress) {
 		super(x, y, 30, 30, Component.empty());
-		this.research = Research.getById(researchId);
+		this.research = access.lookupOrThrow(Research.REGISTRY_KEY).getOrThrow(ResourceKey.create(Research.REGISTRY_KEY, researchId));
 		this.onPress = onPress;
 
-		if(research != null) {
-			Set<ResourceLocation> playerResearch = MainHelper.getResearchIds(client.player);
+		Set<ResourceLocation> playerResearch = MainHelper.getResearchIds(client.player);
 
-			if(playerResearch.contains(research.getId())) {
-				active = true;
-				visible = true;
-			}
-			else if(playerResearch.containsAll(research.getParentIds())) {
-				active = true;
-				visible = true;
-			}
-			else {
-				active = false;
+		if(playerResearch.contains(research.key().location())) {
+			active = true;
+			visible = true;
+		}
+		else if(playerResearch.containsAll(research.value().parentIds())) {
+			active = true;
+			visible = true;
+		}
+		else {
+			active = false;
 
-				if(research.isHidden() || research.getParents().stream().anyMatch(Research::isHidden))
-					visible = false;
-			}
+			if(research.value().isHidden() || research.value().getParents(access).stream().anyMatch(Research::isHidden))
+				visible = false;
 		}
 	}
 
@@ -68,11 +71,11 @@ public class ResearchWidget extends AbstractButton {
 		Set<ResourceLocation> playerResearch = MainHelper.getResearchIds(client.player);
 
 		if(research != null) {
-			if(playerResearch.contains(research.getId()))
+			if(playerResearch.contains(research.key().location()))
 				visible = true;
-			else if(playerResearch.containsAll(research.getParentIds()))
+			else if(playerResearch.containsAll(research.value().parentIds()))
 				visible = true;
-			else if(research.isHidden() || research.getParents().stream().anyMatch(Research::isHidden))
+			else if(research.value().isHidden() || research.value().getParents(access).stream().anyMatch(Research::isHidden))
 				visible = false;
 
 			if(visible) {
@@ -88,15 +91,15 @@ public class ResearchWidget extends AbstractButton {
 	}
 
 	public void renderButton(GuiGraphics guiGraphics, int mouseX, int mouseY, Set<ResourceLocation> playerResearch) {
-		ItemStack stack = research.getIcon();
+		ItemStack stack = research.value().icon();
 		PoseStack poseStack = guiGraphics.pose();
 		int u;
 
-		if(playerResearch.contains(research.getId())) {
+		if(playerResearch.contains(research.key().location())) {
 			u = 60;
 			active = true;
 		}
-		else if(playerResearch.containsAll(research.getParentIds())) {
+		else if(playerResearch.containsAll(research.value().parentIds())) {
 			u = 30;
 			active = true;
 		}
@@ -107,7 +110,7 @@ public class ResearchWidget extends AbstractButton {
 
 		guiGraphics.blit(TEXTURE, getX(), getY(), u, 0, width, height);
 
-		if(!research.getParents().stream().filter(parent -> playerResearch.containsAll(parent.getParentIds())).toList().isEmpty() || research.getParents().isEmpty())
+		if(!research.value().getParents(access).stream().allMatch(parent -> playerResearch.containsAll(parent.parentIds())) || research.value().parentIds().isEmpty())
 			guiGraphics.renderItem(stack, getX() + 7, getY() + 7);
 		else
 			guiGraphics.blit(TEXTURE, getX() + 7, getY() + 7, 0, 32, 16, 16);
@@ -115,7 +118,7 @@ public class ResearchWidget extends AbstractButton {
 		if(isHovered() && active) {
 			poseStack.pushPose();
 			poseStack.translate(-offsetX, -offsetY, 0);
-			guiGraphics.renderTooltip(client.font, Component.translatable(research.getTranslationKey()), mouseX, mouseY);
+			guiGraphics.renderTooltip(client.font, Component.translatable(Util.makeDescriptionId("devotion_research", research.key().location())), mouseX, mouseY);
 			poseStack.popPose();
 		}
 	}
@@ -125,7 +128,7 @@ public class ResearchWidget extends AbstractButton {
 		offsetY = y;
 	}
 
-	public Research getResearch() {
+	public Holder.Reference<Research> getResearch() {
 		return research;
 	}
 

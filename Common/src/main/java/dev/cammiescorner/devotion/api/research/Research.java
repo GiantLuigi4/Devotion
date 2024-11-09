@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.cammiescorner.devotion.Devotion;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,71 +15,32 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class Research {
+public record Research(ItemStack icon, Research.Difficulty difficulty, boolean isHidden, Set<ResourceLocation> parentIds) {
 	public static final ResourceKey<Registry<Research>> REGISTRY_KEY = ResourceKey.createRegistryKey(Devotion.id("research"));
 	public static final Codec<Holder<Research>> CODEC = RegistryFixedCodec.create(REGISTRY_KEY);
 	public static final Codec<Research> DIRECT_CODEC = RecordCodecBuilder.create(researchInstance -> researchInstance.group(
-		Difficulty.CODEC.fieldOf("difficulty").forGetter(Research::getDifficulty),
-		Codec.BOOL.fieldOf("hidden").forGetter(Research::isHidden),
-		ItemStack.CODEC.fieldOf("icon").forGetter(Research::getIcon)
+		ItemStack.CODEC.fieldOf("item_icon").forGetter(Research::icon),
+		Difficulty.CODEC.fieldOf("difficulty").forGetter(Research::difficulty),
+		Codec.BOOL.optionalFieldOf("hidden", false).forGetter(Research::isHidden),
+		ResourceLocation.CODEC.listOf().xmap(Set::copyOf, List::copyOf).optionalFieldOf("parents", Set.of()).forGetter(Research::parentIds)
 	).apply(researchInstance, Research::new));
-	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Research>> HOLDER_STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY_KEY);
-	public static final StreamCodec<RegistryFriendlyByteBuf, Research> OBJ_STREAM_CODEC = ByteBufCodecs.registry(REGISTRY_KEY);
-	private final Set<Research> parents = new HashSet<>();
-	private final Difficulty difficulty;
-	private final ItemStack icon;
-	private final boolean isHidden;
-
-	public Research(Difficulty difficulty, boolean isHidden, ItemStack icon) {
-		this.difficulty = difficulty;
-		this.isHidden = isHidden;
-		this.icon = icon;
-	}
+	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Research>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY_KEY);
 
 	public static Research getById(ResourceLocation id) {
 		return Devotion.RESEARCH.get(id);
 	}
 
-	public Set<Research> getParents() {
-		return parents;
-	}
-
-	public Set<ResourceLocation> getParentIds() {
-		Set<ResourceLocation> parentIds = new HashSet<>();
-
-		for(Research parent : parents)
-			parentIds.add(parent.getId());
-
-		return parentIds;
+	public Set<Research> getParents(HolderLookup.Provider provider) {
+		HolderLookup.RegistryLookup<Research> lookup = provider.lookupOrThrow(REGISTRY_KEY);
+		return parentIds.stream().map(id -> ResourceKey.create(REGISTRY_KEY, id)).map(lookup::getOrThrow).map(Holder.Reference::value).collect(Collectors.toSet());
 	}
 
 	public ResourceLocation getId() {
 		return Devotion.RESEARCH.inverse().get(this);
-	}
-
-	public Difficulty getDifficulty() {
-		return difficulty;
-	}
-
-	public ItemStack getIcon() {
-		return icon;
-	}
-
-	public String getTranslationKey() {
-		ResourceLocation id = getId();
-		return "research." + id.getNamespace() + "." + id.getPath();
-	}
-
-	public boolean isHidden() {
-		return isHidden;
-	}
-
-	public void setParents(Set<Research> parents) {
-		this.parents.clear();
-		this.parents.addAll(parents);
 	}
 
 	public enum Difficulty implements StringRepresentable {
