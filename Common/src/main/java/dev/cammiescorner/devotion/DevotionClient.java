@@ -4,6 +4,7 @@ import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.events.ScriptsOfDevotionScreenCallback;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.client.AuraEffectManager;
+import dev.cammiescorner.devotion.client.gui.screens.ResearchScreen;
 import dev.cammiescorner.devotion.client.gui.widgets.ResearchWidget;
 import dev.cammiescorner.devotion.client.models.armor.DeathCultLeaderArmorModel;
 import dev.cammiescorner.devotion.client.models.armor.DeathCultistRobesModel;
@@ -12,15 +13,18 @@ import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultLeaderA
 import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultistRobesRenderer;
 import dev.cammiescorner.devotion.client.renderers.entity.armor.MageRobesRenderer;
 import dev.cammiescorner.devotion.common.MainHelper;
-import dev.cammiescorner.devotion.common.networking.c2s.ServerboundGiveResearchScrollPacket;
-import dev.cammiescorner.devotion.common.networking.c2s.ServerboundOpenCloseHoodPacket;
+import dev.cammiescorner.devotion.common.networking.serverbound.ServerboundGiveResearchScrollPacket;
+import dev.cammiescorner.devotion.common.networking.serverbound.ServerboundOpenCloseHoodPacket;
+import dev.cammiescorner.devotion.common.networking.serverbound.ServerboundSaveScrollDataPacket;
 import dev.cammiescorner.devotion.common.registries.DevotionBlocks;
 import dev.cammiescorner.devotion.common.registries.DevotionData;
 import dev.cammiescorner.devotion.common.registries.DevotionItems;
+import dev.cammiescorner.devotion.common.registries.DevotionMenus;
 import dev.cammiescorner.velvet.api.event.EntitiesPreRenderCallback;
 import dev.cammiescorner.velvet.api.event.ShaderEffectRenderCallback;
 import dev.upcraft.sparkweave.api.client.event.RegisterCustomArmorRenderersEvent;
 import dev.upcraft.sparkweave.api.client.event.RegisterLayerDefinitionsEvent;
+import dev.upcraft.sparkweave.api.client.event.RegisterMenuScreensEvent;
 import dev.upcraft.sparkweave.api.entrypoint.ClientEntryPoint;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import net.minecraft.client.Minecraft;
@@ -65,8 +69,13 @@ public class DevotionClient implements ClientEntryPoint {
 			event.register((entity, context, renderer) -> new DeathCultLeaderArmorRenderer(context), DevotionItems.DEATH_CULT_LEADER_HEADDRESS.get(), DevotionItems.DEATH_CULT_LEADER_CLOAK.get(), DevotionItems.DEATH_CULT_LEADER_LEGGINGS.get(), DevotionItems.DEATH_CULT_LEADER_BOOTS.get());
 		});
 
+		RegisterMenuScreensEvent.EVENT.register(event -> {
+			event.register(DevotionMenus.RESEARCH, ResearchScreen::new);
+		});
+
 		Network.registerPacket(ServerboundOpenCloseHoodPacket.TYPE, ServerboundOpenCloseHoodPacket.class, ServerboundOpenCloseHoodPacket.CODEC, ServerboundOpenCloseHoodPacket::handle);
 		Network.registerPacket(ServerboundGiveResearchScrollPacket.TYPE, ServerboundGiveResearchScrollPacket.class, ServerboundGiveResearchScrollPacket.CODEC, ServerboundGiveResearchScrollPacket::handle);
+		Network.registerPacket(ServerboundSaveScrollDataPacket.TYPE, ServerboundSaveScrollDataPacket.class, ServerboundSaveScrollDataPacket.CODEC, ServerboundSaveScrollDataPacket::handle);
 
 		createItemPropertyForList(Devotion.HOOD_ITEMS, Devotion.id("closed_hood"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.CLOSED_HOOD.get(), false) ? 1f : 0f);
 

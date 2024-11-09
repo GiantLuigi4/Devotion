@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.common.StructureMapData;
-import dev.cammiescorner.devotion.common.networking.s2c.ClientboundAltarStructurePacket;
+import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAltarStructurePacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;

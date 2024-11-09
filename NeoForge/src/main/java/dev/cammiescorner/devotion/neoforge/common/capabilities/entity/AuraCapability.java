@@ -2,7 +2,7 @@ package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.common.Color;
-import dev.cammiescorner.devotion.common.networking.s2c.ClientboundDataPacket;
+import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundDataPacket;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.SyncedCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;

@@ -11,6 +11,8 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 
+import java.util.List;
+
 public class DevotionData {
 	public static final RegistryHandler<DataComponentType<?>> DATA_COMPONENTS = RegistryHandler.create(Registries.DATA_COMPONENT_TYPE, Devotion.MOD_ID);
 
@@ -26,6 +28,12 @@ public class DevotionData {
 		.cacheEncoding()
 		.build()
 	);
+	public static final RegistrySupplier<DataComponentType<Long>> SCROLL_COMPLETED_TIME = DATA_COMPONENTS.register("scroll_completed_time", () -> DataComponentType.<Long>builder()
+		.persistent(Codec.LONG)
+		.networkSynchronized(ByteBufCodecs.VAR_LONG)
+		.cacheEncoding()
+		.build()
+	);
 	public static final RegistrySupplier<DataComponentType<Holder<Research>>> RESEARCH = DATA_COMPONENTS.register("research", () -> DataComponentType.<Holder<Research>>builder()
 		.persistent(Research.CODEC)
 		.networkSynchronized(Research.STREAM_CODEC)
@@ -35,6 +43,12 @@ public class DevotionData {
 	public static final RegistrySupplier<DataComponentType<RiddleData>> RIDDLE_DATA = DATA_COMPONENTS.register("riddle_data", () -> DataComponentType.<RiddleData>builder()
 		.persistent(RiddleData.CODEC)
 		.networkSynchronized(RiddleData.STREAM_CODEC)
+		.cacheEncoding()
+		.build()
+	);
+	public static final RegistrySupplier<DataComponentType<List<Integer>>> UNDO_BUFFER = DATA_COMPONENTS.register("undo_buffer", () -> DataComponentType.<List<Integer>>builder()
+		.persistent(Codec.INT.listOf())
+		.networkSynchronized(ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()))
 		.cacheEncoding()
 		.build()
 	);

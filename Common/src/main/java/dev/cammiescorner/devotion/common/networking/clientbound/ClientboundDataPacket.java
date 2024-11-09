@@ -1,4 +1,4 @@
-package dev.cammiescorner.devotion.common.networking.s2c;
+package dev.cammiescorner.devotion.common.networking.clientbound;
 
 import commonnetwork.networking.data.PacketContext;
 import dev.cammiescorner.devotion.Devotion;

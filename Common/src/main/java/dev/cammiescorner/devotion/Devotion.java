@@ -8,11 +8,14 @@ import dev.cammiescorner.devotion.api.Graph;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.StructureMapData;
-import dev.cammiescorner.devotion.common.networking.c2s.ServerboundOpenCloseHoodPacket;
-import dev.cammiescorner.devotion.common.networking.s2c.ClientboundAltarStructurePacket;
-import dev.cammiescorner.devotion.common.networking.s2c.ClientboundDataPacket;
+import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAltarStructurePacket;
+import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundDataPacket;
+import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundRefreshResearchScreenPacket;
+import dev.cammiescorner.devotion.common.networking.serverbound.ServerboundOpenCloseHoodPacket;
 import dev.cammiescorner.devotion.common.registries.*;
+import dev.cammiescorner.devotion.common.screens.providers.ResearchMenuProvider;
 import dev.upcraft.sparkweave.api.entrypoint.MainEntryPoint;
+import dev.upcraft.sparkweave.api.event.CustomLecternMenuEvent;
 import dev.upcraft.sparkweave.api.event.ItemMenuInteractionEvent;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
@@ -77,9 +80,15 @@ public class Devotion implements MainEntryPoint {
 		DevotionAttributes.ATTRIBUTES.accept(registryService);
 		DevotionRecipes.RECIPE_SERIALIZERS.accept(registryService);
 		DevotionRecipes.RECIPE_TYPES.accept(registryService);
+		DevotionMenus.MENUS.accept(registryService);
 
 		Network.registerPacket(ClientboundAltarStructurePacket.TYPE, ClientboundAltarStructurePacket.class, ClientboundAltarStructurePacket.CODEC, ClientboundAltarStructurePacket::handle);
 		Network.registerPacket(ClientboundDataPacket.TYPE, ClientboundDataPacket.class, ClientboundDataPacket.CODEC, ClientboundDataPacket::handle);
+		Network.registerPacket(ClientboundRefreshResearchScreenPacket.TYPE, ClientboundRefreshResearchScreenPacket.class, ClientboundRefreshResearchScreenPacket.CODEC, ClientboundRefreshResearchScreenPacket::handle);
+
+		CustomLecternMenuEvent.EVENT.register(event -> {
+			event.register((level, pos, player, blockEntity, stack) -> new ResearchMenuProvider(stack), DevotionItems.RESEARCH_SCROLL.get());
+		});
 
 		ItemMenuInteractionEvent.EVENT.register((menu, player, level, clickAction, slot, slotStack, cursorStack) -> {
 			if(clickAction == ClickAction.SECONDARY && cursorStack.isEmpty() && Devotion.HOOD_ITEMS.contains(slotStack.getItem())) {

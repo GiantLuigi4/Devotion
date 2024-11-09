@@ -22,6 +22,6 @@ public record RiddleData(List<Pair<AuraType, Integer>> riddles) {
 
 	public String getRiddleTranslationKey(int index) {
 		Pair<AuraType, Integer> riddle = getRiddle(index);
-		return riddle != null ? String.format("riddle.%s_%s", riddle.getFirst().getSerializedName(), riddle.getSecond()) : "";
+		return riddle != null ? String.format("devotion_riddle.%s_%s", riddle.getFirst().getSerializedName(), riddle.getSecond()) : "";
 	}
 }
