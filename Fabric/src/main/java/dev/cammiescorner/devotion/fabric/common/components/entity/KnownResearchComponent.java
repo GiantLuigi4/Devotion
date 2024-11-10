@@ -47,9 +47,11 @@ public class KnownResearchComponent implements AutoSyncedComponent {
 	}
 
 	public boolean giveResearch(Research research, boolean simulate) {
-		if(!researchIds.contains(research.getId())) {
+		ResourceLocation researchId = research.getId(player.level().registryAccess());
+
+		if(!researchIds.contains(researchId)) {
 			if(!simulate) {
-				researchIds.add(research.getId());
+				researchIds.add(researchId);
 				DevotionComponents.KNOWN_RESEARCH.sync(player);
 			}
 
@@ -60,9 +62,11 @@ public class KnownResearchComponent implements AutoSyncedComponent {
 	}
 
 	public boolean revokeResearch(Research research, boolean simulate) {
-		if(researchIds.contains(research.getId())) {
+		ResourceLocation researchId = research.getId(player.level().registryAccess());
+
+		if(researchIds.contains(researchId)) {
 			if(!simulate) {
-				researchIds.remove(research.getId());
+				researchIds.remove(researchId);
 				DevotionComponents.KNOWN_RESEARCH.sync(player);
 			}
 

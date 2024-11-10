@@ -45,9 +45,11 @@ public class KnownResearchCapability implements SyncedCapability {
 	}
 
 	public boolean giveResearch(Research research, boolean simulate) {
-		if(!researchIds.contains(research.getId())) {
+		ResourceLocation researchId = research.getId(player.level().registryAccess());
+
+		if(!researchIds.contains(researchId)) {
 			if(!simulate) {
-				researchIds.add(research.getId());
+				researchIds.add(researchId);
 
 				if(player.level() instanceof ServerLevel level) {
 					// TODO sync packet
@@ -61,9 +63,11 @@ public class KnownResearchCapability implements SyncedCapability {
 	}
 
 	public boolean revokeResearch(Research research, boolean simulate) {
-		if(researchIds.contains(research.getId())) {
+		ResourceLocation researchId = research.getId(player.level().registryAccess());
+
+		if(researchIds.contains(researchId)) {
 			if(!simulate) {
-				researchIds.remove(research.getId());
+				researchIds.remove(researchId);
 
 				if(player.level() instanceof ServerLevel level) {
 					// TODO sync packet

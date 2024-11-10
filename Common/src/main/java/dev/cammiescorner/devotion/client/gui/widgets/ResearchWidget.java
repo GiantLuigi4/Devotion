@@ -29,7 +29,7 @@ public class ResearchWidget extends AbstractButton {
 
 	public ResearchWidget(int x, int y, ResourceLocation researchId, OnPress onPress) {
 		super(x, y, 30, 30, Component.empty());
-		this.research = access.lookupOrThrow(Research.REGISTRY_KEY).getOrThrow(ResourceKey.create(Research.REGISTRY_KEY, researchId));
+		this.research = access.lookupOrThrow(Devotion.RESEARCH_KEY).getOrThrow(ResourceKey.create(Devotion.RESEARCH_KEY, researchId));
 		this.onPress = onPress;
 
 		Set<ResourceLocation> playerResearch = MainHelper.getResearchIds(client.player);

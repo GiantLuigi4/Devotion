@@ -22,7 +22,7 @@ public record ServerboundGiveResearchScrollPacket(ResourceKey<Research> research
 	public static final Type<ServerboundGiveResearchScrollPacket> TYPE = new Type<>(Devotion.id("give_research_scroll"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundGiveResearchScrollPacket> CODEC = StreamCodec.of(
 		(buffer, packet) -> buffer.writeResourceKey(packet.researchId()),
-		buffer -> new ServerboundGiveResearchScrollPacket(buffer.readResourceKey(Research.REGISTRY_KEY))
+		buffer -> new ServerboundGiveResearchScrollPacket(buffer.readResourceKey(Devotion.RESEARCH_KEY))
 	);
 
 	@Override
@@ -46,7 +46,7 @@ public record ServerboundGiveResearchScrollPacket(ResourceKey<Research> research
 		}
 
 		if(bl) {
-			HolderLookup.RegistryLookup<Research> lookUp = context.sender().registryAccess().lookupOrThrow(Research.REGISTRY_KEY);
+			HolderLookup.RegistryLookup<Research> lookUp = context.sender().registryAccess().lookupOrThrow(Devotion.RESEARCH_KEY);
 			ItemStack stack = ResearchScrollItem.createScroll(lookUp.getOrThrow(researchId), player.getRandom());
 			boolean canInsert = player.getInventory().add(stack);
 			ItemEntity itemEntity;

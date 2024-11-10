@@ -1,7 +1,5 @@
 package dev.cammiescorner.devotion;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator;
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.Graph;
@@ -20,13 +18,14 @@ import dev.upcraft.sparkweave.api.event.ItemMenuInteractionEvent;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +36,7 @@ public class Devotion implements MainEntryPoint {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Devotion");
 	public static final Configurator CONFIGURATOR = new Configurator(MOD_ID);
 
-	public static final BiMap<ResourceLocation, Research> RESEARCH = HashBiMap.create();
+	public static final ResourceKey<Registry<Research>> RESEARCH_KEY = ResourceKey.createRegistryKey(id("research"));
 	public static final List<Item> HOOD_ITEMS = List.of(
 		DevotionItems.BASIC_MAGE_HOOD.get(), DevotionItems.ENHANCER_MAGE_HOOD.get(), DevotionItems.TRANSMUTER_MAGE_HOOD.get(),
 		DevotionItems.EMITTER_MAGE_HOOD.get(), DevotionItems.CONJURER_MAGE_HOOD.get(), DevotionItems.MANIPULATOR_MAGE_HOOD.get(),

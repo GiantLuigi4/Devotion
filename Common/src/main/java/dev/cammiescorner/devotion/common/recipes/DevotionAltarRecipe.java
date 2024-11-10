@@ -3,7 +3,6 @@ package dev.cammiescorner.devotion.common.recipes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.actions.ConfiguredAltarAction;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.common.blocks.entities.AltarFocusBlockEntity;
@@ -121,7 +120,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 				Codec.INT.fieldOf("power").forGetter(DevotionAltarRecipe::getPower),
 				Codec.BOOL.optionalFieldOf("requires_player", false).forGetter(DevotionAltarRecipe::requiresPlayer),
 				ConfiguredAltarAction.CODEC.fieldOf("result").forGetter(DevotionAltarRecipe::getResult),
-				Research.CODEC.listOf().optionalFieldOf("prerequisites", List.of(Holder.direct(Research.getById(Devotion.id("empty"))))).forGetter(DevotionAltarRecipe::getRequiredResearch)
+				Research.CODEC.listOf().optionalFieldOf("prerequisites", List.of()).forGetter(DevotionAltarRecipe::getRequiredResearch)
 			).apply(recipe, DevotionAltarRecipe::new)
 		);
 

@@ -78,6 +78,7 @@ public class DevotionClient implements ClientEntryPoint {
 		Network.registerPacket(ServerboundSaveScrollDataPacket.TYPE, ServerboundSaveScrollDataPacket.class, ServerboundSaveScrollDataPacket.CODEC, ServerboundSaveScrollDataPacket::handle);
 
 		createItemPropertyForList(Devotion.HOOD_ITEMS, Devotion.id("closed_hood"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.CLOSED_HOOD.get(), false) ? 1f : 0f);
+		ItemProperties.register(DevotionItems.RESEARCH_SCROLL.get(), Devotion.id("completed_research"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.SCROLL_COMPLETED.get(), false) ? 1f : 0f);
 
 		ScriptsOfDevotionScreenCallback.ADD_TAB.register(tabMap -> {
 			tabMap.put(Devotion.id("artifice"), DevotionItems.BASIC_MAGE_HOOD.get());
