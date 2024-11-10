@@ -8,7 +8,6 @@ import dev.cammiescorner.devotion.api.research.RiddleData;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.MainHelper;
 import dev.cammiescorner.devotion.common.registries.DevotionData;
-import dev.cammiescorner.devotion.common.registries.DevotionItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
@@ -80,7 +79,7 @@ public class ResearchScrollItem extends Item {
 		return stack.getOrDefault(DevotionData.SCROLL_COMPLETED.get(), false);
 	}
 
-	public static ItemStack createScroll(Holder<Research> research, RandomSource random) {
+	public static RiddleData generateRiddleData(Holder<Research> research, RandomSource random) {
 		List<Graph.Node<AuraType>> path = new ArrayList<>();
 		HashSet<Graph.Edge<AuraType>> visitedEdges = new HashSet<>();
 		Research.Difficulty difficulty = research != null ? research.value().difficulty() : Research.Difficulty.EASY;
@@ -109,12 +108,6 @@ public class ResearchScrollItem extends Item {
 			path.add(next.nodes.stream().filter(n -> n != current).findFirst().orElseThrow(() -> new IllegalStateException("invalid graph")));
 		}
 
-		ItemStack stack = new ItemStack(DevotionItems.RESEARCH_SCROLL.get());
-		RiddleData riddleData = new RiddleData(path.stream().map(auraTypeNode -> Pair.of(auraTypeNode.obj, random.nextInt(9))).toList());
-
-		stack.set(DevotionData.RIDDLE_DATA.get(), riddleData);
-		stack.set(DevotionData.RESEARCH.get(), research);
-
-		return stack;
+		return new RiddleData(path.stream().map(auraTypeNode -> Pair.of(auraTypeNode.obj, random.nextInt(9))).toList());
 	}
 }

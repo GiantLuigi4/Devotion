@@ -3,8 +3,10 @@ package dev.cammiescorner.devotion.common.networking.serverbound;
 import commonnetwork.networking.data.PacketContext;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.research.Research;
+import dev.cammiescorner.devotion.api.research.RiddleData;
 import dev.cammiescorner.devotion.common.items.ResearchScrollItem;
 import dev.cammiescorner.devotion.common.registries.DevotionData;
+import dev.cammiescorner.devotion.common.registries.DevotionItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
@@ -47,7 +49,13 @@ public record ServerboundGiveResearchScrollPacket(ResourceKey<Research> research
 
 		if(bl) {
 			HolderLookup.RegistryLookup<Research> lookUp = context.sender().registryAccess().lookupOrThrow(Devotion.RESEARCH_KEY);
-			ItemStack stack = ResearchScrollItem.createScroll(lookUp.getOrThrow(researchId), player.getRandom());
+			Holder<Research> research = lookUp.getOrThrow(researchId);
+			ItemStack stack = new ItemStack(DevotionItems.RESEARCH_SCROLL.get());
+			RiddleData riddleData = ResearchScrollItem.generateRiddleData(research, player.getRandom());
+
+			stack.set(DevotionData.RIDDLE_DATA.get(), riddleData);
+			stack.set(DevotionData.RESEARCH.get(), research);
+
 			boolean canInsert = player.getInventory().add(stack);
 			ItemEntity itemEntity;
 

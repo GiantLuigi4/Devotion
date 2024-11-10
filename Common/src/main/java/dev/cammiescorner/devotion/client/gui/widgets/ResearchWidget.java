@@ -110,7 +110,7 @@ public class ResearchWidget extends AbstractButton {
 
 		guiGraphics.blit(TEXTURE, getX(), getY(), u, 0, width, height);
 
-		if(!research.value().getParents(access).stream().allMatch(parent -> playerResearch.containsAll(parent.parentIds())) || research.value().parentIds().isEmpty())
+		if(playerResearch.containsAll(research.value().parentIds()) || playerResearch.contains(research.key().location()) || research.value().parentIds().isEmpty())
 			guiGraphics.renderItem(stack, getX() + 7, getY() + 7);
 		else
 			guiGraphics.blit(TEXTURE, getX() + 7, getY() + 7, 0, 32, 16, 16);
