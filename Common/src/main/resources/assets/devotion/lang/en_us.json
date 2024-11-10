@@ -49,6 +49,7 @@
 	"devotion_riddle.enhancement_6": "This is filler text #7 for an Enhancement riddle.",
 	"devotion_riddle.enhancement_7": "This is filler text #8 for an Enhancement riddle.",
 	"devotion_riddle.enhancement_8": "This is filler text #9 for an Enhancement riddle.",
+	"devotion_riddle.enhancement_9": "This is filler text #10 for an Enhancement riddle.",
 
 	"devotion_riddle.transmutation_0": "This is filler text #1 for a Transmutation riddle.",
 	"devotion_riddle.transmutation_1": "This is filler text #2 for a Transmutation riddle.",
@@ -59,6 +60,7 @@
 	"devotion_riddle.transmutation_6": "This is filler text #7 for a Transmutation riddle.",
 	"devotion_riddle.transmutation_7": "This is filler text #8 for a Transmutation riddle.",
 	"devotion_riddle.transmutation_8": "This is filler text #9 for an Transmutation riddle.",
+	"devotion_riddle.transmutation_9": "This is filler text #10 for an Transmutation riddle.",
 
 	"devotion_riddle.emission_0": "This is filler text #1 for an Emission riddle.",
 	"devotion_riddle.emission_1": "This is filler text #2 for an Emission riddle.",
@@ -69,6 +71,7 @@
 	"devotion_riddle.emission_6": "This is filler text #7 for an Emission riddle.",
 	"devotion_riddle.emission_7": "This is filler text #8 for an Emission riddle.",
 	"devotion_riddle.emission_8": "This is filler text #9 for an Emission riddle.",
+	"devotion_riddle.emission_9": "This is filler text #10 for an Emission riddle.",
 
 	"devotion_riddle.conjuration_0": "This is filler text #1 for a Conjuration riddle.",
 	"devotion_riddle.conjuration_1": "This is filler text #2 for a Conjuration riddle.",
@@ -79,6 +82,7 @@
 	"devotion_riddle.conjuration_6": "This is filler text #7 for a Conjuration riddle.",
 	"devotion_riddle.conjuration_7": "This is filler text #8 for a Conjuration riddle.",
 	"devotion_riddle.conjuration_8": "This is filler text #9 for a Conjuration riddle.",
+	"devotion_riddle.conjuration_9": "This is filler text #10 for a Conjuration riddle.",
 
 	"devotion_riddle.manipulation_0": "This is filler text #1 for a Manipulation riddle.",
 	"devotion_riddle.manipulation_1": "This is filler text #2 for a Manipulation riddle.",
@@ -89,6 +93,7 @@
 	"devotion_riddle.manipulation_6": "This is filler text #7 for a Manipulation riddle.",
 	"devotion_riddle.manipulation_7": "This is filler text #8 for a Manipulation riddle.",
 	"devotion_riddle.manipulation_8": "This is filler text #9 for a Manipulation riddle.",
+	"devotion_riddle.manipulation_9": "This is filler text #10 for a Manipulation riddle.",
 
 	"devotion_riddle.specialization_0": "This is filler text #1 for a Specialization riddle.",
 	"devotion_riddle.specialization_1": "This is filler text #2 for a Specialization riddle.",
@@ -99,6 +104,7 @@
 	"devotion_riddle.specialization_6": "This is filler text #7 for a Specialization riddle.",
 	"devotion_riddle.specialization_7": "This is filler text #8 for a Specialization riddle.",
 	"devotion_riddle.specialization_8": "This is filler text #9 for a Specialization riddle.",
+	"devotion_riddle.specialization_9": "This is filler text #10 for a Specialization riddle.",
 
 	"research_error.devotion.not_enough_aura": "You don't have enough Aura to learn this.",
 	"research_error.devotion.already_known": "You've already learned this research!",

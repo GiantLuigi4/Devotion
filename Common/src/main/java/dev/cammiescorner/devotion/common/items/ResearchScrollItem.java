@@ -108,6 +108,6 @@ public class ResearchScrollItem extends Item {
 			path.add(next.nodes.stream().filter(n -> n != current).findFirst().orElseThrow(() -> new IllegalStateException("invalid graph")));
 		}
 
-		return new RiddleData(path.stream().map(auraTypeNode -> Pair.of(auraTypeNode.obj, random.nextInt(9))).toList());
+		return new RiddleData(path.stream().map(auraTypeNode -> Pair.of(auraTypeNode.obj, random.nextInt(10))).toList());
 	}
 }
