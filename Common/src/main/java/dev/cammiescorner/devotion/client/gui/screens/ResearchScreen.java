@@ -137,6 +137,9 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 		if(!stack.getOrDefault(completedData, false)) {
 			RiddleData riddles = stack.get(riddleData);
 
+			// TODO remove later
+			System.out.println("Client Riddle: " + riddles);
+
 			if(riddles != null && !riddles.riddles().isEmpty() && lineStart == null && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 				if(!lines.isEmpty())
 					lastPos = lines.getLast().getSecond();

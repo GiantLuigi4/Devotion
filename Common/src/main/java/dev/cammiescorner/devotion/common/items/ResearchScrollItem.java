@@ -83,7 +83,7 @@ public class ResearchScrollItem extends Item {
 		List<Graph.Node<AuraType>> path = new ArrayList<>();
 		HashSet<Graph.Edge<AuraType>> visitedEdges = new HashSet<>();
 		Research.Difficulty difficulty = research != null ? research.value().difficulty() : Research.Difficulty.EASY;
-		int maxRiddles = difficulty == Research.Difficulty.EASY ? 4 : difficulty == Research.Difficulty.NORMAL ? 6 : 8;
+		int maxRiddles = difficulty.getRiddleCount();
 
 		// pick random starting node
 		path.add(Devotion.AURA_GRAPH.nodes.get(random.nextInt(Devotion.AURA_GRAPH.nodes.size())));

@@ -56,6 +56,9 @@ public record ServerboundGiveResearchScrollPacket(ResourceKey<Research> research
 			stack.set(DevotionData.RIDDLE_DATA.get(), riddleData);
 			stack.set(DevotionData.RESEARCH.get(), research);
 
+			// TODO remove later
+			System.out.println("Server Riddle: " + riddleData);
+
 			boolean canInsert = player.getInventory().add(stack);
 			ItemEntity itemEntity;
 

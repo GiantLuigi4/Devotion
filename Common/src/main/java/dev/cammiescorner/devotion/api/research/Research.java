@@ -39,18 +39,24 @@ public record Research(ItemStack icon, Research.Difficulty difficulty, boolean i
 	}
 
 	public enum Difficulty implements StringRepresentable {
-		EASY("easy"), NORMAL("normal"), HARD("hard");
+		EASY("easy", 4), NORMAL("normal", 6), HARD("hard", 8);
 
 		public static final Codec<Difficulty> CODEC = StringRepresentable.fromEnum(Difficulty::values);
 		private final String name;
+		private final int riddleCount;
 
-		Difficulty(String name) {
+		Difficulty(String name, int riddleCount) {
 			this.name = name;
+			this.riddleCount = riddleCount;
 		}
 
 		@Override
 		public String getSerializedName() {
 			return name;
+		}
+
+		public int getRiddleCount() {
+			return riddleCount;
 		}
 	}
 }
