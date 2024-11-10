@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public record ServerboundSaveScrollDataPacket(int containerId, List<AuraType> auraTypes) implements CustomPacketPayload {
@@ -32,10 +31,14 @@ public record ServerboundSaveScrollDataPacket(int containerId, List<AuraType> au
 			buffer.writeEnum(auraType);
 
 	}, buffer -> {
+		int containerId = buffer.readVarInt();
 		int listSize = buffer.readVarInt();
-		List<AuraType> auraTypes = new ArrayList<>(Arrays.asList(AuraType.values()).subList(0, listSize));
+		List<AuraType> auraTypes = new ArrayList<>();
 
-		return new ServerboundSaveScrollDataPacket(buffer.readVarInt(), auraTypes);
+		for(int i = 0; i < listSize; i++)
+			auraTypes.add(buffer.readEnum(AuraType.class));
+
+		return new ServerboundSaveScrollDataPacket(containerId, auraTypes);
 	});
 
 	@Override
@@ -61,7 +64,7 @@ public record ServerboundSaveScrollDataPacket(int containerId, List<AuraType> au
 					stack.set(auraTypesData, auraTypes.stream().map(AuraType::ordinal).toList());
 
 					if(riddles != null) {
-						for(int i = 0; i < riddles.riddles().size(); i++) {
+						for(int i = 0; i < auraTypes.size(); i++) {
 							if(riddles.getRiddle(i).getFirst() != auraTypes.get(i))
 								break;
 							else if(riddles.riddles().size() == auraTypes.size() && !stack.getOrDefault(completedData, false)) {

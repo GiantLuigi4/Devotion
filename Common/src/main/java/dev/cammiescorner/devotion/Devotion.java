@@ -26,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +88,7 @@ public class Devotion implements MainEntryPoint {
 		Network.registerPacket(ClientboundRefreshResearchScreenPacket.TYPE, ClientboundRefreshResearchScreenPacket.class, ClientboundRefreshResearchScreenPacket.CODEC, ClientboundRefreshResearchScreenPacket::handle);
 
 		CustomLecternMenuEvent.EVENT.register(event -> {
-			event.register((level, pos, player, blockEntity, stack) -> new ResearchMenuProvider(stack), DevotionItems.RESEARCH_SCROLL.get());
+			event.register((level, pos, player, blockEntity, stack) -> new ResearchMenuProvider(level, stack, pos, blockEntity.bookAccess), DevotionItems.RESEARCH_SCROLL.get());
 		});
 
 		ItemMenuInteractionEvent.EVENT.register((menu, player, level, clickAction, slot, slotStack, cursorStack) -> {

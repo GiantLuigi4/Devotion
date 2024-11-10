@@ -43,14 +43,13 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 	private final double angle = Math.toRadians(72);
 	private final double offset = Math.PI * 0.5;
 	private final int distance = 64;
+	private ItemStack stack = ItemStack.EMPTY;
 	private Vec2 mousePos = new Vec2(0, 0);
 	private Vec2 lastPos = new Vec2(0, 0);
 	private Vec2 lineStart;
-	private ItemStack stack;
 
 	public ResearchScreen(ResearchMenu menu, Inventory playerInventory, Component title) {
 		super(menu, playerInventory, Component.empty());
-		this.stack = menu.getScroll();
 	}
 
 	@Override
@@ -115,7 +114,7 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 				poseStack.translate(0, -textHeight * 0.5, 0);
 
 				for(FormattedCharSequence text : agony) {
-					guiGraphics.drawString(font, text, (int) (-font.width(text) * 0.5f), posY, 0);
+					guiGraphics.drawString(font, text, (int) (-font.width(text) * 0.5f), posY, 0, false);
 					posY += 8;
 				}
 
@@ -135,7 +134,7 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 		DataComponentType<Boolean> completedData = DevotionData.SCROLL_COMPLETED.get();
 		DataComponentType<RiddleData> riddleData = DevotionData.RIDDLE_DATA.get();
 
-		if(stack.getOrDefault(completedData, false)) {
+		if(!stack.getOrDefault(completedData, false)) {
 			RiddleData riddles = stack.get(riddleData);
 
 			if(riddles != null && !riddles.riddles().isEmpty() && lineStart == null && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
@@ -228,6 +227,10 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 	public void onClose() {
 		Network.getNetworkHandler().sendToServer(new ServerboundSaveScrollDataPacket(menu.containerId, auraTypes));
 		super.onClose();
+	}
+
+	public void setScroll(ItemStack stack) {
+		this.stack = stack;
 	}
 
 	private void takeScrollButtonShit(Button buttonWidget) {

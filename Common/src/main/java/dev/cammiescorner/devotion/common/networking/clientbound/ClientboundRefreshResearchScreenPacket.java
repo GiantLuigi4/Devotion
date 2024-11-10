@@ -23,7 +23,7 @@ public record ClientboundRefreshResearchScreenPacket(ItemStack stack) implements
 
 	public static void handle(PacketContext<ClientboundRefreshResearchScreenPacket> context) {
 		if(client.screen instanceof ResearchScreen screen) {
-			screen.getMenu().setScroll(context.message().stack());
+			screen.setScroll(context.message().stack());
 			screen.redrawLines();
 		}
 	}
