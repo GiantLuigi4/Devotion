@@ -14,6 +14,8 @@ import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -42,6 +44,7 @@ public class ResearchScrollItem extends Item {
 				if(research != null && MainHelper.getResearchIds(player).containsAll(research.value().parentIds())) {
 					if(MainHelper.giveResearch(player, research.value(), false)) {
 						stack.consume(1, player);
+						level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS);
 						return InteractionResultHolder.success(stack);
 					}
 					else {
