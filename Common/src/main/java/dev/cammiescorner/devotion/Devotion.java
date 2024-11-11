@@ -18,6 +18,7 @@ import dev.upcraft.sparkweave.api.event.CustomLecternMenuEvent;
 import dev.upcraft.sparkweave.api.event.ItemMenuInteractionEvent;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
+import dev.upcraft.sparkweave.api.registry.RegistrySupplier;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -38,10 +39,10 @@ public class Devotion implements MainEntryPoint {
 	public static final Configurator CONFIGURATOR = new Configurator(MOD_ID);
 
 	public static final ResourceKey<Registry<Research>> RESEARCH_KEY = ResourceKey.createRegistryKey(id("research"));
-	public static final List<Item> HOOD_ITEMS = List.of(
-		DevotionItems.BASIC_MAGE_HOOD.get(), DevotionItems.ENHANCER_MAGE_HOOD.get(), DevotionItems.TRANSMUTER_MAGE_HOOD.get(),
-		DevotionItems.EMITTER_MAGE_HOOD.get(), DevotionItems.CONJURER_MAGE_HOOD.get(), DevotionItems.MANIPULATOR_MAGE_HOOD.get(),
-		DevotionItems.DEATH_CULTIST_HOOD.get()
+	public static final List<RegistrySupplier<Item>> HOOD_ITEMS = List.of(
+		DevotionItems.BASIC_MAGE_HOOD, DevotionItems.ENHANCER_MAGE_HOOD, DevotionItems.TRANSMUTER_MAGE_HOOD,
+		DevotionItems.EMITTER_MAGE_HOOD, DevotionItems.CONJURER_MAGE_HOOD, DevotionItems.MANIPULATOR_MAGE_HOOD,
+		DevotionItems.DEATH_CULTIST_HOOD
 	);
 
 	public static final Graph<AuraType> AURA_GRAPH = Util.make(new Graph<>(), (graph) -> {

@@ -13,7 +13,7 @@ public class NeoMain {
 		Devotion.id("aura"), AuraCapability.class
 	);
 	public static final EntityCapability<KnownResearchCapability, Void> KNOWN_RESEARCH = EntityCapability.createVoid(
-		Devotion.id("aura"), KnownResearchCapability.class
+		Devotion.id("known_research"), KnownResearchCapability.class
 	);
 
 	public NeoMain(IEventBus modBus) {

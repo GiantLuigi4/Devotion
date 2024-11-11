@@ -27,6 +27,7 @@ import dev.upcraft.sparkweave.api.client.event.RegisterLayerDefinitionsEvent;
 import dev.upcraft.sparkweave.api.client.event.RegisterMenuScreensEvent;
 import dev.upcraft.sparkweave.api.entrypoint.ClientEntryPoint;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
+import dev.upcraft.sparkweave.api.registry.RegistrySupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -112,8 +113,8 @@ public class DevotionClient implements ClientEntryPoint {
 		}
 	}
 
-	private static void createItemPropertyForList(List<Item> items, ResourceLocation name, ClampedItemPropertyFunction property) {
-		for(Item item : items)
-			ItemProperties.register(item, name, property);
+	private static void createItemPropertyForList(List<RegistrySupplier<Item>> supplierList, ResourceLocation name, ClampedItemPropertyFunction property) {
+		for(RegistrySupplier<Item> supplier : supplierList)
+			ItemProperties.register(supplier.get(), name, property);
 	}
 }
