@@ -25,7 +25,7 @@ public class ResearchWidget extends AbstractButton {
 	private final RegistryAccess access = client.player.registryAccess();
 	private final Holder.Reference<Research> research;
 	private final OnPress onPress;
-	private float offsetX = 0, offsetY = 0;
+	private float offsetX, offsetY;
 
 	public ResearchWidget(int x, int y, ResourceLocation researchId, OnPress onPress) {
 		super(x, y, 30, 30, Component.empty());
@@ -80,7 +80,7 @@ public class ResearchWidget extends AbstractButton {
 
 			if(visible) {
 				isHovered = mouseX >= getX() + offsetX && mouseY >= getY() + offsetY && mouseX < getX() + offsetX + width && mouseY < getY() + offsetY + height;
-				renderButton(guiGraphics, mouseX, mouseY, playerResearch);
+				renderButton(guiGraphics, playerResearch);
 			}
 		}
 	}
@@ -90,9 +90,8 @@ public class ResearchWidget extends AbstractButton {
 		defaultButtonNarrationText(narrationElementOutput);
 	}
 
-	public void renderButton(GuiGraphics guiGraphics, int mouseX, int mouseY, Set<ResourceLocation> playerResearch) {
+	public void renderButton(GuiGraphics guiGraphics, Set<ResourceLocation> playerResearch) {
 		ItemStack stack = research.value().icon();
-		PoseStack poseStack = guiGraphics.pose();
 		int u;
 
 		if(playerResearch.contains(research.key().location())) {
@@ -114,8 +113,10 @@ public class ResearchWidget extends AbstractButton {
 			guiGraphics.renderItem(stack, getX() + 7, getY() + 7);
 		else
 			guiGraphics.blit(TEXTURE, getX() + 7, getY() + 7, 0, 32, 16, 16);
+	}
 
-		if(isHovered() && active) {
+	public void renderTooltip(GuiGraphics guiGraphics, PoseStack poseStack, int mouseX, int mouseY) {
+		if(isHovered() && active && guiGraphics.containsPointInScissor(mouseX, mouseY)) {
 			poseStack.pushPose();
 			poseStack.translate(-offsetX, -offsetY, 0);
 			guiGraphics.renderTooltip(client.font, Component.translatable(Util.makeDescriptionId("devotion_research", research.key().location())), mouseX, mouseY);
@@ -123,9 +124,9 @@ public class ResearchWidget extends AbstractButton {
 		}
 	}
 
-	public void setOffset(float x, float y) {
-		offsetX = x;
-		offsetY = y;
+	public void setOffset(float offsetX, float offsetY, int leftPos, int topPos) {
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
 	}
 
 	public Holder.Reference<Research> getResearch() {

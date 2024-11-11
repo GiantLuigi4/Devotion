@@ -38,7 +38,6 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 	public static final ResourceLocation TEXTURE = Devotion.id("textures/gui/research/research_scroll.png");
 	private final List<Pair<Vec2, Vec2>> lines = new ArrayList<>();
 	private final List<AuraType> auraTypes = new ArrayList<>();
-	// TODO reminder to assign these positions to each one randomly using Collections#shuffle()
 	private final List<Vec2> postions = Arrays.asList(
 		new Vec2(268, 52),  // top
 		new Vec2(328, 97),  // top right

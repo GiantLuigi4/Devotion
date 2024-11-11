@@ -19,13 +19,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec2;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import static dev.cammiescorner.devotion.DevotionClient.client;
 
 public class ScriptsOfDevotionScreen extends Screen {
 	public static final ResourceLocation TEXTURE = Devotion.id("textures/gui/scripts_of_devotion_frame.png");
@@ -64,7 +61,7 @@ public class ScriptsOfDevotionScreen extends Screen {
 			if(i < 13)
 				addTabChild(new TabWidget(leftPos + 21 + (26 * i), topPos + 2, true, tabId, item, this::clickTab));
 			else
-				addTabChild(new TabWidget(leftPos + 21 + (26 * (i - 13)), topPos + 209, false, tabId, item, this::clickTab));
+				addTabChild(new TabWidget(leftPos + 21 + (26 * (i - 13)), topPos + 100, false, tabId, item, this::clickTab));
 		}
 	}
 
@@ -83,21 +80,19 @@ public class ScriptsOfDevotionScreen extends Screen {
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		PoseStack poseStack = guiGraphics.pose();
-		Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
-		int scale = (int) client.getWindow().getGuiScale();
 
 		drawBackground(guiGraphics);
-		matrixStack.pushMatrix();
-		matrixStack.translate(leftPos, topPos, 0);
-		RenderSystem.applyModelViewMatrix();
-		RenderSystem.enableScissor((leftPos + 16) * scale, (topPos + 16) * scale, 346 * scale, 218 * scale);
+
+		guiGraphics.enableScissor(leftPos + 16, topPos + 16, leftPos + 362, topPos + 234);
+		poseStack.pushPose();
+		poseStack.translate(leftPos, topPos, 0);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 		drawWidgets(guiGraphics, poseStack, mouseX, mouseY, partialTick);
-		RenderSystem.disableScissor();
-		matrixStack.popMatrix();
-		RenderSystem.applyModelViewMatrix();
+		poseStack.popPose();
+		guiGraphics.disableScissor();
 
 		drawForeground(guiGraphics);
+		drawWidgetTooltips(guiGraphics, poseStack, mouseX, mouseY);
 	}
 
 	@Override
@@ -145,14 +140,16 @@ public class ScriptsOfDevotionScreen extends Screen {
 
 	protected void drawWidgets(GuiGraphics guiGraphics, PoseStack poseStack, int mouseX, int mouseY, float delta) {
 		poseStack.pushPose();
-		poseStack.translate(-leftPos + offsetX, -topPos + offsetY, -100);
+		poseStack.translate(-leftPos + offsetX, -topPos + offsetY, -200);
 
 		if(tabId.equals(Devotion.id("artifice"))) {
 			for(ResearchWidget widget : artificeDrawables) {
 				for(ResearchWidget parent : getParents(widget, artificeDrawables))
 					drawLine(poseStack, parent.getX() + 15, parent.getY() + 15, widget.getX() + 15, widget.getY() + 15);
+			}
 
-				widget.setOffset(offsetX, offsetY);
+			for(ResearchWidget widget : artificeDrawables) {
+				widget.setOffset(offsetX, offsetY, leftPos, topPos);
 				widget.render(guiGraphics, mouseX, mouseY, delta);
 			}
 		}
@@ -161,8 +158,10 @@ public class ScriptsOfDevotionScreen extends Screen {
 			for(ResearchWidget widget : spellDrawables) {
 				for(ResearchWidget parent : getParents(widget, spellDrawables))
 					drawLine(poseStack, parent.getX() + offsetX + 15, parent.getY() + offsetY + 15, widget.getX() + offsetX + 15, widget.getY() + offsetY + 15);
+			}
 
-				widget.setOffset(offsetX, offsetY);
+			for(ResearchWidget widget : spellDrawables) {
+				widget.setOffset(offsetX, offsetY, leftPos, topPos);
 				widget.render(guiGraphics, mouseX, mouseY, delta);
 			}
 		}
@@ -171,18 +170,40 @@ public class ScriptsOfDevotionScreen extends Screen {
 			for(ResearchWidget widget : cultDrawables) {
 				for(ResearchWidget parent : getParents(widget, cultDrawables))
 					drawLine(poseStack, parent.getX() + offsetX + 15, parent.getY() + offsetY + 15, widget.getX() + offsetX + 15, widget.getY() + offsetY + 15);
-				
-				widget.setOffset(offsetX, offsetY);
+			}
+
+			for(ResearchWidget widget : cultDrawables) {
+				widget.setOffset(offsetX, offsetY, leftPos, topPos);
 				widget.render(guiGraphics, mouseX, mouseY, delta);
 			}
 		}
 
 		poseStack.popPose();
+
 		poseStack.pushPose();
-		poseStack.translate(-leftPos, -topPos, 100);
+		poseStack.translate(-leftPos, -topPos, 0);
 
 		for(TabWidget widget : tabDrawables)
 			widget.render(guiGraphics, mouseX, mouseY, delta);
+
+		poseStack.popPose();
+	}
+
+	protected void drawWidgetTooltips(GuiGraphics guiGraphics, PoseStack poseStack, int mouseX, int mouseY) {
+		poseStack.pushPose();
+		poseStack.translate(offsetX, offsetY, 0);
+
+		if(tabId.equals(Devotion.id("artifice")))
+			for(ResearchWidget widget : artificeDrawables)
+				widget.renderTooltip(guiGraphics, poseStack, mouseX, mouseY);
+
+		if(tabId.equals(Devotion.id("spells")))
+			for(ResearchWidget widget : spellDrawables)
+				widget.renderTooltip(guiGraphics, poseStack, mouseX, mouseY);
+
+		if(tabId.equals(Devotion.id("cults")))
+			for(ResearchWidget widget : cultDrawables)
+				widget.renderTooltip(guiGraphics, poseStack, mouseX, mouseY);
 
 		poseStack.popPose();
 	}
@@ -264,10 +285,10 @@ public class ScriptsOfDevotionScreen extends Screen {
 
 			Tesselator tesselator = Tesselator.getInstance();
 			BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-			bufferBuilder.addVertex(matrix, c2.x - dx, c2.y - dy, -1).setColor(0);
-			bufferBuilder.addVertex(matrix, c2.x + dx, c2.y + dy, -1).setColor(0);
-			bufferBuilder.addVertex(matrix, c1.x + dx, c1.y + dy, -1).setColor(0);
-			bufferBuilder.addVertex(matrix, c1.x - dx, c1.y - dy, -1).setColor(0);
+			bufferBuilder.addVertex(matrix, c2.x - dx, c2.y - dy, 0).setColor(0);
+			bufferBuilder.addVertex(matrix, c2.x + dx, c2.y + dy, 0).setColor(0);
+			bufferBuilder.addVertex(matrix, c1.x + dx, c1.y + dy, 0).setColor(0);
+			bufferBuilder.addVertex(matrix, c1.x - dx, c1.y - dy, 0).setColor(0);
 			MeshData data = bufferBuilder.build();
 
 			if(data != null)
