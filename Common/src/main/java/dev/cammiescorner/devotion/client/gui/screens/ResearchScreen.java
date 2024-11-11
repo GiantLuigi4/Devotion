@@ -272,14 +272,6 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 		}
 	}
 
-	private int pentagonX(int x, int index) {
-		return x + (int) (Math.cos(angle * index - offset) * distance);
-	}
-
-	private int pentagonY(int y, int index) {
-		return y + (int) (Math.sin(angle * index - offset) * distance);
-	}
-
 	private void drawLine(PoseStack matrices, float x1, float y1, float x2, float y2) {
 		DataComponentType<Boolean> completedData = DevotionData.SCROLL_COMPLETED.get();
 

@@ -35,7 +35,7 @@ public class ScriptsOfDevotionScreen extends Screen {
 	private final List<ResearchWidget> spellDrawables = new ArrayList<>();
 	private final List<ResearchWidget> cultDrawables = new ArrayList<>();
 	public ResourceLocation tabId = Devotion.id("artifice");
-	public int x, y;
+	public int leftPos, topPos;
 	public float offsetX, offsetY;
 
 	public ScriptsOfDevotionScreen() {
@@ -45,12 +45,12 @@ public class ScriptsOfDevotionScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		x = (width - 378) / 2;
-		y = (height - 250) / 2;
+		leftPos = (width - 378) / 2;
+		topPos = (height - 250) / 2;
 		offsetX = DevotionClient.guideBookOffsetX;
 		offsetY = DevotionClient.guideBookOffsetY;
 
-		ScriptsOfDevotionScreenCallback.ADD_RESEARCH.invoker().addWidgets(this, x, y);
+		ScriptsOfDevotionScreenCallback.ADD_RESEARCH.invoker().addWidgets(this, leftPos, topPos);
 		ScriptsOfDevotionScreenCallback.ADD_TAB.invoker().addTabs(tabs);
 
 		// 13 is the max number of tabs along the top
@@ -62,9 +62,9 @@ public class ScriptsOfDevotionScreen extends Screen {
 			Item item = tabs.get(tabId);
 
 			if(i < 13)
-				addTabChild(new TabWidget(x + 21 + (26 * i), y + 2, true, tabId, item, this::clickTab));
+				addTabChild(new TabWidget(leftPos + 21 + (26 * i), topPos + 2, true, tabId, item, this::clickTab));
 			else
-				addTabChild(new TabWidget(x + 21 + (26 * (i - 13)), y + 209, false, tabId, item, this::clickTab));
+				addTabChild(new TabWidget(leftPos + 21 + (26 * (i - 13)), topPos + 209, false, tabId, item, this::clickTab));
 		}
 	}
 
@@ -88,9 +88,9 @@ public class ScriptsOfDevotionScreen extends Screen {
 
 		drawBackground(guiGraphics);
 		matrixStack.pushMatrix();
-		matrixStack.translate(x, y, 0);
+		matrixStack.translate(leftPos, topPos, 0);
 		RenderSystem.applyModelViewMatrix();
-		RenderSystem.enableScissor((x + 16) * scale, (y + 16) * scale, 346 * scale, 218 * scale);
+		RenderSystem.enableScissor((leftPos + 16) * scale, (topPos + 16) * scale, 346 * scale, 218 * scale);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 		drawWidgets(guiGraphics, poseStack, mouseX, mouseY, partialTick);
 		RenderSystem.disableScissor();
@@ -135,24 +135,23 @@ public class ScriptsOfDevotionScreen extends Screen {
 
 	protected void drawBackground(GuiGraphics guiGraphics) {
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		guiGraphics.blit(TEXTURE, x, y, 0, 256, 378, 250, 512, 512);
+		guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 256, 378, 250, 512, 512);
 	}
 
 	protected void drawForeground(GuiGraphics guiGraphics) {
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		guiGraphics.blit(TEXTURE, x, y, 110, 0, 0, 378, 250, 512, 512);
+		guiGraphics.blit(TEXTURE, leftPos, topPos, 110, 0, 0, 378, 250, 512, 512);
 	}
 
 	protected void drawWidgets(GuiGraphics guiGraphics, PoseStack poseStack, int mouseX, int mouseY, float delta) {
 		poseStack.pushPose();
-		poseStack.translate(-x + offsetX, -y + offsetY, 0);
+		poseStack.translate(-leftPos + offsetX, -topPos + offsetY, -100);
 
 		if(tabId.equals(Devotion.id("artifice"))) {
-			for(ResearchWidget widget : artificeDrawables)
+			for(ResearchWidget widget : artificeDrawables) {
 				for(ResearchWidget parent : getParents(widget, artificeDrawables))
 					drawLine(poseStack, parent.getX() + 15, parent.getY() + 15, widget.getX() + 15, widget.getY() + 15);
 
-			for(ResearchWidget widget : artificeDrawables) {
 				widget.setOffset(offsetX, offsetY);
 				widget.render(guiGraphics, mouseX, mouseY, delta);
 			}
@@ -182,7 +181,7 @@ public class ScriptsOfDevotionScreen extends Screen {
 
 		poseStack.popPose();
 		poseStack.pushPose();
-		poseStack.translate(-x, -y, 0);
+		poseStack.translate(-leftPos, -topPos, 100);
 
 		for(TabWidget widget : tabDrawables)
 			widget.render(guiGraphics, mouseX, mouseY, delta);
@@ -210,12 +209,12 @@ public class ScriptsOfDevotionScreen extends Screen {
 		return addWidget(drawable);
 	}
 
-	private void drawLine(PoseStack matrices, float x1, float y1, float x2, float y2) {
+	private void drawLine(PoseStack poseStack, float x1, float y1, float x2, float y2) {
 		RenderSystem.setShader(GameRenderer::getPositionShader);
-		RenderSystem.setShaderColor(0.224F, 0.196F, 0.175F, 1F);
-		Matrix4f matrix = matrices.last().pose();
+		RenderSystem.setShaderColor(0.224f, 0.196f, 0.175f, 1f);
+		Matrix4f matrix = poseStack.last().pose();
 		Vec2 startPos = new Vec2(x1, y1);
-		Vec2 midPos = new Vec2(x1 + (x2 - x1) * 0.5F, y1 + (y2 - y1) * 0.5F);
+		Vec2 midPos = new Vec2(x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f);
 		Vec2 endPos = new Vec2(x2, y2);
 		float angle = (float) (Math.atan2(y2 - y1, x2 - x1) - (Math.PI * 0.5));
 		float prevDelta = 0;
@@ -225,7 +224,7 @@ public class ScriptsOfDevotionScreen extends Screen {
 			segmentCount = 1;
 
 		if(segmentCount > 1) {
-			float offset = Mth.sqrt(startPos.distanceToSqr(endPos)) * 0.25F;
+			float offset = Mth.sqrt(startPos.distanceToSqr(endPos)) * 0.25f;
 			float angleDeg = (float) Math.toDegrees(angle) + 270;
 
 			// top
@@ -267,16 +266,16 @@ public class ScriptsOfDevotionScreen extends Screen {
 
 			Tesselator tesselator = Tesselator.getInstance();
 			BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-			bufferBuilder.addVertex(matrix, c2.x - dx, c2.y - dy, 0).setColor(0);
-			bufferBuilder.addVertex(matrix, c2.x + dx, c2.y + dy, 0).setColor(0);
-			bufferBuilder.addVertex(matrix, c1.x + dx, c1.y + dy, 0).setColor(0);
-			bufferBuilder.addVertex(matrix, c1.x - dx, c1.y - dy, 0).setColor(0);
+			bufferBuilder.addVertex(matrix, c2.x - dx, c2.y - dy, -1).setColor(0);
+			bufferBuilder.addVertex(matrix, c2.x + dx, c2.y + dy, -1).setColor(0);
+			bufferBuilder.addVertex(matrix, c1.x + dx, c1.y + dy, -1).setColor(0);
+			bufferBuilder.addVertex(matrix, c1.x - dx, c1.y - dy, -1).setColor(0);
 			MeshData data = bufferBuilder.build();
 
 			if(data != null)
 				BufferUploader.drawWithShader(data);
 
-			prevDelta = delta - 0.004F;
+			prevDelta = delta - 0.004f;
 		}
 	}
 
