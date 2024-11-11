@@ -29,8 +29,12 @@ public record Research(ItemStack icon, Research.Difficulty difficulty, boolean i
 	).apply(researchInstance, Research::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Research>> STREAM_CODEC = ByteBufCodecs.holderRegistry(Devotion.RESEARCH_KEY);
 
-	public ResourceLocation getId(RegistryAccess provider) {
-		return provider.registry(Devotion.RESEARCH_KEY).orElseThrow().getKey(this);
+	public static Research get(ResourceLocation id, RegistryAccess access) {
+		return access.registry(Devotion.RESEARCH_KEY).orElseThrow().get(id);
+	}
+
+	public ResourceLocation getId(RegistryAccess access) {
+		return access.registry(Devotion.RESEARCH_KEY).orElseThrow().getKey(this);
 	}
 
 	public Set<Research> getParents(HolderLookup.Provider provider) {

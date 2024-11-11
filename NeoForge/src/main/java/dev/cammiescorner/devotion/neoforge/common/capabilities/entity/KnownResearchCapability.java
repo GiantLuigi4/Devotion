@@ -1,13 +1,15 @@
 package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 
 import com.google.common.collect.ImmutableSet;
+import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.research.Research;
+import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundKnownResearchPacket;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.SyncedCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashSet;
@@ -51,9 +53,8 @@ public class KnownResearchCapability implements SyncedCapability {
 			if(!simulate) {
 				researchIds.add(researchId);
 
-				if(player.level() instanceof ServerLevel level) {
-					// TODO sync packet
-				}
+				if(player instanceof ServerPlayer serverPlayer)
+					Network.getNetworkHandler().sendToClient(new ClientboundKnownResearchPacket(researchIds), serverPlayer);
 			}
 
 			return true;
@@ -69,9 +70,8 @@ public class KnownResearchCapability implements SyncedCapability {
 			if(!simulate) {
 				researchIds.remove(researchId);
 
-				if(player.level() instanceof ServerLevel level) {
-					// TODO sync packet
-				}
+				if(player instanceof ServerPlayer serverPlayer)
+					Network.getNetworkHandler().sendToClient(new ClientboundKnownResearchPacket(researchIds), serverPlayer);
 			}
 
 			return true;

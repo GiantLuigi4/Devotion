@@ -11,9 +11,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.LivingEntity;
 
-public record ClientboundDataPacket(int entityId, float aura, int auraColor) implements CustomPacketPayload {
+public record ClientboundAuraPacket(int entityId, float aura, int auraColor) implements CustomPacketPayload {
 	public static final Type<ClientboundAltarStructurePacket> TYPE = new Type<>(Devotion.id("aura"));
-	public static final StreamCodec<? extends FriendlyByteBuf, ClientboundDataPacket> CODEC = StreamCodec.of((buffer, value) -> {
+	public static final StreamCodec<? extends FriendlyByteBuf, ClientboundAuraPacket> CODEC = StreamCodec.of((buffer, value) -> {
 		buffer.writeVarInt(value.entityId);
 		buffer.writeFloat(value.aura);
 		buffer.writeVarInt(value.auraColor);
@@ -22,7 +22,7 @@ public record ClientboundDataPacket(int entityId, float aura, int auraColor) imp
 		float aura = buffer.readFloat();
 		int auraColor = buffer.readVarInt();
 
-		return new ClientboundDataPacket(entityId, aura, auraColor);
+		return new ClientboundAuraPacket(entityId, aura, auraColor);
 	});
 
 	@Override
@@ -30,7 +30,7 @@ public record ClientboundDataPacket(int entityId, float aura, int auraColor) imp
 		return TYPE;
 	}
 
-	public static void handle(PacketContext<ClientboundDataPacket> context) {
+	public static void handle(PacketContext<ClientboundAuraPacket> context) {
 		ClientLevel level = Minecraft.getInstance().level;
 		int entityId = context.message().entityId;
 		float aura = context.message().aura;

@@ -14,7 +14,6 @@ import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import java.util.HashSet;
 import java.util.Set;
 
-// FIXME apparently researchIds is null? it shouldn't be but idk. maybe its the values inside it? but that's also weird
 public class KnownResearchComponent implements AutoSyncedComponent {
 	private final Set<ResourceLocation> researchIds = new HashSet<>();
 	private final Player player;

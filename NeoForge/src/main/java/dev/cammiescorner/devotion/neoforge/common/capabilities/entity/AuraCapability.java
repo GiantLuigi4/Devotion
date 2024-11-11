@@ -2,7 +2,7 @@ package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.common.Color;
-import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundDataPacket;
+import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAuraPacket;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.SyncedCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -45,7 +45,7 @@ public class AuraCapability implements SyncedCapability {
 		aura = Mth.clamp(amount, 0, MAX_AURA);
 
 		if(sync && entity.level() instanceof ServerLevel level)
-			Network.getNetworkHandler().sendToClientsInRange(new ClientboundDataPacket(entity.getId(), aura, auraColor), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
+			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, auraColor), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
 	}
 
 	public Color getAuraColor() {
@@ -60,7 +60,7 @@ public class AuraCapability implements SyncedCapability {
 		auraColor = color.getDecimal();
 
 		if(sync && entity.level() instanceof ServerLevel level)
-			Network.getNetworkHandler().sendToClientsInRange(new ClientboundDataPacket(entity.getId(), aura, auraColor), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
+			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, auraColor), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
 	}
 
 	public float getAuraAlpha() {
