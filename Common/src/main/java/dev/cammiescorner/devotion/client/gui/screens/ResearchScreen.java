@@ -7,6 +7,7 @@ import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.research.RiddleData;
 import dev.cammiescorner.devotion.api.spells.AuraType;
+import dev.cammiescorner.devotion.common.Color;
 import dev.cammiescorner.devotion.common.networking.serverbound.ServerboundSaveScrollDataPacket;
 import dev.cammiescorner.devotion.common.registries.DevotionData;
 import dev.cammiescorner.devotion.common.screens.ResearchMenu;
@@ -26,6 +27,8 @@ import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static dev.cammiescorner.devotion.DevotionClient.client;
@@ -34,12 +37,21 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 	public static final ResourceLocation TEXTURE = Devotion.id("textures/gui/research/research_scroll.png");
 	private final List<Pair<Vec2, Vec2>> lines = new ArrayList<>();
 	private final List<AuraType> auraTypes = new ArrayList<>();
-	private final Vec2 enhancerPos = new Vec2(268, 52);
-	private final Vec2 transmuterPos = new Vec2(328, 97);
-	private final Vec2 conjurerPos = new Vec2(305, 167);
-	private final Vec2 manipulatorPos = new Vec2(231, 167);
-	private final Vec2 emitterPos = new Vec2(208, 97);
-	private final Vec2 specialistPos = new Vec2(268, 116);
+	// TODO reminder to assign these positions to each one randomly using Collections#shuffle()
+	private final List<Vec2> postions = Arrays.asList(
+		new Vec2(268, 52),  // top
+		new Vec2(328, 97),  // top right
+		new Vec2(305, 167), // bottom right
+		new Vec2(231, 167), // bottom left
+		new Vec2(208, 97),  // top left
+		new Vec2(268, 116)  // center
+	);
+	private Vec2 enhancerPos = Vec2.ZERO;
+	private Vec2 transmuterPos = Vec2.ZERO;
+	private Vec2 conjurerPos = Vec2.ZERO;
+	private Vec2 manipulatorPos = Vec2.ZERO;
+	private Vec2 emitterPos = Vec2.ZERO;
+	private Vec2 specialistPos = Vec2.ZERO;
 	private final double angle = Math.toRadians(72);
 	private final double offset = Math.PI * 0.5;
 	private final int distance = 64;
@@ -57,6 +69,14 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 		super.init();
 		leftPos = (width - 384) / 2;
 		topPos = (height - 216) / 2;
+		Collections.shuffle(postions);
+		enhancerPos = postions.get(0);
+		transmuterPos = postions.get(1);
+		conjurerPos = postions.get(2);
+		manipulatorPos = postions.get(3);
+		emitterPos = postions.get(4);
+		specialistPos = postions.get(5);
+
 		addRenderableWidget(Button.builder(Component.translatable("lectern." + Devotion.MOD_ID + ".take_scroll"), this::takeScrollButtonShit).bounds(leftPos + 142, topPos + 200, 100, 20).build());
 		redrawLines();
 	}
@@ -89,10 +109,11 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 
 			if(!list.isEmpty()) {
 				RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-				guiGraphics.blit(TEXTURE, 256, 104, 120, 216, 24, 24, 384, 320);
-
-				for(int i = 0; i < 5; i++)
-					guiGraphics.blit(TEXTURE, pentagonX(256, i), pentagonY(104, i), i * 24, 216, 24, 24, 384, 320);
+				
+				for(int i = 0; i < postions.size(); i++) {
+					Vec2 position = postions.get(i);
+					guiGraphics.blit(TEXTURE, (int) position.x - 12, (int) position.y - 12, i * 24, 216, 24, 24, 384, 320);
+				}
 
 				List<FormattedCharSequence> agony = new ArrayList<>();
 				int posY = 0;
@@ -250,14 +271,10 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 
 	private void drawLine(PoseStack matrices, float x1, float y1, float x2, float y2) {
 		DataComponentType<Boolean> completedData = DevotionData.SCROLL_COMPLETED.get();
-		DataComponentType<Long> completedTimeData = DevotionData.SCROLL_COMPLETED_TIME.get();
-		float colour = 0f;
 
-		if(client.level != null && stack.getOrDefault(completedData, false))
-			colour = 0.25f + (float) Math.sin((client.level.getGameTime() - stack.getOrDefault(completedTimeData, 0).longValue()) * 0.15f) * 0.25f;
-
+		Color color = stack.getOrDefault(completedData, false) ? colorModulation(0.224f, 0.196f, 0.175f) : new Color(0.224f, 0.196f, 0.175f);
 		RenderSystem.setShader(GameRenderer::getPositionShader);
-		RenderSystem.setShaderColor(0.224f + colour, 0.196f + colour, 0.175f + colour, 1f);
+		RenderSystem.setShaderColor(color.getRedF(), color.getGreenF(), color.getBlueF(), 1f);
 		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 		Matrix4f matrix = matrices.last().pose();
 		float angle = (float) (Math.atan2(y2 - y1, x2 - x1) - (Math.PI * 0.5));
@@ -272,6 +289,16 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 
 		if(data != null)
 			BufferUploader.drawWithShader(data);
+	}
+
+	public Color colorModulation(float r, float g, float b) {
+		DataComponentType<Long> completedTimeData = DevotionData.SCROLL_COMPLETED_TIME.get();
+		float colorModifier = 0f;
+
+		if(client.level != null)
+			colorModifier = 0.25f + (float) Math.sin((client.level.getGameTime() - stack.getOrDefault(completedTimeData, 0).longValue()) * 0.15f) * 0.25f;
+
+		return new Color(r + colorModifier, g + colorModifier, b + colorModifier);
 	}
 
 	public void redrawLines() {

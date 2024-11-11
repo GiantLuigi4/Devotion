@@ -14,6 +14,10 @@ public class Color {
 			throw new IllegalArgumentException("All parameters have to be between 0 and 255");
 	}
 
+	public Color(float r, float g, float b) {
+		this((int) (r * 255), (int) (g * 255), (int) (b * 255));
+	}
+
 	public int getDecimal() {
 		return color;
 	}
