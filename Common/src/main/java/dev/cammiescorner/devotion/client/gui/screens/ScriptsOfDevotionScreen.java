@@ -158,22 +158,20 @@ public class ScriptsOfDevotionScreen extends Screen {
 		}
 
 		if(tabId.equals(Devotion.id("spells"))) {
-			for(ResearchWidget widget : spellDrawables)
+			for(ResearchWidget widget : spellDrawables) {
 				for(ResearchWidget parent : getParents(widget, spellDrawables))
 					drawLine(poseStack, parent.getX() + offsetX + 15, parent.getY() + offsetY + 15, widget.getX() + offsetX + 15, widget.getY() + offsetY + 15);
 
-			for(ResearchWidget widget : spellDrawables) {
 				widget.setOffset(offsetX, offsetY);
 				widget.render(guiGraphics, mouseX, mouseY, delta);
 			}
 		}
 
 		if(tabId.equals(Devotion.id("cults"))) {
-			for(ResearchWidget widget : cultDrawables)
+			for(ResearchWidget widget : cultDrawables) {
 				for(ResearchWidget parent : getParents(widget, cultDrawables))
 					drawLine(poseStack, parent.getX() + offsetX + 15, parent.getY() + offsetY + 15, widget.getX() + offsetX + 15, widget.getY() + offsetY + 15);
-
-			for(ResearchWidget widget : cultDrawables) {
+				
 				widget.setOffset(offsetX, offsetY);
 				widget.render(guiGraphics, mouseX, mouseY, delta);
 			}
