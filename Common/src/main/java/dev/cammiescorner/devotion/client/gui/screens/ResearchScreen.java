@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -90,6 +91,12 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		PoseStack poseStack = guiGraphics.pose();
+		Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+		int guiScale = (int) client.getWindow().getGuiScale();
+
+		matrixStack.pushMatrix();
+		RenderSystem.applyModelViewMatrix();
+		RenderSystem.enableScissor((leftPos + 194) * guiScale, (topPos + 35) * guiScale, 148 * guiScale, 144 * guiScale);
 
 		if(lineStart != null)
 			drawLine(poseStack, lineStart.x, lineStart.y, mousePos.x, mousePos.y);
@@ -102,6 +109,10 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 			}
 		}
 
+		RenderSystem.disableScissor();
+		matrixStack.popMatrix();
+		RenderSystem.applyModelViewMatrix();
+
 		DataComponentType<RiddleData> riddleData = DevotionData.RIDDLE_DATA.get();
 
 		if(stack.get(riddleData) instanceof RiddleData riddles) {
@@ -109,7 +120,7 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 
 			if(!list.isEmpty()) {
 				RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-				
+
 				for(int i = 0; i < postions.size(); i++) {
 					Vec2 position = postions.get(i);
 					guiGraphics.blit(TEXTURE, (int) position.x - 12, (int) position.y - 12, i * 24, 216, 24, 24, 384, 320);
