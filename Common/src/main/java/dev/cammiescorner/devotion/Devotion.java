@@ -14,11 +14,10 @@ import dev.cammiescorner.devotion.common.networking.serverbound.ServerboundOpenC
 import dev.cammiescorner.devotion.common.registries.*;
 import dev.cammiescorner.devotion.common.screens.providers.ResearchMenuProvider;
 import dev.upcraft.sparkweave.api.entrypoint.MainEntryPoint;
-import dev.upcraft.sparkweave.api.event.CustomLecternMenuEvent;
 import dev.upcraft.sparkweave.api.event.ItemMenuInteractionEvent;
+import dev.upcraft.sparkweave.api.event.RegisterCustomLecternMenuEvent;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
-import dev.upcraft.sparkweave.api.registry.RegistrySupplier;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -32,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class Devotion implements MainEntryPoint {
 	public static final String MOD_ID = "devotion";
@@ -39,7 +39,7 @@ public class Devotion implements MainEntryPoint {
 	public static final Configurator CONFIGURATOR = new Configurator(MOD_ID);
 
 	public static final ResourceKey<Registry<Research>> RESEARCH_KEY = ResourceKey.createRegistryKey(id("research"));
-	public static final List<RegistrySupplier<Item>> HOOD_ITEMS = List.of(
+	public static final List<Supplier<Item>> HOOD_ITEMS = List.of(
 		DevotionItems.BASIC_MAGE_HOOD, DevotionItems.ENHANCER_MAGE_HOOD, DevotionItems.TRANSMUTER_MAGE_HOOD,
 		DevotionItems.EMITTER_MAGE_HOOD, DevotionItems.CONJURER_MAGE_HOOD, DevotionItems.MANIPULATOR_MAGE_HOOD,
 		DevotionItems.DEATH_CULTIST_HOOD
@@ -90,8 +90,8 @@ public class Devotion implements MainEntryPoint {
 		Network.registerPacket(ClientboundRefreshResearchScreenPacket.TYPE, ClientboundRefreshResearchScreenPacket.class, ClientboundRefreshResearchScreenPacket.CODEC, ClientboundRefreshResearchScreenPacket::handle);
 
 
-		CustomLecternMenuEvent.EVENT.register(event -> {
-			event.register((level, pos, player, blockEntity, stack) -> new ResearchMenuProvider(level, stack, pos, blockEntity.bookAccess), DevotionItems.RESEARCH_SCROLL.get());
+		RegisterCustomLecternMenuEvent.EVENT.register(event -> {
+			event.register((level, pos, player, blockEntity, stack) -> new ResearchMenuProvider(level, stack, pos, blockEntity.bookAccess), DevotionItems.RESEARCH_SCROLL);
 		});
 
 		ItemMenuInteractionEvent.EVENT.register((menu, player, level, clickAction, slot, slotStack, cursorStack) -> {

@@ -27,7 +27,6 @@ import dev.upcraft.sparkweave.api.client.event.RegisterLayerDefinitionsEvent;
 import dev.upcraft.sparkweave.api.client.event.RegisterMenuScreensEvent;
 import dev.upcraft.sparkweave.api.entrypoint.ClientEntryPoint;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
-import dev.upcraft.sparkweave.api.registry.RegistrySupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -37,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class DevotionClient implements ClientEntryPoint {
 	private static final ResourceLocation BASIC_MAGE_ROBES = Devotion.id("textures/entity/armor/basic_mage_robes.png");
@@ -113,8 +113,8 @@ public class DevotionClient implements ClientEntryPoint {
 		}
 	}
 
-	private static void createItemPropertyForList(List<RegistrySupplier<Item>> supplierList, ResourceLocation name, ClampedItemPropertyFunction property) {
-		for(RegistrySupplier<Item> supplier : supplierList)
+	private static void createItemPropertyForList(List<Supplier<Item>> supplierList, ResourceLocation name, ClampedItemPropertyFunction property) {
+		for(Supplier<Item> supplier : supplierList)
 			ItemProperties.register(supplier.get(), name, property);
 	}
 }

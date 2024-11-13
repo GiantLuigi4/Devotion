@@ -30,7 +30,6 @@ public class AltarFocusBlock extends BaseEntityBlock implements BlockItemProvide
 
 	@Override
 	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> altar) {
-		// TODO register AltarBlockEntity type
 		return level.isClientSide() ? null : createTickerHelper(altar, DevotionBlocks.ALTAR_ENTITY.get(), AltarFocusBlockEntity::tick);
 	}
 }
