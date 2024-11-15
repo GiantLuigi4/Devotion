@@ -39,6 +39,8 @@ public class MainHelper {
 		int offsetX = (int) Math.floor(structureTemplate.getSize().getX() / 2d);
 		int offsetZ = (int) Math.floor(structureTemplate.getSize().getZ() / 2d);
 
+		// TODO replace offset with pos of altar block
+
 		for(StructureTemplate.StructureBlockInfo info : infoList)
 			if(MainHelper.isValidAltarBlock(info.state()))
 				map.put(info.pos().subtract(pos), info.state());

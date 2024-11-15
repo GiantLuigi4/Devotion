@@ -1,6 +1,7 @@
 package dev.cammiescorner.devotion.common.blocks.entities;
 
 import dev.cammiescorner.devotion.Devotion;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.MainHelper;
 import dev.cammiescorner.devotion.common.StructureMapData;
 import dev.cammiescorner.devotion.common.recipes.DevotionAltarRecipe;
@@ -9,7 +10,6 @@ import dev.upcraft.sparkweave.api.registry.RegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -28,9 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -43,18 +41,16 @@ import java.util.Map;
 import java.util.Optional;
 
 public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, Container {
-	public static final List<BlockPos> AMETHYST_POS_LIST = List.of(
-		new BlockPos(0, 1, -3), new BlockPos(3, 1, -3), new BlockPos(3, 1, 0), new BlockPos(3, 1, 3),
-		new BlockPos(0, 1, 3), new BlockPos(-3, 1, 3), new BlockPos(-3, 1, 0), new BlockPos(-3, 1, -3)
-	);
+	private static final int MAX_CRAFTING_TIME = 120;
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
+	private final Map<AuraType, Integer> auraCosts = new HashMap<>(5);
 	private boolean crafting, completed, hideSchematic;
-	private int power, craftingTime, amethystIndex;
+	private int craftingTime;
 	private DevotionAltarRecipe recipe;
 	private ResourceLocation recipeId;
 
 	public AltarFocusBlockEntity(BlockPos pos, BlockState blockState) {
-		super(DevotionBlocks.ALTAR_ENTITY.get(), pos, blockState);
+		super(DevotionBlocks.ALTAR_FOCUS_ENTITY.get(), pos, blockState);
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, AltarFocusBlockEntity altar) {
@@ -87,54 +83,36 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 					itemEntity.discard();
 			}
 
-			if(altar.isCrafting()) {
-				if(altar.power < altar.getRequiredPower()) {
-					BlockPos amethystPos = AMETHYST_POS_LIST.get(altar.getAmethystIndex()).offset(altar.getBlockPos());
-					BlockState amethystState = level.getBlockState(amethystPos);
+			if(altar.isCrafting() && !level.isClientSide()) {
+				AuraType nextAuraType = AuraType.ENHANCER;
 
-					if(!(amethystState.getBlock() instanceof AmethystClusterBlock)) {
-						altar.amethystIndex++;
-						return;
-					}
-
-					if(level.getGameTime() % altar.eatAmethystSpeed() == 0) {
-						if(!level.isClientSide()) {
-							level.destroyBlock(amethystPos, false);
-
-							switch(BuiltInRegistries.BLOCK.getKey(amethystState.getBlock()).toString()) {
-								case "minecraft:amethyst_cluster" ->
-									level.setBlockAndUpdate(amethystPos, Blocks.LARGE_AMETHYST_BUD.defaultBlockState());
-								case "minecraft:large_amethyst_bud" ->
-									level.setBlockAndUpdate(amethystPos, Blocks.MEDIUM_AMETHYST_BUD.defaultBlockState());
-								case "minecraft:medium_amethyst_bud" ->
-									level.setBlockAndUpdate(amethystPos, Blocks.SMALL_AMETHYST_BUD.defaultBlockState());
-								case "minecraft:small_amethyst_bud" ->
-									level.setBlockAndUpdate(amethystPos, Blocks.AIR.defaultBlockState());
-								default -> {
-								}
-							}
+				while(nextAuraType.ordinal() < AuraType.SPECIALIST.ordinal()) {
+					if(altar.getRequiredPower(nextAuraType) < altar.recipe.getAuraCost(nextAuraType)) {
+						for(BlockPos blockPos : BlockPos.betweenClosed(altar.getBlockPos().offset(-4, 0, -4), altar.getBlockPos().offset(4, 0, 4))) {
+							// TODO create & find pillar block entity
 						}
 
-						altar.power++;
-						altar.amethystIndex++;
+						altar.addPower(nextAuraType);
+					}
+					else {
+						nextAuraType = AuraType.values()[nextAuraType.ordinal() + 1];
 					}
 				}
-				else {
-					if(altar.getCraftingTime() >= 120) {
-						if(level instanceof ServerLevel serverLevel) {
-							ServerPlayer player = serverLevel.getNearestEntity(ServerPlayer.class, TargetingConditions.forNonCombat(), null, altar.getBlockPos().getX() + 0.5, altar.getBlockPos().getY() + 0.5, altar.getBlockPos().getZ() + 0.5, box);
 
-							if(player != null || !altar.recipe.requiresPlayer()) {
-								altar.recipe.assemble(serverLevel, player, altar);
-								altar.setCrafting(false);
-							}
+				if(altar.getCraftingTime() >= MAX_CRAFTING_TIME) {
+					if(level instanceof ServerLevel serverLevel) {
+						ServerPlayer player = serverLevel.getNearestEntity(ServerPlayer.class, TargetingConditions.forNonCombat(), null, altar.getBlockPos().getX() + 0.5, altar.getBlockPos().getY() + 0.5, altar.getBlockPos().getZ() + 0.5, box);
+
+						if(player != null || !altar.recipe.requiresPlayer()) {
+							altar.recipe.assemble(serverLevel, player, altar);
+							altar.setCrafting(false);
 						}
 					}
 				}
 			}
 		}
 
-		if(altar.isCompleted() && altar.isCrafting() && altar.power >= altar.getRequiredPower())
+		if(altar.isCompleted() && altar.isCrafting())
 			altar.craftingTime++;
 	}
 
@@ -145,9 +123,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 		completed = tag.getBoolean("Completed");
 		crafting = tag.getBoolean("Active");
 		hideSchematic = tag.getBoolean("HideSchematic");
-		power = tag.getInt("Power");
 		craftingTime = tag.getInt("CraftingTime");
-		amethystIndex = tag.getInt("AmethystIndex");
 
 		if(tag.contains("RecipeId", Tag.TAG_STRING)) {
 			recipeId = ResourceLocation.parse(tag.getString("RecipeId"));
@@ -166,9 +142,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 		tag.putBoolean("Completed", completed);
 		tag.putBoolean("Active", crafting);
 		tag.putBoolean("HideSchematic", hideSchematic);
-		tag.putInt("Power", power);
 		tag.putInt("CraftingTime", craftingTime);
-		tag.putInt("AmethystIndex", amethystIndex);
 
 		ResourceLocation id = RegistryHelper.getBuiltinRegistry(Registries.RECIPE).getKey(recipe);
 
@@ -247,7 +221,6 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 		if(level != null && !level.isClientSide()) {
 			if(isCrafting() && !recipe.matches(this, level)) {
 				craftingTime = 0;
-				power = 0;
 				crafting = false;
 				recipe = null;
 			}
@@ -275,7 +248,6 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 
 		if(!crafting) {
 			craftingTime = 0;
-			power = 0;
 			recipe = null;
 		}
 
@@ -317,26 +289,15 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 		}
 	}
 
-	public int getPower() {
-		return power;
+	public int getRequiredPower(AuraType auraType) {
+		return recipe != null ? recipe.getAuraCosts().get(auraType) : 0;
 	}
 
-	public int getAmethystIndex() {
-		if(amethystIndex > 7)
-			amethystIndex = 0;
-
-		return amethystIndex;
-	}
-
-	public int getRequiredPower() {
-		return recipe != null ? recipe.getPower() : 0;
-	}
-
-	public int eatAmethystSpeed() {
-		return recipe != null ? Math.min(10, 160 / recipe.getPower()) : 30;
+	public void addPower(AuraType auraType) {
+		auraCosts.compute(auraType, (key, value) -> value + 1);
 	}
 
 	public int getCraftingTime() {
-		return Math.min(craftingTime, 120);
+		return Math.min(craftingTime, MAX_CRAFTING_TIME);
 	}
 }

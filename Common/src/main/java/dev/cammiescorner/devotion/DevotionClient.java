@@ -83,7 +83,7 @@ public class DevotionClient implements ClientEntryPoint {
 
 		ScriptsOfDevotionScreenCallback.ADD_TAB.register(tabMap -> {
 			tabMap.put(Devotion.id("artifice"), DevotionItems.BASIC_MAGE_HOOD.get());
-			tabMap.put(Devotion.id("spells"), DevotionBlocks.ALTAR_BLOCK.get().asItem());
+			tabMap.put(Devotion.id("spells"), DevotionBlocks.ALTAR_FOCUS_BLOCK.get().asItem());
 			tabMap.put(Devotion.id("cults"), DevotionItems.DEATH_CULTIST_HOOD.get());
 		});
 

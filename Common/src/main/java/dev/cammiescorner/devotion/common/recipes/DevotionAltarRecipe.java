@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.cammiescorner.devotion.api.actions.ConfiguredAltarAction;
 import dev.cammiescorner.devotion.api.research.Research;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.blocks.entities.AltarFocusBlockEntity;
 import dev.cammiescorner.devotion.common.registries.DevotionRecipes;
 import net.minecraft.core.Holder;
@@ -23,20 +24,22 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 	private final String group;
 	private final List<Ingredient> input;
-	private final int power;
+	private final Map<AuraType, Integer> auraCosts = new HashMap<>();
 	private final boolean requiresPlayer;
 	private final Holder<ConfiguredAltarAction> result;
 	private final List<Holder<Research>> requiredResearch;
 
-	public DevotionAltarRecipe(String group, List<Ingredient> input, int power, boolean requiresPlayer, Holder<ConfiguredAltarAction> result, List<Holder<Research>> requiredResearch) {
+	public DevotionAltarRecipe(String group, List<Ingredient> input, Map<AuraType, Integer> auraCosts, boolean requiresPlayer, Holder<ConfiguredAltarAction> result, List<Holder<Research>> requiredResearch) {
 		this.group = group;
 		this.input = input;
-		this.power = power;
+		this.auraCosts.putAll(auraCosts);
 		this.requiresPlayer = requiresPlayer;
 		this.result = result;
 		this.requiredResearch = requiredResearch;
@@ -96,8 +99,12 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 		altar.clearContent();
 	}
 
-	public int getPower() {
-		return power;
+	public Map<AuraType, Integer> getAuraCosts() {
+		return Map.copyOf(auraCosts);
+	}
+
+	public int getAuraCost(AuraType auraType) {
+		return auraCosts.get(auraType);
 	}
 
 	public boolean requiresPlayer() {
@@ -117,7 +124,12 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 			recipe.group(
 				Codec.STRING.optionalFieldOf("group", "").forGetter(DevotionAltarRecipe::getGroup),
 				Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(Recipe::getIngredients),
-				Codec.INT.fieldOf("power").forGetter(DevotionAltarRecipe::getPower),
+				Codec.unboundedMap(AuraType.CODEC.xmap(auraType -> {
+					if(auraType.ordinal() >= AuraType.SPECIALIST.ordinal())
+						throw new IllegalArgumentException(auraType.getName() + " is not a valid aura type for recipes");
+
+					return auraType;
+				}, auraType -> auraType), Codec.INT).optionalFieldOf("aura_costs", Map.of()).forGetter(DevotionAltarRecipe::getAuraCosts),
 				Codec.BOOL.optionalFieldOf("requires_player", false).forGetter(DevotionAltarRecipe::requiresPlayer),
 				ConfiguredAltarAction.CODEC.fieldOf("result").forGetter(DevotionAltarRecipe::getResult),
 				Research.CODEC.listOf().optionalFieldOf("prerequisites", List.of()).forGetter(DevotionAltarRecipe::getRequiredResearch)
@@ -132,7 +144,13 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 				for(Ingredient ingredient : recipe.getIngredients())
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
 
-				buffer.writeVarInt(recipe.getPower());
+				buffer.writeVarInt(recipe.getAuraCosts().size());
+
+				for(AuraType auraType : recipe.getAuraCosts().keySet()) {
+					buffer.writeEnum(auraType);
+					buffer.writeVarInt(recipe.getAuraCosts().get(auraType));
+				}
+
 				buffer.writeBoolean(recipe.requiresPlayer());
 				ConfiguredAltarAction.HOLDER_STREAM_CODEC.encode(buffer, recipe.getResult());
 				buffer.writeVarInt(recipe.getRequiredResearch().size());
@@ -143,13 +161,18 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 			buffer -> {
 				List<Ingredient> ingredients = new ArrayList<>();
 				List<Holder<Research>> requiredResearch = new ArrayList<>();
+				Map<AuraType, Integer> auraCosts = new HashMap<>();
 				String group = buffer.readUtf();
 				int ingredientsSize = buffer.readVarInt();
 
 				for(int i = 0; i < ingredientsSize; i++)
 					ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
 
-				int power = buffer.readVarInt();
+				int mapSize = buffer.readVarInt();
+
+				for(int i = 0; i < mapSize; i++)
+					auraCosts.put(buffer.readEnum(AuraType.class), buffer.readVarInt());
+
 				boolean requiresPlayer = buffer.readBoolean();
 				Holder<ConfiguredAltarAction> action = ConfiguredAltarAction.HOLDER_STREAM_CODEC.decode(buffer);
 				int researchSize = buffer.readVarInt();
@@ -157,7 +180,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 				for(int i = 0; i < researchSize; i++)
 					requiredResearch.add(Research.STREAM_CODEC.decode(buffer));
 
-				return new DevotionAltarRecipe(group, ingredients, power, requiresPlayer, action, requiredResearch);
+				return new DevotionAltarRecipe(group, ingredients, auraCosts, requiresPlayer, action, requiredResearch);
 			}
 		);
 
