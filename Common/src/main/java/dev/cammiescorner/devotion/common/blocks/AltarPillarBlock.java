@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import dev.cammiescorner.devotion.common.blocks.entities.AltarPillarBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +22,17 @@ public class AltarPillarBlock extends BaseEntityBlock {
 	public AltarPillarBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(getStateDefinition().any().setValue(LAYER, 0));
+	}
+
+	@Override
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		if(state != newState && level.getBlockEntity(pos) instanceof AltarPillarBlockEntity pillar) {
+			for(BlockState storedBlock : pillar.getStoredBlocks()) {
+				Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), storedBlock.getBlock().getCloneItemStack(level, pos, storedBlock));
+			}
+		}
+
+		super.onRemove(state, level, pos, newState, movedByPiston);
 	}
 
 	@Override

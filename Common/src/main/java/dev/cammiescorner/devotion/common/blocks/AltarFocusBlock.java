@@ -7,6 +7,7 @@ import dev.cammiescorner.devotion.common.registries.DevotionBlockStateProperties
 import dev.cammiescorner.devotion.common.registries.DevotionBlocks;
 import dev.upcraft.sparkweave.api.registry.block.BlockItemProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Containers;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -26,6 +27,12 @@ public class AltarFocusBlock extends BaseEntityBlock implements BlockItemProvide
 	public AltarFocusBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(getStateDefinition().any().setValue(ROTATION, Rotation.NONE));
+	}
+
+	@Override
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		Containers.dropContentsOnDestroy(state, newState, level, pos);
+		super.onRemove(state, level, pos, newState, movedByPiston);
 	}
 
 	@Override

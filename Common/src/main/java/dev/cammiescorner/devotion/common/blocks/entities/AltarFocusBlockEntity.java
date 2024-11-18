@@ -74,10 +74,12 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 						BlockPos.MutableBlockPos pillarPos = new BlockPos.MutableBlockPos();
 
 						for(BlockPos basePos : posList) {
+							List<BlockState> storedStates = new ArrayList<>();
 							pillarPos.set(basePos);
 
 							for(int i = 0; i < 3; i++) {
 								pillarPos.setY(basePos.getY() + i);
+								storedStates.add(level.getBlockState(pillarPos));
 								level.destroyBlock(pillarPos, false);
 							}
 
@@ -86,7 +88,10 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 								level.setBlockAndUpdate(pillarPos, defaultPillarState.setValue(AltarPillarBlock.LAYER, i));
 							}
 
-							level.getBlockEntity(basePos, DevotionBlocks.ALTAR_PILLAR_ENTITY.get()).ifPresent(pillarEntity -> pillarEntity.setAltarFocusPos(pos));
+							level.getBlockEntity(basePos, DevotionBlocks.ALTAR_PILLAR_ENTITY.get()).ifPresent(pillarEntity -> {
+								pillarEntity.setStoredBlocks(storedStates);
+								pillarEntity.setAltarFocusPos(pos);
+							});
 
 							altar.inWorldPillarPositions.add(basePos);
 						}

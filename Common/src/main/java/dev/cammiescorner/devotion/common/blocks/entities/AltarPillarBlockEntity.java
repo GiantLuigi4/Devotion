@@ -4,7 +4,11 @@ import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.registries.DevotionBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -13,8 +17,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class AltarPillarBlockEntity extends BlockEntity {
 	private static final float MAX_AURA = 1000f;
+	private final List<BlockState> storedBlocks = new ArrayList<>();
 	private BlockPos altarFocusPos = BlockPos.ZERO;
 	private AuraType containedAuraType = AuraType.NONE;
 	private float storedAura = 0f;
@@ -25,7 +34,14 @@ public class AltarPillarBlockEntity extends BlockEntity {
 
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		altarFocusPos = new BlockPos(tag.getInt("AltarPosX"), tag.getInt("AltarPosY"), tag.getInt("AltarPosZ"));
+		storedBlocks.clear();
+
+		ListTag listTag = tag.getList("StoredBlocks", Tag.TAG_COMPOUND);
+
+		for(int i = 0; i < listTag.size(); i++)
+			storedBlocks.add(NbtUtils.readBlockState(registries.lookupOrThrow(Registries.BLOCK), listTag.getCompound(i)));
+
+		NbtUtils.readBlockPos(tag, "AltarFocusPos").ifPresent(pos -> altarFocusPos = pos);
 		containedAuraType = AuraType.valueOf(tag.getString("ContainedAuraType"));
 		storedAura = tag.getFloat("StoredAura");
 		super.loadAdditional(tag, registries);
@@ -33,9 +49,13 @@ public class AltarPillarBlockEntity extends BlockEntity {
 
 	@Override
 	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		tag.putInt("AltarPosX", altarFocusPos.getX());
-		tag.putInt("AltarPosY", altarFocusPos.getY());
-		tag.putInt("AltarPosZ", altarFocusPos.getZ());
+		ListTag listTag = new ListTag();
+
+		for(BlockState state : storedBlocks)
+			listTag.add(NbtUtils.writeBlockState(state));
+
+		tag.put("StoredBlocks", listTag);
+		tag.put("AltarFocusPos", NbtUtils.writeBlockPos(altarFocusPos));
 		tag.putString("ContainedAuraType", containedAuraType.name());
 		tag.putFloat("StoredAura", storedAura);
 		super.saveAdditional(tag, registries);
@@ -59,6 +79,16 @@ public class AltarPillarBlockEntity extends BlockEntity {
 			setChanged();
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
 		}
+	}
+
+	public List<BlockState> getStoredBlocks() {
+		return Collections.unmodifiableList(storedBlocks);
+	}
+
+	public void setStoredBlocks(List<BlockState> states) {
+		storedBlocks.clear();
+		storedBlocks.addAll(states);
+		setChanged();
 	}
 
 	public BlockPos getAltarFocusPos() {
