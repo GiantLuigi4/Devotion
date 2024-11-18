@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
+// TODO redo aura component to have multiple types of aura
 public class AuraComponent implements AutoSyncedComponent {
 	public static final float MAX_AURA = 100;
 	private final LivingEntity entity;

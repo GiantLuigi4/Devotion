@@ -2,10 +2,10 @@ package dev.cammiescorner.devotion.common.blocks.entities;
 
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.spells.AuraType;
-import dev.cammiescorner.devotion.common.MainHelper;
-import dev.cammiescorner.devotion.common.StructureMapData;
+import dev.cammiescorner.devotion.common.blocks.AltarFocusBlock;
 import dev.cammiescorner.devotion.common.recipes.DevotionAltarRecipe;
 import dev.cammiescorner.devotion.common.registries.DevotionBlocks;
+import dev.cammiescorner.devotion.common.registries.DevotionTags;
 import dev.upcraft.sparkweave.api.registry.RegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -29,22 +29,29 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, Container {
 	private static final int MAX_CRAFTING_TIME = 120;
+	private static final List<BlockPos> RELATIVE_PILLAR_POSITIONS = List.of(
+		new BlockPos(0, 0, -4),
+		new BlockPos(4, 0, -1),
+		new BlockPos(-4, 0, -1),
+		new BlockPos(2, 0, 3),
+		new BlockPos(-2, 0, 3)
+	);
+	private final Set<BlockPos> pillarPositions = new HashSet<>();
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
-	private final Map<AuraType, Integer> auraCosts = new HashMap<>(5);
-	private boolean crafting, completed, hideSchematic;
+	private final Map<AuraType, Float> auraCosts = new HashMap<>();
+	private boolean crafting;
 	private int craftingTime;
 	private DevotionAltarRecipe recipe;
 	private ResourceLocation recipeId;
@@ -54,75 +61,98 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, AltarFocusBlockEntity altar) {
-		if(!level.isClientSide() && altar.isCompleted()) {
-			if(altar.recipeId != null) {
-				Optional<RecipeHolder<?>> optional = level.getRecipeManager().byKey(altar.recipeId);
+		if(!altar.completed()) {
+			if(!level.isClientSide()) {
+				List<BlockPos> posList = RELATIVE_PILLAR_POSITIONS.stream().map(blockPos -> StructureTemplate.transform(blockPos.offset(pos), Mirror.NONE, state.getValue(AltarFocusBlock.ROTATION), pos)).toList();
 
-				if(optional.isPresent() && optional.get().value() instanceof DevotionAltarRecipe altarRecipe)
-					altar.recipe = altarRecipe;
-				else
-					Devotion.LOGGER.error("Invalid Recipe ID: {}", altar.recipeId);
+				if(posList.stream().allMatch(altar::isPillar)) {
+					for(BlockPos pillarPos : posList) {
+						if(!level.getBlockState(pillarPos).is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get())) {
+							level.destroyBlock(pillarPos, false);
+							level.destroyBlock(pillarPos.above(), false);
+							level.destroyBlock(pillarPos.above(2), false);
 
-				altar.recipeId = null;
-			}
-
-			if(level.getGameTime() % 20 == 0)
-				altar.checkMultiblock();
-
-			int filledSlots = altar.filledSlots();
-			AABB box = state.getCollisionShape(level, pos).bounds().expandTowards(2, 0.4, 2).expandTowards(-3, 0, -3).move(altar.getBlockPos());
-			List<ItemEntity> list = level.getEntities(EntityTypeTest.forClass(ItemEntity.class), box, itemEntity -> filledSlots < altar.size());
-
-			if(!list.isEmpty()) {
-				ItemEntity itemEntity = list.getFirst();
-				ItemStack stack = itemEntity.getItem();
-
-				altar.setItem(filledSlots, stack.split(1));
-
-				if(stack.getCount() <= 0)
-					itemEntity.discard();
-			}
-
-			if(altar.isCrafting() && !level.isClientSide()) {
-				AuraType nextAuraType = AuraType.ENHANCER;
-
-				while(nextAuraType.ordinal() < AuraType.SPECIALIST.ordinal()) {
-					if(altar.getRequiredPower(nextAuraType) < altar.recipe.getAuraCost(nextAuraType)) {
-						for(BlockPos blockPos : BlockPos.betweenClosed(altar.getBlockPos().offset(-4, 0, -4), altar.getBlockPos().offset(4, 0, 4))) {
-							// TODO create & find pillar block entity
+							level.setBlockAndUpdate(pillarPos, DevotionBlocks.ALTAR_PILLAR_BLOCK.get().defaultBlockState());
+							level.getBlockEntity(pillarPos, DevotionBlocks.ALTAR_PILLAR_ENTITY.get()).ifPresent(pillarEntity -> pillarEntity.setAltarFocusPos(pos));
 						}
 
-						altar.addPower(nextAuraType);
-					}
-					else {
-						nextAuraType = AuraType.values()[nextAuraType.ordinal() + 1];
-					}
-				}
-
-				if(altar.getCraftingTime() >= MAX_CRAFTING_TIME) {
-					if(level instanceof ServerLevel serverLevel) {
-						ServerPlayer player = serverLevel.getNearestEntity(ServerPlayer.class, TargetingConditions.forNonCombat(), null, altar.getBlockPos().getX() + 0.5, altar.getBlockPos().getY() + 0.5, altar.getBlockPos().getZ() + 0.5, box);
-
-						if(player != null || !altar.recipe.requiresPlayer()) {
-							altar.recipe.assemble(serverLevel, player, altar);
-							altar.setCrafting(false);
-						}
+						altar.pillarPositions.add(pillarPos);
 					}
 				}
 			}
 		}
+		else {
+			if(!level.isClientSide()) {
+				if(altar.recipeId != null) {
+					Optional<RecipeHolder<?>> optional = level.getRecipeManager().byKey(altar.recipeId);
 
-		if(altar.isCompleted() && altar.isCrafting())
-			altar.craftingTime++;
+					if(optional.isPresent() && optional.get().value() instanceof DevotionAltarRecipe altarRecipe)
+						altar.recipe = altarRecipe;
+					else
+						Devotion.LOGGER.error("Invalid Recipe ID: {}", altar.recipeId);
+
+					altar.recipeId = null;
+				}
+
+				int filledSlots = altar.filledSlots();
+				AABB box = state.getCollisionShape(level, pos).bounds().expandTowards(2, 0.4, 2).expandTowards(-3, 0, -3).move(altar.getBlockPos());
+				List<ItemEntity> list = level.getEntities(EntityTypeTest.forClass(ItemEntity.class), box, itemEntity -> filledSlots < altar.size());
+
+				if(!list.isEmpty()) {
+					ItemEntity itemEntity = list.getFirst();
+					ItemStack stack = itemEntity.getItem();
+
+					altar.setItem(filledSlots, stack.split(1));
+
+					if(stack.getCount() <= 0)
+						itemEntity.discard();
+				}
+
+				if(altar.isCrafting() && !level.isClientSide()) {
+					AuraType nextAuraType = AuraType.ENHANCER;
+
+					while(nextAuraType.ordinal() < AuraType.SPECIALIST.ordinal()) {
+						if(altar.getRequiredPower(nextAuraType) < altar.recipe.getAuraCost(nextAuraType)) {
+							AltarPillarBlockEntity pillar = null;
+
+							for(BlockPos blockPos : BlockPos.betweenClosed(altar.getBlockPos().offset(-4, 0, -4), altar.getBlockPos().offset(4, 0, 4)))
+								if(level.getBlockEntity(blockPos) instanceof AltarPillarBlockEntity blockEntity && blockEntity.getContainedAuraType() == nextAuraType) {
+									pillar = blockEntity;
+									break;
+								}
+
+							if(pillar != null) {
+								altar.addPower(nextAuraType);
+							}
+						}
+						else {
+							nextAuraType = AuraType.values()[nextAuraType.ordinal() + 1];
+						}
+					}
+
+					if(altar.getCraftingProgress() >= 1f) {
+						if(level instanceof ServerLevel serverLevel) {
+							ServerPlayer player = serverLevel.getNearestEntity(ServerPlayer.class, TargetingConditions.forNonCombat(), null, altar.getBlockPos().getX() + 0.5, altar.getBlockPos().getY() + 0.5, altar.getBlockPos().getZ() + 0.5, box);
+
+							if(player != null || !altar.recipe.requiresPlayer()) {
+								altar.recipe.assemble(serverLevel, player, altar);
+								altar.setCrafting(false);
+							}
+						}
+					}
+				}
+			}
+
+			if(altar.isCrafting())
+				altar.craftingTime++;
+		}
 	}
 
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		inventory.clear();
 		ContainerHelper.loadAllItems(tag, inventory, registries);
-		completed = tag.getBoolean("Completed");
 		crafting = tag.getBoolean("Active");
-		hideSchematic = tag.getBoolean("HideSchematic");
 		craftingTime = tag.getInt("CraftingTime");
 
 		if(tag.contains("RecipeId", Tag.TAG_STRING)) {
@@ -139,15 +169,17 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	@Override
 	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		ContainerHelper.saveAllItems(tag, inventory, registries);
-		tag.putBoolean("Completed", completed);
 		tag.putBoolean("Active", crafting);
-		tag.putBoolean("HideSchematic", hideSchematic);
 		tag.putInt("CraftingTime", craftingTime);
 
-		ResourceLocation id = RegistryHelper.getBuiltinRegistry(Registries.RECIPE).getKey(recipe);
+		if(recipe != null) {
+			ResourceLocation id = RegistryHelper.getBuiltinRegistry(Registries.RECIPE).getKey(recipe);
 
-		if(id != null)
-			tag.putString("RecipeId", id.toString());
+			if(id != null)
+				tag.putString("RecipeId", id.toString());
+			else
+				tag.remove("RecipeId");
+		}
 		else
 			tag.remove("RecipeId");
 
@@ -221,6 +253,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 		if(level != null && !level.isClientSide()) {
 			if(isCrafting() && !recipe.matches(this, level)) {
 				craftingTime = 0;
+				auraCosts.clear();
 				crafting = false;
 				recipe = null;
 			}
@@ -248,56 +281,34 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 
 		if(!crafting) {
 			craftingTime = 0;
+			auraCosts.clear();
 			recipe = null;
 		}
 
 		notifyListeners();
 	}
 
-	public boolean isCompleted() {
-		return completed;
+	public boolean isPillar(BlockPos pillarPos) {
+		BlockState baseState = level.getBlockState(pillarPos);
+		BlockState middleState = level.getBlockState(pillarPos.above());
+		BlockState capState = level.getBlockState(pillarPos.above(2));
+
+		return baseState.is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()) || (baseState.is(DevotionTags.ALTAR_PILLAR) && middleState.is(DevotionTags.ALTAR_PILLAR) && capState.is(DevotionTags.ALTAR_CAPS));
 	}
 
-	public void setCompleted(boolean completed) {
-		this.completed = completed;
-		notifyListeners();
+	public boolean completed() {
+		return !pillarPositions.isEmpty() && pillarPositions.stream().allMatch(blockPos -> level.getBlockState(blockPos).is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()));
 	}
 
-	public boolean isSchematicHidden() {
-		return hideSchematic;
-	}
-
-	public void hideSchematic(boolean hide) {
-		this.hideSchematic = hide;
-	}
-
-	public void checkMultiblock() {
-		if(level != null && !level.isClientSide()) {
-			StructureMapData structureData = MainHelper.getStructureMapData();
-			HashMap<BlockPos, BlockState> structure = new HashMap<>();
-			HashMap<BlockPos, BlockState> template = structureData.structureMap();
-
-			for(Map.Entry<BlockPos, BlockState> entry : template.entrySet()) {
-				BlockPos.MutableBlockPos pos = getBlockPos().mutable().move(structureData.offsetX(), 0, structureData.offsetZ()).move(entry.getKey());
-				BlockState state = level.getBlockState(pos);
-
-				if(MainHelper.isValidAltarBlock(state))
-					structure.put(entry.getKey(), state);
-			}
-
-			setCompleted(structure.equals(template));
-		}
-	}
-
-	public int getRequiredPower(AuraType auraType) {
-		return recipe != null ? recipe.getAuraCosts().get(auraType) : 0;
+	public float getRequiredPower(AuraType auraType) {
+		return recipe != null ? recipe.getAuraCosts().get(auraType) : 0f;
 	}
 
 	public void addPower(AuraType auraType) {
 		auraCosts.compute(auraType, (key, value) -> value + 1);
 	}
 
-	public int getCraftingTime() {
-		return Math.min(craftingTime, MAX_CRAFTING_TIME);
+	public float getCraftingProgress() {
+		return Math.clamp((float) craftingTime / MAX_CRAFTING_TIME, 0, 1);
 	}
 }

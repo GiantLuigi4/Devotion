@@ -12,7 +12,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.LivingEntity;
 
 public record ClientboundAuraPacket(int entityId, float aura, int auraColor) implements CustomPacketPayload {
-	public static final Type<ClientboundAltarStructurePacket> TYPE = new Type<>(Devotion.id("aura"));
+	public static final Type<ClientboundAuraPacket> TYPE = new Type<>(Devotion.id("aura"));
 	public static final StreamCodec<? extends FriendlyByteBuf, ClientboundAuraPacket> CODEC = StreamCodec.of((buffer, value) -> {
 		buffer.writeVarInt(value.entityId);
 		buffer.writeFloat(value.aura);

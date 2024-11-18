@@ -3,21 +3,14 @@ package dev.cammiescorner.devotion.fabric.common;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.common.Color;
 import dev.cammiescorner.devotion.common.Duck;
-import dev.cammiescorner.devotion.common.StructureMapData;
 import dev.cammiescorner.devotion.fabric.common.registries.DevotionComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Set;
 
 public class FabricDuck implements Duck {
-	@Override
-	public void setStructureMap(MinecraftServer server, StructureMapData data) {
-		server.getScoreboard().getComponent(DevotionComponents.ALTAR_STRUCTURE).setStructureMap(data);
-	}
-
 	@Override
 	public float getAura(LivingEntity entity) {
 		return DevotionComponents.AURA.isProvidedBy(entity) ? entity.getComponent(DevotionComponents.AURA).getAura() : 0f;

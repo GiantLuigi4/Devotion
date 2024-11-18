@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
+// TODO redo aura component to have multiple types of aura
 public class AuraCapability implements SyncedCapability {
 	public static final float MAX_AURA = 100;
 	private final LivingEntity entity;

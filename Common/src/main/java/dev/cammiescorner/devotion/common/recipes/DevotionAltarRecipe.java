@@ -31,12 +31,12 @@ import java.util.Map;
 public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 	private final String group;
 	private final List<Ingredient> input;
-	private final Map<AuraType, Integer> auraCosts = new HashMap<>();
+	private final Map<AuraType, Float> auraCosts = new HashMap<>();
 	private final boolean requiresPlayer;
 	private final Holder<ConfiguredAltarAction> result;
 	private final List<Holder<Research>> requiredResearch;
 
-	public DevotionAltarRecipe(String group, List<Ingredient> input, Map<AuraType, Integer> auraCosts, boolean requiresPlayer, Holder<ConfiguredAltarAction> result, List<Holder<Research>> requiredResearch) {
+	public DevotionAltarRecipe(String group, List<Ingredient> input, Map<AuraType, Float> auraCosts, boolean requiresPlayer, Holder<ConfiguredAltarAction> result, List<Holder<Research>> requiredResearch) {
 		this.group = group;
 		this.input = input;
 		this.auraCosts.putAll(auraCosts);
@@ -99,11 +99,11 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 		altar.clearContent();
 	}
 
-	public Map<AuraType, Integer> getAuraCosts() {
+	public Map<AuraType, Float> getAuraCosts() {
 		return Map.copyOf(auraCosts);
 	}
 
-	public int getAuraCost(AuraType auraType) {
+	public float getAuraCost(AuraType auraType) {
 		return auraCosts.get(auraType);
 	}
 
@@ -129,7 +129,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 						throw new IllegalArgumentException(auraType.getName() + " is not a valid aura type for recipes");
 
 					return auraType;
-				}, auraType -> auraType), Codec.INT).optionalFieldOf("aura_costs", Map.of()).forGetter(DevotionAltarRecipe::getAuraCosts),
+				}, auraType -> auraType), Codec.FLOAT).optionalFieldOf("aura_costs", Map.of()).forGetter(DevotionAltarRecipe::getAuraCosts),
 				Codec.BOOL.optionalFieldOf("requires_player", false).forGetter(DevotionAltarRecipe::requiresPlayer),
 				ConfiguredAltarAction.CODEC.fieldOf("result").forGetter(DevotionAltarRecipe::getResult),
 				Research.CODEC.listOf().optionalFieldOf("prerequisites", List.of()).forGetter(DevotionAltarRecipe::getRequiredResearch)
@@ -148,7 +148,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 
 				for(AuraType auraType : recipe.getAuraCosts().keySet()) {
 					buffer.writeEnum(auraType);
-					buffer.writeVarInt(recipe.getAuraCosts().get(auraType));
+					buffer.writeFloat(recipe.getAuraCosts().get(auraType));
 				}
 
 				buffer.writeBoolean(recipe.requiresPlayer());
@@ -161,7 +161,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 			buffer -> {
 				List<Ingredient> ingredients = new ArrayList<>();
 				List<Holder<Research>> requiredResearch = new ArrayList<>();
-				Map<AuraType, Integer> auraCosts = new HashMap<>();
+				Map<AuraType, Float> auraCosts = new HashMap<>();
 				String group = buffer.readUtf();
 				int ingredientsSize = buffer.readVarInt();
 
@@ -171,7 +171,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 				int mapSize = buffer.readVarInt();
 
 				for(int i = 0; i < mapSize; i++)
-					auraCosts.put(buffer.readEnum(AuraType.class), buffer.readVarInt());
+					auraCosts.put(buffer.readEnum(AuraType.class), buffer.readFloat());
 
 				boolean requiresPlayer = buffer.readBoolean();
 				Holder<ConfiguredAltarAction> action = ConfiguredAltarAction.HOLDER_STREAM_CODEC.decode(buffer);

@@ -3,24 +3,16 @@ package dev.cammiescorner.devotion.neoforge.common;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.common.Color;
 import dev.cammiescorner.devotion.common.Duck;
-import dev.cammiescorner.devotion.common.StructureMapData;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraCapability;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.KnownResearchCapability;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.level.AltarStructureCapability;
 import dev.cammiescorner.devotion.neoforge.entrypoints.NeoMain;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Set;
 
 public class NeoDuck implements Duck {
-	@Override
-	public void setStructureMap(MinecraftServer server, StructureMapData data) {
-		AltarStructureCapability.getInstance(server).setStructureMap(data);
-	}
-
 	@Override
 	public float getAura(LivingEntity entity) {
 		return entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability ? capability.getAura() : 0f;

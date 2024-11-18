@@ -41,7 +41,6 @@
 			]
 		},
 		"cardinal-components": [
-			"devotion:altar_structure",
 			"devotion:aura",
 			"devotion:known_research"
 		]

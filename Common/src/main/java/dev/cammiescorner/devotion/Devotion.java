@@ -5,8 +5,6 @@ import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.Graph;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
-import dev.cammiescorner.devotion.common.StructureMapData;
-import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAltarStructurePacket;
 import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAuraPacket;
 import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundKnownResearchPacket;
 import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundRefreshResearchScreenPacket;
@@ -62,8 +60,6 @@ public class Devotion implements MainEntryPoint {
 		}
 	});
 
-	public static StructureMapData data = StructureMapData.empty();
-
 	@Override
 	public void onInitialize(ModContainer mod) {
 		CONFIGURATOR.register(DevotionConfig.class);
@@ -84,7 +80,6 @@ public class Devotion implements MainEntryPoint {
 		DevotionRecipes.RECIPE_TYPES.accept(registryService);
 		DevotionMenus.MENUS.accept(registryService);
 
-		Network.registerPacket(ClientboundAltarStructurePacket.TYPE, ClientboundAltarStructurePacket.class, ClientboundAltarStructurePacket.CODEC, ClientboundAltarStructurePacket::handle);
 		Network.registerPacket(ClientboundAuraPacket.TYPE, ClientboundAuraPacket.class, ClientboundAuraPacket.CODEC, ClientboundAuraPacket::handle);
 		Network.registerPacket(ClientboundKnownResearchPacket.TYPE, ClientboundKnownResearchPacket.class, ClientboundKnownResearchPacket.CODEC, ClientboundKnownResearchPacket::handle);
 		Network.registerPacket(ClientboundRefreshResearchScreenPacket.TYPE, ClientboundRefreshResearchScreenPacket.class, ClientboundRefreshResearchScreenPacket.CODEC, ClientboundRefreshResearchScreenPacket::handle);

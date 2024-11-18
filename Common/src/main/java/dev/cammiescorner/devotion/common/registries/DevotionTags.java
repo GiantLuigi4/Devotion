@@ -6,5 +6,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 public class DevotionTags {
-	public static final TagKey<Block> ALTAR_PALETTE = TagKey.create(Registries.BLOCK, Devotion.id("altar_palette"));
+	public static final TagKey<Block> ALTAR_PILLAR = TagKey.create(Registries.BLOCK, Devotion.id("altar_pillar"));
+	public static final TagKey<Block> ALTAR_CAPS = TagKey.create(Registries.BLOCK, Devotion.id("altar_caps"));
 }

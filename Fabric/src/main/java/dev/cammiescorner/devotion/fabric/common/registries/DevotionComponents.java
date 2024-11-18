@@ -3,7 +3,6 @@ package dev.cammiescorner.devotion.fabric.common.registries;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.fabric.common.components.entity.AuraComponent;
 import dev.cammiescorner.devotion.fabric.common.components.entity.KnownResearchComponent;
-import dev.cammiescorner.devotion.fabric.common.components.world.AltarStructureComponent;
 import net.minecraft.world.entity.player.Player;
 import org.ladysnake.cca.api.v3.component.Component;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
@@ -22,7 +21,6 @@ public class DevotionComponents implements EntityComponentInitializer, Scoreboar
 	// BlockEntity Components
 
 	// Scoreboard Components
-	public static final ComponentKey<AltarStructureComponent> ALTAR_STRUCTURE = createComponent("altar_structure", AltarStructureComponent.class);
 
 	@Override
 	public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
@@ -32,7 +30,7 @@ public class DevotionComponents implements EntityComponentInitializer, Scoreboar
 
 	@Override
 	public void registerScoreboardComponentFactories(ScoreboardComponentFactoryRegistry registry) {
-		registry.registerScoreboardComponent(ALTAR_STRUCTURE, AltarStructureComponent::new);
+
 	}
 
 	private static <T extends Component> ComponentKey<T> createComponent(String name, Class<T> component) {

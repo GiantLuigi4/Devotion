@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import dev.cammiescorner.devotion.common.Color;
 import net.minecraft.util.StringRepresentable;
 
-public enum AuraType implements StringRepresentable{
+public enum AuraType implements StringRepresentable {
 	ENHANCER("enhancement", 0x008100), TRANSMUTER("transmutation", 0xbb00c5), EMITTER("emission", 0xffd100),
 	CONJURER("conjuration", 0xda0018), MANIPULATOR("manipulation", 0xe08600), SPECIALIST("specialization", 0x0070b9),
 	NONE("none", 0xffffff);
