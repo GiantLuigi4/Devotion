@@ -108,44 +108,46 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 				}
 
 				if(altar.isCrafting()) {
-					AuraType nextAuraType = AuraType.ENHANCER;
+					if(!altar.hasEnoughAura()) {
+						AuraType nextAuraType = AuraType.ENHANCER;
 
-					while(nextAuraType.ordinal() < AuraType.SPECIALIST.ordinal()) {
-						if(altar.getAura(nextAuraType) < altar.getAuraCost(nextAuraType)) {
-							AltarPillarBlockEntity pillar = null;
+						while(nextAuraType.ordinal() < AuraType.SPECIALIST.ordinal()) {
+							if(altar.getAura(nextAuraType) < altar.getAuraCost(nextAuraType)) {
+								AltarPillarBlockEntity pillar = null;
 
-							for(BlockPos blockPos : altar.inWorldPillarPositions) {
-								if(level.getBlockEntity(blockPos) instanceof AltarPillarBlockEntity blockEntity && blockEntity.getContainedAuraType() == nextAuraType) {
-									pillar = blockEntity;
-									break;
+								for(BlockPos blockPos : altar.inWorldPillarPositions) {
+									if(level.getBlockEntity(blockPos) instanceof AltarPillarBlockEntity blockEntity && blockEntity.getContainedAuraType() == nextAuraType) {
+										pillar = blockEntity;
+										break;
+									}
+								}
+
+								if(pillar != null && pillar.drainAura(1, false))
+									altar.addPower(nextAuraType);
+								else {
+									// TODO do something to indicate it needs more aura
 								}
 							}
-
-							if(pillar != null && pillar.drainAura(1, false))
-								altar.addPower(nextAuraType);
 							else {
-								// TODO do something to indicate it needs more aura
+								nextAuraType = AuraType.values()[nextAuraType.ordinal() + 1];
 							}
-						}
-						else {
-							nextAuraType = AuraType.values()[nextAuraType.ordinal() + 1];
 						}
 					}
+					else {
+						if(altar.getCraftingProgress() >= 1f) {
+							if(level instanceof ServerLevel serverLevel) {
+								ServerPlayer player = serverLevel.getNearestEntity(ServerPlayer.class, TargetingConditions.forNonCombat(), null, altar.getBlockPos().getX() + 0.5, altar.getBlockPos().getY() + 0.5, altar.getBlockPos().getZ() + 0.5, box);
 
-					if(altar.getCraftingProgress() >= 1f) {
-						if(level instanceof ServerLevel serverLevel) {
-							ServerPlayer player = serverLevel.getNearestEntity(ServerPlayer.class, TargetingConditions.forNonCombat(), null, altar.getBlockPos().getX() + 0.5, altar.getBlockPos().getY() + 0.5, altar.getBlockPos().getZ() + 0.5, box);
-
-							if(player != null || !altar.recipe.requiresPlayer()) {
-								altar.recipe.assemble(serverLevel, player, altar);
-								altar.setCrafting(false);
+								if(player != null || !altar.recipe.requiresPlayer()) {
+									altar.recipe.assemble(serverLevel, player, altar);
+									altar.setCrafting(false);
+								}
 							}
 						}
+
+						altar.incrementCraftingTime();
 					}
 				}
-
-				if(altar.isCrafting() && altar.hasEnoughAura())
-					altar.incrementCraftingTime();
 			}
 		}
 	}
