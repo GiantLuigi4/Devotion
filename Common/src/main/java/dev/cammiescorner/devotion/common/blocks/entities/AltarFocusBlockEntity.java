@@ -38,6 +38,7 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, Container {
 	private static final int MAX_CRAFTING_TIME = 120;
@@ -61,8 +62,8 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, AltarFocusBlockEntity altar) {
-		if(!altar.completed()) {
-			if(!level.isClientSide()) {
+		if(!level.isClientSide()) {
+			if(!altar.completed()) {
 				List<BlockPos> posList = RELATIVE_PILLAR_POSITIONS.stream().map(blockPos -> StructureTemplate.transform(blockPos.offset(pos), Mirror.NONE, state.getValue(AltarFocusBlock.ROTATION), pos)).toList();
 
 				if(posList.stream().allMatch(altar::isPillar)) {
@@ -80,9 +81,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 					}
 				}
 			}
-		}
-		else {
-			if(!level.isClientSide()) {
+			else {
 				if(altar.recipeId != null) {
 					Optional<RecipeHolder<?>> optional = level.getRecipeManager().byKey(altar.recipeId);
 
@@ -108,11 +107,11 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 						itemEntity.discard();
 				}
 
-				if(altar.isCrafting() && !level.isClientSide()) {
+				if(altar.isCrafting()) {
 					AuraType nextAuraType = AuraType.ENHANCER;
 
 					while(nextAuraType.ordinal() < AuraType.SPECIALIST.ordinal()) {
-						if(altar.getRequiredPower(nextAuraType) < altar.recipe.getAuraCost(nextAuraType)) {
+						if(altar.getAura(nextAuraType) < altar.getAuraCost(nextAuraType)) {
 							AltarPillarBlockEntity pillar = null;
 
 							for(BlockPos blockPos : altar.inWorldPillarPositions) {
@@ -144,10 +143,10 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 						}
 					}
 				}
-			}
 
-			if(altar.isCrafting())
-				altar.craftingTime++;
+				if(altar.isCrafting() && altar.hasEnoughAura())
+					altar.incrementCraftingTime();
+			}
 		}
 	}
 
@@ -299,16 +298,30 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 		return baseState.is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()) || (baseState.is(DevotionTags.ALTAR_PILLAR) && middleState.is(DevotionTags.ALTAR_PILLAR) && capState.is(DevotionTags.ALTAR_CAPS));
 	}
 
+	public void incrementCraftingTime() {
+		craftingTime++;
+		notifyListeners();
+	}
+
 	public boolean completed() {
 		return !inWorldPillarPositions.isEmpty() && inWorldPillarPositions.stream().allMatch(blockPos -> level.getBlockState(blockPos).is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()));
 	}
 
-	public float getRequiredPower(AuraType auraType) {
+	public float getAuraCost(AuraType auraType) {
 		return recipe != null ? recipe.getAuraCosts().get(auraType) : 0f;
 	}
 
+	public float getAura(AuraType auraType) {
+		return auraCosts.get(auraType);
+	}
+
+	public boolean hasEnoughAura() {
+		return isCrafting() && Stream.of(AuraType.ENHANCER, AuraType.TRANSMUTER, AuraType.EMITTER, AuraType.CONJURER, AuraType.MANIPULATOR).allMatch(auraType -> getAura(auraType) >= getAuraCost(auraType));
+	}
+
 	public void addPower(AuraType auraType) {
-		auraCosts.compute(auraType, (key, value) -> value + 1);
+		auraCosts.compute(auraType, (key, value) -> Math.min(value + 1, getAuraCost(auraType)));
+		notifyListeners();
 	}
 
 	public float getCraftingProgress() {
