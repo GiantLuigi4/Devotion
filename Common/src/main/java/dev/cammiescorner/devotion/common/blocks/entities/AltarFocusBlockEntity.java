@@ -43,11 +43,11 @@ import java.util.stream.Stream;
 public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, Container {
 	private static final int MAX_CRAFTING_TIME = 120;
 	private static final List<BlockPos> RELATIVE_PILLAR_POSITIONS = List.of(
-		new BlockPos(0, 0, -4),
-		new BlockPos(4, 0, -1),
-		new BlockPos(-4, 0, -1),
-		new BlockPos(2, 0, 3),
-		new BlockPos(-2, 0, 3)
+		new BlockPos(0, 0, -4),  // enhancer pillar
+		new BlockPos(4, 0, -1),  // transmuter pillar
+		new BlockPos(-4, 0, -1), // emitter pillar
+		new BlockPos(2, 0, 3),   // conjurer pillar
+		new BlockPos(-2, 0, 3)   // manipulator pillar
 	);
 	private final Set<BlockPos> inWorldPillarPositions = new HashSet<>();
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
