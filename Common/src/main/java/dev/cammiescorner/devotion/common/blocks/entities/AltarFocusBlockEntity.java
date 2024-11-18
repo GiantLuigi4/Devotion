@@ -3,6 +3,7 @@ package dev.cammiescorner.devotion.common.blocks.entities;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.blocks.AltarFocusBlock;
+import dev.cammiescorner.devotion.common.blocks.AltarPillarBlock;
 import dev.cammiescorner.devotion.common.recipes.DevotionAltarRecipe;
 import dev.cammiescorner.devotion.common.registries.DevotionBlocks;
 import dev.cammiescorner.devotion.common.registries.DevotionTags;
@@ -52,10 +53,11 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	private final Set<BlockPos> inWorldPillarPositions = new HashSet<>();
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
 	private final Map<AuraType, Float> auraCosts = new HashMap<>();
-	private boolean crafting;
-	private int craftingTime;
+	private final int tickOffset = new Random().nextInt(20);
 	private DevotionAltarRecipe recipe;
 	private ResourceLocation recipeId;
+	private boolean crafting;
+	private int craftingTime;
 
 	public AltarFocusBlockEntity(BlockPos pos, BlockState blockState) {
 		super(DevotionBlocks.ALTAR_FOCUS_ENTITY.get(), pos, blockState);
@@ -64,20 +66,30 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	public static void tick(Level level, BlockPos pos, BlockState state, AltarFocusBlockEntity altar) {
 		if(!level.isClientSide()) {
 			if(!altar.completed()) {
-				List<BlockPos> posList = RELATIVE_PILLAR_POSITIONS.stream().map(blockPos -> StructureTemplate.transform(blockPos.offset(pos), Mirror.NONE, state.getValue(AltarFocusBlock.ROTATION), pos)).toList();
+				if((level.getGameTime() + altar.tickOffset) % 10 == 0) {
+					List<BlockPos> posList = RELATIVE_PILLAR_POSITIONS.stream().map(blockPos -> StructureTemplate.transform(blockPos.offset(pos), Mirror.NONE, state.getValue(AltarFocusBlock.ROTATION), pos)).toList();
 
-				if(posList.stream().allMatch(altar::isPillar)) {
-					for(BlockPos pillarPos : posList) {
-						if(!level.getBlockState(pillarPos).is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get())) {
-							level.destroyBlock(pillarPos, false);
-							level.destroyBlock(pillarPos.above(), false);
-							level.destroyBlock(pillarPos.above(2), false);
+					if(posList.stream().allMatch(altar::isPillar)) {
+						BlockState defaultPillarState = DevotionBlocks.ALTAR_PILLAR_BLOCK.get().defaultBlockState();
+						BlockPos.MutableBlockPos pillarPos = new BlockPos.MutableBlockPos();
 
-							level.setBlockAndUpdate(pillarPos, DevotionBlocks.ALTAR_PILLAR_BLOCK.get().defaultBlockState());
-							level.getBlockEntity(pillarPos, DevotionBlocks.ALTAR_PILLAR_ENTITY.get()).ifPresent(pillarEntity -> pillarEntity.setAltarFocusPos(pos));
+						for(BlockPos basePos : posList) {
+							pillarPos.set(basePos);
+
+							for(int i = 0; i < 3; i++) {
+								pillarPos.setY(basePos.getY() + i);
+								level.destroyBlock(pillarPos, false);
+							}
+
+							for(int i = 0; i < 3; i++) {
+								pillarPos.setY(basePos.getY() + i);
+								level.setBlockAndUpdate(pillarPos, defaultPillarState.setValue(AltarPillarBlock.LAYER, i));
+							}
+
+							level.getBlockEntity(basePos, DevotionBlocks.ALTAR_PILLAR_ENTITY.get()).ifPresent(pillarEntity -> pillarEntity.setAltarFocusPos(pos));
+
+							altar.inWorldPillarPositions.add(basePos);
 						}
-
-						altar.inWorldPillarPositions.add(pillarPos);
 					}
 				}
 			}
