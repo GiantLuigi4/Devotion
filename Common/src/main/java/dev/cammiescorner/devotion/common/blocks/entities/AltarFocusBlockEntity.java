@@ -48,7 +48,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 		new BlockPos(2, 0, 3),
 		new BlockPos(-2, 0, 3)
 	);
-	private final Set<BlockPos> pillarPositions = new HashSet<>();
+	private final Set<BlockPos> inWorldPillarPositions = new HashSet<>();
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
 	private final Map<AuraType, Float> auraCosts = new HashMap<>();
 	private boolean crafting;
@@ -76,7 +76,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 							level.getBlockEntity(pillarPos, DevotionBlocks.ALTAR_PILLAR_ENTITY.get()).ifPresent(pillarEntity -> pillarEntity.setAltarFocusPos(pos));
 						}
 
-						altar.pillarPositions.add(pillarPos);
+						altar.inWorldPillarPositions.add(pillarPos);
 					}
 				}
 			}
@@ -297,7 +297,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	}
 
 	public boolean completed() {
-		return !pillarPositions.isEmpty() && pillarPositions.stream().allMatch(blockPos -> level.getBlockState(blockPos).is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()));
+		return !inWorldPillarPositions.isEmpty() && inWorldPillarPositions.stream().allMatch(blockPos -> level.getBlockState(blockPos).is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()));
 	}
 
 	public float getRequiredPower(AuraType auraType) {
