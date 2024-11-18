@@ -9,6 +9,8 @@ import dev.cammiescorner.devotion.client.gui.widgets.ResearchWidget;
 import dev.cammiescorner.devotion.client.models.armor.DeathCultLeaderArmorModel;
 import dev.cammiescorner.devotion.client.models.armor.DeathCultistRobesModel;
 import dev.cammiescorner.devotion.client.models.armor.MageRobesModel;
+import dev.cammiescorner.devotion.client.models.blockentity.AltarPillarModel;
+import dev.cammiescorner.devotion.client.renderers.blockentity.AltarPillarRenderer;
 import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultLeaderArmorRenderer;
 import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultistRobesRenderer;
 import dev.cammiescorner.devotion.client.renderers.entity.armor.MageRobesRenderer;
@@ -22,6 +24,7 @@ import dev.cammiescorner.devotion.common.registries.DevotionItems;
 import dev.cammiescorner.devotion.common.registries.DevotionMenus;
 import dev.cammiescorner.velvet.api.event.EntitiesPreRenderCallback;
 import dev.cammiescorner.velvet.api.event.ShaderEffectRenderCallback;
+import dev.upcraft.sparkweave.api.client.event.RegisterBlockEntityRenderersEvent;
 import dev.upcraft.sparkweave.api.client.event.RegisterCustomArmorRenderersEvent;
 import dev.upcraft.sparkweave.api.client.event.RegisterLayerDefinitionsEvent;
 import dev.upcraft.sparkweave.api.client.event.RegisterMenuScreensEvent;
@@ -57,6 +60,11 @@ public class DevotionClient implements ClientEntryPoint {
 			event.registerModelLayers(MageRobesModel.MODEL_LAYER, MageRobesModel::createBodyLayer);
 			event.registerModelLayers(DeathCultistRobesModel.MODEL_LAYER, DeathCultistRobesModel::createBodyLayer);
 			event.registerModelLayers(DeathCultLeaderArmorModel.MODEL_LAYER, DeathCultLeaderArmorModel::createBodyLayer);
+			event.registerModelLayers(AltarPillarModel.MODEL_LAYER, AltarPillarModel::createBodyLayer);
+		});
+
+		RegisterBlockEntityRenderersEvent.EVENT.register(event -> {
+			event.registerRenderer(DevotionBlocks.ALTAR_PILLAR_ENTITY, AltarPillarRenderer::new);
 		});
 
 		RegisterCustomArmorRenderersEvent.EVENT.register(event -> {

@@ -13,6 +13,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -94,6 +96,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 							});
 
 							altar.inWorldPillarPositions.add(basePos);
+							altar.setChanged();
 						}
 					}
 				}
@@ -172,9 +175,19 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		inventory.clear();
+		inWorldPillarPositions.clear();
+
+		ListTag listTag = tag.getList("PillarPositions", Tag.TAG_INT_ARRAY);
 		ContainerHelper.loadAllItems(tag, inventory, registries);
 		crafting = tag.getBoolean("Active");
 		craftingTime = tag.getInt("CraftingTime");
+
+		for(int i = 0; i < listTag.size(); i++) {
+			int[] xyz = listTag.getIntArray(i);
+
+			if(xyz.length == 3)
+				inWorldPillarPositions.add(new BlockPos(xyz[0], xyz[1], xyz[2]));
+		}
 
 		if(tag.contains("RecipeId", Tag.TAG_STRING)) {
 			recipeId = ResourceLocation.parse(tag.getString("RecipeId"));
@@ -189,9 +202,15 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 
 	@Override
 	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		ListTag listTag = new ListTag();
 		ContainerHelper.saveAllItems(tag, inventory, registries);
 		tag.putBoolean("Active", crafting);
 		tag.putInt("CraftingTime", craftingTime);
+
+		for(BlockPos pos : inWorldPillarPositions)
+			listTag.add(NbtUtils.writeBlockPos(pos));
+
+		tag.put("PillarPositions", listTag);
 
 		if(recipe != null) {
 			ResourceLocation id = RegistryHelper.getBuiltinRegistry(Registries.RECIPE).getKey(recipe);
