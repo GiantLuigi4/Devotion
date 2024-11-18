@@ -115,14 +115,17 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 						if(altar.getRequiredPower(nextAuraType) < altar.recipe.getAuraCost(nextAuraType)) {
 							AltarPillarBlockEntity pillar = null;
 
-							for(BlockPos blockPos : BlockPos.betweenClosed(altar.getBlockPos().offset(-4, 0, -4), altar.getBlockPos().offset(4, 0, 4)))
+							for(BlockPos blockPos : altar.inWorldPillarPositions) {
 								if(level.getBlockEntity(blockPos) instanceof AltarPillarBlockEntity blockEntity && blockEntity.getContainedAuraType() == nextAuraType) {
 									pillar = blockEntity;
 									break;
 								}
+							}
 
-							if(pillar != null) {
+							if(pillar != null && pillar.drainAura(1, false))
 								altar.addPower(nextAuraType);
+							else {
+								// TODO do something to indicate it needs more aura
 							}
 						}
 						else {
