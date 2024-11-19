@@ -31,13 +31,23 @@
 		},
 		{
 			"_comment": "// FIXME: blit doesn't work here for some reason",
-			"name": "box_blur",
+			"name": "blit",
 			"intarget": "swap",
-			"outtarget": "auras",
-			"uniforms": [
+			"outtarget": "auras"
+		},
+		{
+			"name": "blit",
+			"intarget": "minecraft:main",
+			"outtarget": "swap"
+		},
+		{
+			"name": "devotion:merge",
+			"intarget": "swap",
+			"outtarget": "minecraft:main",
+			"auxtargets": [
 				{
-					"name": "Radius",
-					"values": [ 0.0 ]
+					"name": "AuraSampler",
+					"id": "auras"
 				}
 			]
 		}
