@@ -22,11 +22,9 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -43,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, Container {
+public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 	private static final int MAX_CRAFTING_TIME = 120;
 	private static final List<BlockPos> RELATIVE_PILLAR_POSITIONS = List.of(
 		new BlockPos(0, 0, -4),  // enhancer pillar
@@ -240,45 +238,27 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput, C
 	}
 
 	@Override
-	public int getContainerSize() {
-		return inventory.size();
-	}
-
-	@Override
 	public ItemStack getItem(int index) {
 		return inventory.get(index);
 	}
 
-	@Override
-	public ItemStack removeItem(int slot, int amount) {
-		ItemStack stack = ContainerHelper.removeItem(inventory, slot, amount);
+	public ItemStack removeItem(int slot) {
+		ItemStack stack = ContainerHelper.takeItem(inventory, slot);
 		notifyListeners();
 
 		return stack;
 	}
 
-	@Override
-	public ItemStack removeItemNoUpdate(int slot) {
-		return ContainerHelper.takeItem(inventory, slot);
-	}
-
-	@Override
 	public void setItem(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
 		notifyListeners();
 	}
 
 	@Override
-	public boolean stillValid(Player player) {
-		return !(player.distanceToSqr(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5) > 64);
-	}
-
-	@Override
 	public int size() {
-		return getContainerSize();
+		return inventory.size();
 	}
 
-	@Override
 	public void clearContent() {
 		inventory.clear();
 		notifyListeners();
