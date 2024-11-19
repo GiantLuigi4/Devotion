@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.DevotionConfig;
 import dev.cammiescorner.velvet.api.event.EntitiesPreRenderCallback;
@@ -133,7 +134,12 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 	private static final class AuraRenderType extends RenderType {
 		// have to extend RenderLayer to access a few of these things
 		private static final OutputStateShard AURA_TARGET = new OutputStateShard("devotion:aura_target", AuraEffectManager.INSTANCE::beginAuraRenderTargetUse, AuraEffectManager.INSTANCE::endAuraRenderTargetUse);
-		private static final Function<ResourceLocation, RenderType> AURA_TYPE = Util.memoize(id -> RenderType.create("aura", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, false, true, CompositeState.builder().setShaderState(new ShaderStateShard(AuraEffectManager.INSTANCE.auraCoreShader::getProgram)).setWriteMaskState(COLOR_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(AURA_TARGET).setTextureState(new TextureStateShard(id, false, false)).createCompositeState(false)));
+		public static final VertexFormat POSITION_COLOR_TEX = VertexFormat.builder()
+			.add("Position", VertexFormatElement.POSITION)
+			.add("Color", VertexFormatElement.COLOR)
+			.add("UV0", VertexFormatElement.UV0)
+			.build();
+		private static final Function<ResourceLocation, RenderType> AURA_TYPE = Util.memoize(id -> RenderType.create("aura", POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, true, CompositeState.builder().setShaderState(new ShaderStateShard(AuraEffectManager.INSTANCE.auraCoreShader::getProgram)).setWriteMaskState(COLOR_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(AURA_TARGET).setTextureState(new TextureStateShard(id, false, false)).createCompositeState(false)));
 		private static final ResourceLocation WHITE_TEXTURE = ResourceLocation.withDefaultNamespace("misc/white.png");
 		private static final RenderType DEFAULT_AURA_TYPE = AURA_TYPE.apply(WHITE_TEXTURE);
 
