@@ -242,6 +242,16 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 		return inventory.get(index);
 	}
 
+	@Override
+	public int size() {
+		return inventory.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return inventory.isEmpty();
+	}
+
 	public ItemStack removeItem(int slot) {
 		ItemStack stack = ContainerHelper.takeItem(inventory, slot);
 		notifyListeners();
@@ -254,19 +264,9 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 		notifyListeners();
 	}
 
-	@Override
-	public int size() {
-		return inventory.size();
-	}
-
 	public void clearContent() {
 		inventory.clear();
 		notifyListeners();
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return inventory.isEmpty();
 	}
 
 	public void notifyListeners() {
