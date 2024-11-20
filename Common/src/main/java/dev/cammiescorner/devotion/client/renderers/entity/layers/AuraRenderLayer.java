@@ -14,7 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.List;
 
 public class AuraRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-	private final List<RenderLayer<T, M>> otherFeatureRenderers;
+	public final List<RenderLayer<T, M>> otherFeatureRenderers;
 
 	public AuraRenderLayer(RenderLayerParent<T, M> renderer, List<RenderLayer<T, M>> otherFeatureRenderers) {
 		super(renderer);
@@ -26,7 +26,7 @@ public class AuraRenderLayer<T extends LivingEntity, M extends EntityModel<T>> e
 		float aura = MainHelper.getAura(entity);
 		float scale = 1f;
 
-		if(/*aura > 0f*/ true) {
+		if(aura > 0f) {
 			EntityDimensions dimensions = entity.getDimensions(entity.getPose());
 			AuraVertexBufferSource auraBufferSource = new AuraVertexBufferSource(bufferSource, 255, 255, 255, (int) (MainHelper.getAuraAlpha(entity) * 255));
 

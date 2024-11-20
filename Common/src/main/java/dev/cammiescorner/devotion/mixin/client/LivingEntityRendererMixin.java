@@ -31,11 +31,6 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
 	protected LivingEntityRendererMixin(EntityRendererProvider.Context context) { super(context); }
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(EntityRendererProvider.Context context, EntityModel<T> model, float shadowRadius, CallbackInfo info) {
-		auraLayer = new AuraRenderLayer<>(this, layers);
-	}
-
 	@ModifyArgs(
 		method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/RenderLayer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/Entity;FFFFFF)V")
@@ -54,6 +49,9 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 	)
 	private void renderAura(T entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo info, @Share("limbSwing") LocalFloatRef limbSwing, @Share("limbSwingAmount") LocalFloatRef limbSwingAmount, @Share("ageInTicks") LocalFloatRef ageInTicks, @Share("netHeadYaw") LocalFloatRef netHeadYaw, @Share("headPitch") LocalFloatRef headPitch) {
 		if(!entity.isSpectator()) {
+			if(auraLayer == null)
+				auraLayer = new AuraRenderLayer<>(this, layers);
+
 			auraLayer.render(poseStack, buffer, packedLight, entity, limbSwing.get(), limbSwingAmount.get(), partialTicks, ageInTicks.get(), netHeadYaw.get(), headPitch.get());
 		}
 	}
