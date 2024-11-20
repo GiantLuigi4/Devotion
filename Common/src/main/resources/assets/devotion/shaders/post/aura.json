@@ -30,7 +30,6 @@
 			"outtarget": "swap"
 		},
 		{
-			"_comment": "// FIXME: blit doesn't work here for some reason",
 			"name": "blit",
 			"intarget": "swap",
 			"outtarget": "auras"

@@ -3,7 +3,6 @@ package dev.cammiescorner.devotion.client;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import dev.cammiescorner.devotion.Devotion;
@@ -51,7 +50,7 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 			client.getMainRenderTarget().bindWrite(true);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			auraRenderTarget.draw();
+//			auraRenderTarget.draw();
 			RenderSystem.disableBlend();
 		}
 	}
