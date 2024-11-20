@@ -24,21 +24,15 @@ import dev.cammiescorner.devotion.common.registries.DevotionItems;
 import dev.cammiescorner.devotion.common.registries.DevotionMenus;
 import dev.cammiescorner.velvet.api.event.EntitiesPreRenderCallback;
 import dev.cammiescorner.velvet.api.event.ShaderEffectRenderCallback;
-import dev.upcraft.sparkweave.api.client.event.RegisterBlockEntityRenderersEvent;
-import dev.upcraft.sparkweave.api.client.event.RegisterCustomArmorRenderersEvent;
-import dev.upcraft.sparkweave.api.client.event.RegisterLayerDefinitionsEvent;
-import dev.upcraft.sparkweave.api.client.event.RegisterMenuScreensEvent;
+import dev.upcraft.sparkweave.api.client.event.*;
 import dev.upcraft.sparkweave.api.entrypoint.ClientEntryPoint;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class DevotionClient implements ClientEntryPoint {
@@ -86,8 +80,12 @@ public class DevotionClient implements ClientEntryPoint {
 		Network.registerPacket(ServerboundGiveResearchScrollPacket.TYPE, ServerboundGiveResearchScrollPacket.class, ServerboundGiveResearchScrollPacket.CODEC, ServerboundGiveResearchScrollPacket::handle);
 		Network.registerPacket(ServerboundSaveScrollDataPacket.TYPE, ServerboundSaveScrollDataPacket.class, ServerboundSaveScrollDataPacket.CODEC, ServerboundSaveScrollDataPacket::handle);
 
-		createItemPropertyForList(Devotion.HOOD_ITEMS, Devotion.id("closed_hood"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.CLOSED_HOOD.get(), false) ? 1f : 0f);
-		ItemProperties.register(DevotionItems.RESEARCH_SCROLL.get(), Devotion.id("completed_research"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.SCROLL_COMPLETED.get(), false) ? 1f : 0f);
+		RegisterItemPropertiesEvent.EVENT.register(event -> {
+			for(Supplier<Item> itemSupplier : Devotion.HOOD_ITEMS)
+				event.register(itemSupplier, Devotion.id("closed_hood"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.CLOSED_HOOD.get(), false) ? 1f : 0f);
+
+			event.register(DevotionItems.RESEARCH_SCROLL, Devotion.id("completed_research"), (stack, level, entity, seed) -> stack.getOrDefault(DevotionData.SCROLL_COMPLETED.get(), false) ? 1f : 0f);
+		});
 
 		ScriptsOfDevotionScreenCallback.ADD_TAB.register(tabMap -> {
 			tabMap.put(Devotion.id("artifice"), DevotionItems.BASIC_MAGE_HOOD.get());
@@ -119,10 +117,5 @@ public class DevotionClient implements ClientEntryPoint {
 
 			Network.getNetworkHandler().sendToServer(new ServerboundGiveResearchScrollPacket(researchKey));
 		}
-	}
-
-	private static void createItemPropertyForList(List<Supplier<Item>> supplierList, ResourceLocation name, ClampedItemPropertyFunction property) {
-		for(Supplier<Item> supplier : supplierList)
-			ItemProperties.register(supplier.get(), name, property);
 	}
 }

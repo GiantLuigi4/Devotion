@@ -90,7 +90,7 @@ public class Devotion implements MainEntryPoint {
 		});
 
 		ItemMenuInteractionEvent.EVENT.register((menu, player, level, clickAction, slot, slotStack, cursorStack) -> {
-			if(clickAction == ClickAction.SECONDARY && cursorStack.isEmpty() && Devotion.HOOD_ITEMS.contains(slotStack.getItem())) {
+			if(clickAction == ClickAction.SECONDARY && cursorStack.isEmpty() && Devotion.HOOD_ITEMS.stream().map(Supplier::get).anyMatch(slotStack::is)) {
 				DataComponentType<Boolean> hoodData = DevotionData.CLOSED_HOOD.get();
 				boolean value = !slotStack.getOrDefault(hoodData, false);
 
