@@ -1,6 +1,7 @@
 package dev.cammiescorner.devotion.common;
 
 import dev.cammiescorner.devotion.api.research.Research;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -8,19 +9,19 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Set;
 
 public interface Duck {
-	float getAura(LivingEntity entity);
+	float getAura(LivingEntity entity, AuraType auraType);
 
-	void setAura(LivingEntity entity, float amount);
+	void setAura(LivingEntity entity, AuraType auraType, float amount);
 
-	Color getAuraColor(LivingEntity entity);
+	AuraType getPrimaryAuraType(LivingEntity entity);
 
-	void setAuraColor(LivingEntity entity, Color color);
+	void setPrimaryAuraType(LivingEntity entity, AuraType primaryAuraType);
 
-	float getAuraAlpha(LivingEntity entity);
+	float getAuraAlpha(LivingEntity entity, AuraType auraType);
 
-	boolean drainAura(LivingEntity entity, float amount, boolean simulate);
+	boolean drainAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate);
 
-	boolean regenAura(LivingEntity entity, float amount, boolean simulate);
+	boolean regenAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate);
 
 	Set<ResourceLocation> getResearchIds(Player player);
 

@@ -2,6 +2,7 @@ package dev.cammiescorner.devotion.neoforge.common;
 
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.research.Research;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraCapability;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.KnownResearchCapability;
 import dev.cammiescorner.devotion.neoforge.entrypoints.NeoMain;
@@ -15,7 +16,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 public class CommonEvents {
 	@SubscribeEvent
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerEntity(NeoMain.AURA, EntityType.PLAYER, (entity, unused) -> new AuraCapability(entity, AuraCapability.MAX_AURA, 0xffffff));
+		event.registerEntity(NeoMain.AURA, EntityType.PLAYER, (entity, unused) -> new AuraCapability(entity, AuraType.NONE));
 		event.registerEntity(NeoMain.KNOWN_RESEARCH, EntityType.PLAYER, (player, unused) -> new KnownResearchCapability(player));
 	}
 

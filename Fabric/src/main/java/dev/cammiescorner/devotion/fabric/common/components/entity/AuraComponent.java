@@ -1,64 +1,91 @@
 package dev.cammiescorner.devotion.fabric.common.components.entity;
 
-import dev.cammiescorner.devotion.common.Color;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.fabric.common.registries.DevotionComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
-// TODO redo aura component to have multiple types of aura
+import java.util.HashMap;
+import java.util.Map;
+
 public class AuraComponent implements AutoSyncedComponent {
 	public static final float MAX_AURA = 100;
 	private final LivingEntity entity;
-	private float aura;
-	private int auraColor;
+	private final Map<AuraType, Float> aura = new HashMap<>();
+	private AuraType primaryAuraType;
 
 	public AuraComponent(LivingEntity entity) {
 		this.entity = entity;
-		this.aura = MAX_AURA;
-		this.auraColor = 0xffffff;
+		this.primaryAuraType = AuraType.NONE;
+
+		for(AuraType auraType : AuraType.values())
+			aura.put(auraType, MAX_AURA * auraType.getAffinityMultiplier(primaryAuraType));
 	}
 
 	@Override
 	public void readFromNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
-		aura = tag.getFloat("Aura");
-		auraColor = tag.getInt("AuraColor");
+		aura.clear();
+
+		ListTag listTag = tag.getList("AuraMap", Tag.TAG_COMPOUND);
+
+		for(int i = 0; i < listTag.size(); i++) {
+			CompoundTag compoundTag = listTag.getCompound(i);
+
+			aura.put(AuraType.valueOf(compoundTag.getString("AuraType")), compoundTag.getFloat("AuraAmount"));
+		}
+
+		primaryAuraType = AuraType.valueOf(tag.getString("PrimaryAuraType"));
 	}
 
 	@Override
 	public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
-		tag.putFloat("Aura", aura);
-		tag.putInt("AuraColor", auraColor);
+		ListTag listTag = new ListTag();
+
+		for(Map.Entry<AuraType, Float> entry : aura.entrySet()) {
+			CompoundTag compoundTag = new CompoundTag();
+
+			compoundTag.putString("AuraType", entry.getKey().getSerializedName());
+			compoundTag.putFloat("AuraAmount", entry.getValue());
+			listTag.add(compoundTag);
+		}
+
+		tag.put("AuraMap", listTag);
+		tag.putString("PrimaryAuraType", primaryAuraType.getSerializedName());
 	}
 
-	public float getAura() {
-		return aura;
+	public float getAura(AuraType auraType) {
+		return aura.get(auraType);
 	}
 
-	public void setAura(float amount) {
-		aura = Mth.clamp(amount, 0, MAX_AURA);
+	public void setAura(AuraType auraType, float amount) {
+		aura.put(auraType, Mth.clamp(amount, 0, MAX_AURA * auraType.getAffinityMultiplier(primaryAuraType)));
 		entity.syncComponent(DevotionComponents.AURA);
 	}
 
-	public Color getAuraColor() {
-		return new Color(auraColor);
+	public AuraType getPrimaryAuraType() {
+		return primaryAuraType;
 	}
 
-	public void setAuraColor(Color color) {
-		this.auraColor = color.getDecimal();
+	public void setPrimaryAuraType(AuraType primaryAuraType) {
+		this.primaryAuraType = primaryAuraType;
 		entity.syncComponent(DevotionComponents.AURA);
 	}
 
 	public float getAuraAlpha() {
-		return aura / MAX_AURA;
+		return aura.get(primaryAuraType) / MAX_AURA;
 	}
 
-	public boolean drainAura(float amount, boolean simulate) {
-		if(aura - amount >= 0) {
+	public boolean drainAura(AuraType auraType, float amount, boolean simulate) {
+		float currentAura = getAura(auraType);
+
+		if(currentAura - amount >= 0) {
 			if(!simulate)
-				setAura(aura - amount);
+				setAura(auraType, currentAura - amount);
 
 			return true;
 		}
@@ -66,10 +93,12 @@ public class AuraComponent implements AutoSyncedComponent {
 		return false;
 	}
 
-	public boolean regenAura(float amount, boolean simulate) {
-		if(aura < MAX_AURA) {
+	public boolean regenAura(AuraType auraType, float amount, boolean simulate) {
+		float currentAura = getAura(auraType);
+
+		if(currentAura < MAX_AURA) {
 			if(!simulate)
-				setAura(aura + amount);
+				setAura(auraType, currentAura + amount);
 
 			return true;
 		}

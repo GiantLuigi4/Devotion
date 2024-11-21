@@ -1,6 +1,7 @@
 package dev.cammiescorner.devotion.common;
 
 import dev.cammiescorner.devotion.api.research.Research;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.upcraft.sparkweave.api.platform.Services;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,32 +12,32 @@ import java.util.Set;
 public class MainHelper {
 	private static final Duck duck = Services.getService(Duck.class);
 
-	public static float getAura(LivingEntity entity) {
-		return duck.getAura(entity);
+	public static float getAura(LivingEntity entity, AuraType auraType) {
+		return duck.getAura(entity, auraType);
 	}
 
-	public static void setAura(LivingEntity entity, float amount) {
-		duck.setAura(entity, amount);
+	public static void setAura(LivingEntity entity, AuraType auraType, float amount) {
+		duck.setAura(entity, auraType, amount);
 	}
 
-	public static Color getAuraColor(LivingEntity entity) {
-		return duck.getAuraColor(entity);
+	public static AuraType getPrimaryAuraType(LivingEntity entity) {
+		return duck.getPrimaryAuraType(entity);
 	}
 
-	public static void setAuraColor(LivingEntity entity, Color color) {
-		duck.setAuraColor(entity, color);
+	public static void setPrimaryAuraType(LivingEntity entity, AuraType auraType) {
+		duck.setPrimaryAuraType(entity, auraType);
 	}
 
-	public static float getAuraAlpha(LivingEntity entity) {
-		return duck.getAuraAlpha(entity);
+	public static float getAuraAlpha(LivingEntity entity, AuraType auraType) {
+		return duck.getAuraAlpha(entity, auraType);
 	}
 
-	public static boolean drainAura(LivingEntity entity, float amount, boolean simulate) {
-		return duck.drainAura(entity, amount, simulate);
+	public static boolean drainAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
+		return duck.drainAura(entity, auraType, amount, simulate);
 	}
 
-	public static boolean regenAura(LivingEntity entity, float amount, boolean simulate) {
-		return duck.regenAura(entity, amount, simulate);
+	public static boolean regenAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
+		return duck.regenAura(entity, auraType, amount, simulate);
 	}
 
 	public static Set<ResourceLocation> getResearchIds(Player player) {

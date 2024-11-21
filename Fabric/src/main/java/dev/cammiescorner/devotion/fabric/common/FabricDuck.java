@@ -1,7 +1,7 @@
 package dev.cammiescorner.devotion.fabric.common;
 
 import dev.cammiescorner.devotion.api.research.Research;
-import dev.cammiescorner.devotion.common.Color;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.Duck;
 import dev.cammiescorner.devotion.fabric.common.registries.DevotionComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -12,40 +12,40 @@ import java.util.Set;
 
 public class FabricDuck implements Duck {
 	@Override
-	public float getAura(LivingEntity entity) {
-		return DevotionComponents.AURA.isProvidedBy(entity) ? entity.getComponent(DevotionComponents.AURA).getAura() : 0f;
+	public float getAura(LivingEntity entity, AuraType auraType) {
+		return DevotionComponents.AURA.isProvidedBy(entity) ? entity.getComponent(DevotionComponents.AURA).getAura(auraType) : 0f;
 	}
 
 	@Override
-	public void setAura(LivingEntity entity, float amount) {
+	public void setAura(LivingEntity entity, AuraType auraType, float amount) {
 		if(DevotionComponents.AURA.isProvidedBy(entity))
-			entity.getComponent(DevotionComponents.AURA).setAura(amount);
+			entity.getComponent(DevotionComponents.AURA).setAura(auraType, amount);
 	}
 
 	@Override
-	public Color getAuraColor(LivingEntity entity) {
-		return DevotionComponents.AURA.isProvidedBy(entity) ? entity.getComponent(DevotionComponents.AURA).getAuraColor() : new Color(0xffffff);
+	public AuraType getPrimaryAuraType(LivingEntity entity) {
+		return DevotionComponents.AURA.isProvidedBy(entity) ? entity.getComponent(DevotionComponents.AURA).getPrimaryAuraType() : AuraType.NONE;
 	}
 
 	@Override
-	public void setAuraColor(LivingEntity entity, Color color) {
+	public void setPrimaryAuraType(LivingEntity entity, AuraType primaryAuraType) {
 		if(DevotionComponents.AURA.isProvidedBy(entity))
-			entity.getComponent(DevotionComponents.AURA).setAuraColor(color);
+			entity.getComponent(DevotionComponents.AURA).setPrimaryAuraType(primaryAuraType);
 	}
 
 	@Override
-	public float getAuraAlpha(LivingEntity entity) {
+	public float getAuraAlpha(LivingEntity entity, AuraType auraType) {
 		return DevotionComponents.AURA.isProvidedBy(entity) ? entity.getComponent(DevotionComponents.AURA).getAuraAlpha() : 1f;
 	}
 
 	@Override
-	public boolean drainAura(LivingEntity entity, float amount, boolean simulate) {
-		return DevotionComponents.AURA.isProvidedBy(entity) && entity.getComponent(DevotionComponents.AURA).drainAura(amount, simulate);
+	public boolean drainAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
+		return DevotionComponents.AURA.isProvidedBy(entity) && entity.getComponent(DevotionComponents.AURA).drainAura(auraType, amount, simulate);
 	}
 
 	@Override
-	public boolean regenAura(LivingEntity entity, float amount, boolean simulate) {
-		return DevotionComponents.AURA.isProvidedBy(entity) && entity.getComponent(DevotionComponents.AURA).regenAura(amount, simulate);
+	public boolean regenAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
+		return DevotionComponents.AURA.isProvidedBy(entity) && entity.getComponent(DevotionComponents.AURA).regenAura(auraType, amount, simulate);
 	}
 
 	@Override

@@ -1,77 +1,104 @@
 package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 
 import commonnetwork.api.Network;
-import dev.cammiescorner.devotion.common.Color;
+import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAuraPacket;
 import dev.cammiescorner.devotion.neoforge.common.capabilities.SyncedCapability;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
-// TODO redo aura component to have multiple types of aura
+import java.util.HashMap;
+import java.util.Map;
+
 public class AuraCapability implements SyncedCapability {
 	public static final float MAX_AURA = 100;
 	private final LivingEntity entity;
-	private float aura;
-	private int auraColor;
+	private final Map<AuraType, Float> aura = new HashMap<>();
+	private AuraType primaryAuraType;
 
-	public AuraCapability(LivingEntity entity, float aura, int auraColor) {
+	public AuraCapability(LivingEntity entity, AuraType primaryAuraType) {
 		this.entity = entity;
-		this.aura = aura;
-		this.auraColor = auraColor;
+		this.primaryAuraType = primaryAuraType;
+
+		for(AuraType auraType : AuraType.values())
+			aura.put(auraType, MAX_AURA * auraType.getAffinityMultiplier(primaryAuraType));
 	}
 
 	@Override
 	public void readFromNbt(CompoundTag tag) {
-		aura = tag.getFloat("Aura");
-		auraColor = tag.getInt("AuraColor");
+		aura.clear();
+
+		ListTag listTag = tag.getList("AuraMap", Tag.TAG_COMPOUND);
+
+		for(int i = 0; i < listTag.size(); i++) {
+			CompoundTag compoundTag = listTag.getCompound(i);
+
+			aura.put(AuraType.valueOf(compoundTag.getString("AuraType")), compoundTag.getFloat("AuraAmount"));
+		}
+
+		primaryAuraType = AuraType.valueOf(tag.getString("PrimaryAuraType"));
 	}
 
 	@Override
 	public void writeToNbt(CompoundTag tag) {
-		tag.putFloat("Aura", aura);
-		tag.putInt("AuraColor", auraColor);
+		ListTag listTag = new ListTag();
+
+		for(Map.Entry<AuraType, Float> entry : aura.entrySet()) {
+			CompoundTag compoundTag = new CompoundTag();
+
+			compoundTag.putString("AuraType", entry.getKey().getSerializedName());
+			compoundTag.putFloat("AuraAmount", entry.getValue());
+			listTag.add(compoundTag);
+		}
+
+		tag.put("AuraMap", listTag);
+		tag.putString("PrimaryAuraType", primaryAuraType.getSerializedName());
 	}
 
-	public float getAura() {
-		return aura;
+	public float getAura(AuraType auraType) {
+		return aura.get(auraType);
 	}
 
-	public void setAura(float amount) {
-		setAura(amount, true);
+	public void setAura(AuraType auraType, float amount) {
+		setAura(auraType, amount, true);
 	}
 
-	public void setAura(float amount, boolean sync) {
-		aura = Mth.clamp(amount, 0, MAX_AURA);
+	public void setAura(AuraType auraType, float amount, boolean sync) {
+		aura.put(auraType, Mth.clamp(amount, 0, MAX_AURA * auraType.getAffinityMultiplier(primaryAuraType)));
 
 		if(sync && entity.level() instanceof ServerLevel level)
-			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, auraColor), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
+			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, primaryAuraType), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
 	}
 
-	public Color getAuraColor() {
-		return new Color(auraColor);
+	public AuraType getPrimaryAuraType() {
+		return primaryAuraType;
 	}
 
-	public void setAuraColor(Color color) {
-		setAuraColor(color, true);
+	public void setPrimaryAuraType(AuraType primaryAuraType) {
+		setPrimaryAuraType(primaryAuraType, true);
 	}
 
-	public void setAuraColor(Color color, boolean sync) {
-		auraColor = color.getDecimal();
+	public void setPrimaryAuraType(AuraType primaryAuraType, boolean sync) {
+		this.primaryAuraType = primaryAuraType;
 
 		if(sync && entity.level() instanceof ServerLevel level)
-			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, auraColor), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
+			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, primaryAuraType), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
 	}
 
 	public float getAuraAlpha() {
-		return aura / MAX_AURA;
+		return aura.get(primaryAuraType) / MAX_AURA;
 	}
 
-	public boolean drainAura(float amount, boolean simulate) {
-		if(aura - amount >= 0) {
+	public boolean drainAura(AuraType auraType, float amount, boolean simulate) {
+		float currentAura = getAura(auraType);
+
+		if(currentAura - amount >= 0) {
 			if(!simulate)
-				setAura(getAura() - amount);
+				setAura(auraType, currentAura - amount);
 
 			return true;
 		}
@@ -79,10 +106,12 @@ public class AuraCapability implements SyncedCapability {
 		return false;
 	}
 
-	public boolean regenAura(float amount, boolean simulate) {
-		if(amount < MAX_AURA) {
+	public boolean regenAura(AuraType auraType, float amount, boolean simulate) {
+		float currentAura = getAura(auraType);
+
+		if(currentAura < MAX_AURA) {
 			if(!simulate)
-				setAura(getAura() + amount);
+				setAura(auraType, currentAura + amount);
 
 			return true;
 		}
