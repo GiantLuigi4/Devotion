@@ -36,10 +36,10 @@ public class AuraComponent implements AutoSyncedComponent {
 		for(int i = 0; i < listTag.size(); i++) {
 			CompoundTag compoundTag = listTag.getCompound(i);
 
-			aura.put(AuraType.valueOf(compoundTag.getString("AuraType")), compoundTag.getFloat("AuraAmount"));
+			aura.put(AuraType.byName(compoundTag.getString("AuraType")), compoundTag.getFloat("AuraAmount"));
 		}
 
-		primaryAuraType = AuraType.valueOf(tag.getString("PrimaryAuraType"));
+		primaryAuraType = AuraType.byName(tag.getString("PrimaryAuraType"));
 	}
 
 	@Override

@@ -125,7 +125,7 @@ public class DevotionAltarRecipe implements Recipe<AltarFocusBlockEntity> {
 				Codec.STRING.optionalFieldOf("group", "").forGetter(DevotionAltarRecipe::getGroup),
 				Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(Recipe::getIngredients),
 				Codec.unboundedMap(AuraType.CODEC.xmap(auraType -> {
-					if(auraType.ordinal() >= AuraType.SPECIALIST.ordinal())
+					if(auraType.ordinal() >= AuraType.SPECIALIZATION.ordinal())
 						throw new IllegalArgumentException(auraType.getName() + " is not a valid aura type for recipes");
 
 					return auraType;

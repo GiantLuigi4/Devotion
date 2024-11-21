@@ -127,9 +127,9 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 
 				if(altar.isCrafting()) {
 					if(!altar.hasEnoughAura()) {
-						AuraType nextAuraType = AuraType.ENHANCER;
+						AuraType nextAuraType = AuraType.ENHANCEMENT;
 
-						while(nextAuraType.ordinal() < AuraType.SPECIALIST.ordinal()) {
+						while(nextAuraType.ordinal() < AuraType.SPECIALIZATION.ordinal()) {
 							if(altar.getAura(nextAuraType) < altar.getAuraCost(nextAuraType)) {
 								AltarPillarBlockEntity pillar = null;
 
@@ -334,7 +334,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 	}
 
 	public boolean hasEnoughAura() {
-		return isCrafting() && Stream.of(AuraType.ENHANCER, AuraType.TRANSMUTER, AuraType.EMITTER, AuraType.CONJURER, AuraType.MANIPULATOR).allMatch(auraType -> getAura(auraType) >= getAuraCost(auraType));
+		return isCrafting() && Stream.of(AuraType.ENHANCEMENT, AuraType.TRANSMUTATION, AuraType.EMISSION, AuraType.CONJURATION, AuraType.MANIPULATION).allMatch(auraType -> getAura(auraType) >= getAuraCost(auraType));
 	}
 
 	public void addPower(AuraType auraType) {

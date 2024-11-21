@@ -176,37 +176,37 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 					lineStart = enhancerPos;
 
 					if(lines.isEmpty())
-						auraTypes.add(AuraType.ENHANCER);
+						auraTypes.add(AuraType.ENHANCEMENT);
 				}
 				else if(mousePos.distanceToSqr(transmuterPos) <= 144 && (lines.isEmpty() || lastPos.equals(transmuterPos))) {
 					lineStart = transmuterPos;
 
 					if(lines.isEmpty())
-						auraTypes.add(AuraType.TRANSMUTER);
+						auraTypes.add(AuraType.TRANSMUTATION);
 				}
 				else if(mousePos.distanceToSqr(emitterPos) <= 144 && (lines.isEmpty() || lastPos.equals(emitterPos))) {
 					lineStart = emitterPos;
 
 					if(lines.isEmpty())
-						auraTypes.add(AuraType.EMITTER);
+						auraTypes.add(AuraType.EMISSION);
 				}
 				else if(mousePos.distanceToSqr(conjurerPos) <= 144 && (lines.isEmpty() || lastPos.equals(conjurerPos))) {
 					lineStart = conjurerPos;
 
 					if(lines.isEmpty())
-						auraTypes.add(AuraType.CONJURER);
+						auraTypes.add(AuraType.CONJURATION);
 				}
 				else if(mousePos.distanceToSqr(manipulatorPos) <= 144 && (lines.isEmpty() || lastPos.equals(manipulatorPos))) {
 					lineStart = manipulatorPos;
 
 					if(lines.isEmpty())
-						auraTypes.add(AuraType.MANIPULATOR);
+						auraTypes.add(AuraType.MANIPULATION);
 				}
 				else if(mousePos.distanceToSqr(specialistPos) <= 144 && (lines.isEmpty() || lastPos.equals(specialistPos))) {
 					lineStart = specialistPos;
 
 					if(lines.isEmpty())
-						auraTypes.add(AuraType.SPECIALIST);
+						auraTypes.add(AuraType.SPECIALIZATION);
 				}
 			}
 
@@ -229,17 +229,17 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if(lineStart != null && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 			if(mousePos.distanceToSqr(enhancerPos) <= 144 && !lineStart.equals(enhancerPos))
-				addLine(lineStart, enhancerPos, AuraType.ENHANCER);
+				addLine(lineStart, enhancerPos, AuraType.ENHANCEMENT);
 			else if(mousePos.distanceToSqr(transmuterPos) <= 144 && !lineStart.equals(transmuterPos))
-				addLine(lineStart, transmuterPos, AuraType.TRANSMUTER);
+				addLine(lineStart, transmuterPos, AuraType.TRANSMUTATION);
 			else if(mousePos.distanceToSqr(emitterPos) <= 144 && !lineStart.equals(emitterPos))
-				addLine(lineStart, emitterPos, AuraType.EMITTER);
+				addLine(lineStart, emitterPos, AuraType.EMISSION);
 			else if(mousePos.distanceToSqr(conjurerPos) <= 144 && !lineStart.equals(conjurerPos))
-				addLine(lineStart, conjurerPos, AuraType.CONJURER);
+				addLine(lineStart, conjurerPos, AuraType.CONJURATION);
 			else if(mousePos.distanceToSqr(manipulatorPos) <= 144 && !lineStart.equals(manipulatorPos))
-				addLine(lineStart, manipulatorPos, AuraType.MANIPULATOR);
+				addLine(lineStart, manipulatorPos, AuraType.MANIPULATION);
 			else if(mousePos.distanceToSqr(specialistPos) <= 144 && !lineStart.equals(specialistPos))
-				addLine(lineStart, specialistPos, AuraType.SPECIALIST);
+				addLine(lineStart, specialistPos, AuraType.SPECIALIZATION);
 
 			lineStart = null;
 			Network.getNetworkHandler().sendToServer(new ServerboundSaveScrollDataPacket(menu.containerId, auraTypes));
@@ -317,21 +317,21 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 					AuraType current = AuraType.values()[undoBuffer.get(i)];
 					AuraType next = AuraType.values()[undoBuffer.get(i + 1)];
 					Vec2 lineX = switch(current) {
-						case ENHANCER -> enhancerPos;
-						case TRANSMUTER -> transmuterPos;
-						case EMITTER -> emitterPos;
-						case CONJURER -> conjurerPos;
-						case MANIPULATOR -> manipulatorPos;
-						case SPECIALIST -> specialistPos;
+						case ENHANCEMENT -> enhancerPos;
+						case TRANSMUTATION -> transmuterPos;
+						case EMISSION -> emitterPos;
+						case CONJURATION -> conjurerPos;
+						case MANIPULATION -> manipulatorPos;
+						case SPECIALIZATION -> specialistPos;
 						case NONE -> new Vec2(0, 0);
 					};
 					Vec2 lineY = switch(next) {
-						case ENHANCER -> enhancerPos;
-						case TRANSMUTER -> transmuterPos;
-						case EMITTER -> emitterPos;
-						case CONJURER -> conjurerPos;
-						case MANIPULATOR -> manipulatorPos;
-						case SPECIALIST -> specialistPos;
+						case ENHANCEMENT -> enhancerPos;
+						case TRANSMUTATION -> transmuterPos;
+						case EMISSION -> emitterPos;
+						case CONJURATION -> conjurerPos;
+						case MANIPULATION -> manipulatorPos;
+						case SPECIALIZATION -> specialistPos;
 						case NONE -> new Vec2(0, 0);
 					};
 
