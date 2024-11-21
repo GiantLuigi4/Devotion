@@ -20,9 +20,9 @@ public class AuraCapability implements SyncedCapability {
 	private final Map<AuraType, Float> aura = new HashMap<>();
 	private AuraType primaryAuraType;
 
-	public AuraCapability(LivingEntity entity, AuraType primaryAuraType) {
+	public AuraCapability(LivingEntity entity) {
 		this.entity = entity;
-		this.primaryAuraType = primaryAuraType;
+		this.primaryAuraType = AuraType.NONE; // TODO make primaryAuraType random on first spawn
 
 		for(AuraType auraType : AuraType.values())
 			aura.put(auraType, MAX_AURA * auraType.getAffinityMultiplier(primaryAuraType));

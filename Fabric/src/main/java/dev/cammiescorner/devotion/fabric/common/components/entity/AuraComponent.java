@@ -21,7 +21,7 @@ public class AuraComponent implements AutoSyncedComponent {
 
 	public AuraComponent(LivingEntity entity) {
 		this.entity = entity;
-		this.primaryAuraType = AuraType.NONE;
+		this.primaryAuraType = AuraType.NONE; // TODO make primaryAuraType random on first spawn
 
 		for(AuraType auraType : AuraType.values())
 			aura.put(auraType, MAX_AURA * auraType.getAffinityMultiplier(primaryAuraType));
