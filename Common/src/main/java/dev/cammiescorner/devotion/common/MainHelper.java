@@ -32,12 +32,12 @@ public class MainHelper {
 		return duck.getAuraAlpha(entity, auraType);
 	}
 
-	public static boolean drainAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
-		return duck.drainAura(entity, auraType, amount, simulate);
-	}
-
 	public static boolean regenAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
 		return duck.regenAura(entity, auraType, amount, simulate);
+	}
+
+	public static boolean drainAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
+		return duck.drainAura(entity, auraType, amount, simulate);
 	}
 
 	public static Set<ResourceLocation> getResearchIds(Player player) {

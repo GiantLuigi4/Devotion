@@ -43,8 +43,8 @@ public enum AuraType implements StringRepresentable {
 		};
 	}
 
-	public Affinity getAffinity(AuraType primaryAuraType) {
-		return this == primaryAuraType ? Affinity.PRIMARY : isSecondaryAffinity(primaryAuraType) ? Affinity.SECONDARY : isTertiaryAffinity(primaryAuraType) ? Affinity.TERTIARY : Affinity.OPPOSITE;
+	public AuraAffinity getAffinity(AuraType primaryAuraType) {
+		return this == primaryAuraType ? AuraAffinity.PRIMARY : isSecondaryAffinity(primaryAuraType) ? AuraAffinity.SECONDARY : isTertiaryAffinity(primaryAuraType) ? AuraAffinity.TERTIARY : AuraAffinity.OPPOSITE;
 	}
 
 	public float getAffinityMultiplier(AuraType primaryAuraType) {
@@ -84,19 +84,5 @@ public enum AuraType implements StringRepresentable {
 	@Override
 	public String getSerializedName() {
 		return name;
-	}
-
-	public enum Affinity {
-		PRIMARY(1f), SECONDARY(0.6f), TERTIARY(0.4f), OPPOSITE(0.2f);
-
-		private final float multiplier;
-
-		Affinity(float multiplier) {
-			this.multiplier = multiplier;
-		}
-
-		public float getMultiplier() {
-			return multiplier;
-		}
 	}
 }

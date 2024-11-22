@@ -110,5 +110,11 @@
 	"research_error.devotion.already_known": "You've already learned this research!",
 	"research_error.devotion.dont_know_parents": "Perhaps you should learn more before trying to understand this.",
 
-	"lectern.devotion.take_scroll": "Take Scroll"
+	"lectern.devotion.take_scroll": "Take Scroll",
+
+	"command.devotion.get_aura": "%s's %s aura is %s",
+	"command.devotion.set_aura": "Set %s's %s aura to %s",
+	"command.devotion.get_auratype": "%s's primary Aura Type is %s",
+	"command.devotion.set_auratype": "Set %s's primary Aura Type to %s",
+	"command.devotion.not_living_entity": "Entity argument must be a living entity"
 }

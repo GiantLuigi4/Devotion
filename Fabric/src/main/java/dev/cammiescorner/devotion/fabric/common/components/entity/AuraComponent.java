@@ -80,12 +80,12 @@ public class AuraComponent implements AutoSyncedComponent {
 		return aura.get(primaryAuraType) / MAX_AURA;
 	}
 
-	public boolean drainAura(AuraType auraType, float amount, boolean simulate) {
+	public boolean regenAura(AuraType auraType, float amount, boolean simulate) {
 		float currentAura = getAura(auraType);
 
-		if(currentAura - amount >= 0) {
+		if(currentAura < MAX_AURA) {
 			if(!simulate)
-				setAura(auraType, currentAura - amount);
+				setAura(auraType, currentAura + amount);
 
 			return true;
 		}
@@ -93,12 +93,12 @@ public class AuraComponent implements AutoSyncedComponent {
 		return false;
 	}
 
-	public boolean regenAura(AuraType auraType, float amount, boolean simulate) {
+	public boolean drainAura(AuraType auraType, float amount, boolean simulate) {
 		float currentAura = getAura(auraType);
 
-		if(currentAura < MAX_AURA) {
+		if(currentAura - amount >= 0) {
 			if(!simulate)
-				setAura(auraType, currentAura + amount);
+				setAura(auraType, currentAura - amount);
 
 			return true;
 		}

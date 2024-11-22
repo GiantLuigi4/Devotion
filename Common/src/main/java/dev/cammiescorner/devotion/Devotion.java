@@ -12,6 +12,7 @@ import dev.cammiescorner.devotion.common.networking.serverbound.ServerboundOpenC
 import dev.cammiescorner.devotion.common.registries.*;
 import dev.cammiescorner.devotion.common.screens.providers.ResearchMenuProvider;
 import dev.upcraft.sparkweave.api.entrypoint.MainEntryPoint;
+import dev.upcraft.sparkweave.api.event.CommandEvents;
 import dev.upcraft.sparkweave.api.event.ItemMenuInteractionEvent;
 import dev.upcraft.sparkweave.api.event.RegisterCustomLecternMenuEvent;
 import dev.upcraft.sparkweave.api.platform.ModContainer;
@@ -79,6 +80,7 @@ public class Devotion implements MainEntryPoint {
 		DevotionRecipes.RECIPE_SERIALIZERS.accept(registryService);
 		DevotionRecipes.RECIPE_TYPES.accept(registryService);
 		DevotionMenus.MENUS.accept(registryService);
+		CommandEvents.REGISTER.register(DevotionCommands::register);
 
 		Network.registerPacket(ClientboundAuraPacket.TYPE, ClientboundAuraPacket.class, ClientboundAuraPacket.CODEC, ClientboundAuraPacket::handle);
 		Network.registerPacket(ClientboundKnownResearchPacket.TYPE, ClientboundKnownResearchPacket.class, ClientboundKnownResearchPacket.CODEC, ClientboundKnownResearchPacket::handle);
