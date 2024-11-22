@@ -3,18 +3,19 @@ package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAuraPacket;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.SyncedCapability;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuraCapability implements SyncedCapability {
+public class AuraCapability implements INBTSerializable<CompoundTag> {
 	public static final float MAX_AURA = 100;
 	private final LivingEntity entity;
 	private final Map<AuraType, Float> aura = new HashMap<>();
@@ -29,7 +30,7 @@ public class AuraCapability implements SyncedCapability {
 	}
 
 	@Override
-	public void readFromNbt(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
 		aura.clear();
 
 		ListTag listTag = tag.getList("AuraMap", Tag.TAG_COMPOUND);
@@ -44,7 +45,8 @@ public class AuraCapability implements SyncedCapability {
 	}
 
 	@Override
-	public void writeToNbt(CompoundTag tag) {
+	public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+		CompoundTag tag = new CompoundTag();
 		ListTag listTag = new ListTag();
 
 		for(Map.Entry<AuraType, Float> entry : aura.entrySet()) {
@@ -57,6 +59,8 @@ public class AuraCapability implements SyncedCapability {
 
 		tag.put("AuraMap", listTag);
 		tag.putString("PrimaryAuraType", primaryAuraType.getSerializedName());
+
+		return tag;
 	}
 
 	public float getAura(AuraType auraType) {
@@ -71,7 +75,7 @@ public class AuraCapability implements SyncedCapability {
 		aura.put(auraType, Mth.clamp(amount, 0, MAX_AURA * auraType.getAffinityMultiplier(primaryAuraType)));
 
 		if(sync && entity.level() instanceof ServerLevel level)
-			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, primaryAuraType), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
+			Network.getNetworkHandler().sendToClientsLoadingPos(new ClientboundAuraPacket(entity.getId(), aura, primaryAuraType), level, entity.blockPosition());
 	}
 
 	public AuraType getPrimaryAuraType() {
@@ -85,8 +89,11 @@ public class AuraCapability implements SyncedCapability {
 	public void setPrimaryAuraType(AuraType primaryAuraType, boolean sync) {
 		this.primaryAuraType = primaryAuraType;
 
+		System.out.println("Side: " + (entity.level().isClientSide() ? "CLIENT" : "SERVER"));
+		System.out.println("From Capability: " + getPrimaryAuraType());
+
 		if(sync && entity.level() instanceof ServerLevel level)
-			Network.getNetworkHandler().sendToClientsInRange(new ClientboundAuraPacket(entity.getId(), aura, primaryAuraType), level, entity.blockPosition(), (double) entity.getType().clientTrackingRange() * 16);
+			Network.getNetworkHandler().sendToClientsLoadingPos(new ClientboundAuraPacket(entity.getId(), aura, primaryAuraType), level, entity.blockPosition());
 	}
 
 	public float getAuraAlpha() {

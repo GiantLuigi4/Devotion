@@ -19,20 +19,23 @@ public record ClientboundAuraPacket(int entityId, Map<AuraType, Float> aura, Aur
 	public static final StreamCodec<? extends FriendlyByteBuf, ClientboundAuraPacket> CODEC = StreamCodec.of((buffer, value) -> {
 		buffer.writeVarInt(value.entityId);
 		buffer.writeVarInt(value.aura.entrySet().size());
-		buffer.writeEnum(value.primaryAuraType);
+		buffer.writeUtf(value.primaryAuraType.getSerializedName());
 
 		for(Map.Entry<AuraType, Float> entry : value.aura.entrySet()) {
-			buffer.writeEnum(entry.getKey());
+			buffer.writeUtf(entry.getKey().getSerializedName());
 			buffer.writeFloat(entry.getValue());
 		}
 	}, buffer -> {
 		int entityId = buffer.readVarInt();
 		int mapSize = buffer.readVarInt();
-		AuraType primaryAuraType = buffer.readEnum(AuraType.class);
+		AuraType primaryAuraType = AuraType.byName(buffer.readUtf());
 		Map<AuraType, Float> aura = new HashMap<>();
 
-		for(int i = 0; i < mapSize; i++)
-			aura.put(buffer.readEnum(AuraType.class), buffer.readFloat());
+		for(int i = 0; i < mapSize; i++) {
+			AuraType auraType = AuraType.byName(buffer.readUtf());
+			float auraAmount = buffer.readFloat();
+			aura.put(auraType, auraAmount);
+		}
 
 		return new ClientboundAuraPacket(entityId, aura, primaryAuraType);
 	});
@@ -53,6 +56,10 @@ public record ClientboundAuraPacket(int entityId, Map<AuraType, Float> aura, Aur
 				MainHelper.setAura(entity, entry.getKey(), entry.getValue());
 
 			MainHelper.setPrimaryAuraType(entity, primaryAuraType);
+
+			System.out.println("Side: " + (entity.level().isClientSide() ? "CLIENT" : "SERVER"));
+			System.out.println("From Packet Value: " + primaryAuraType);
+			System.out.println("From Packet After Set: " + MainHelper.getPrimaryAuraType(entity));
 		}
 	}
 }

@@ -31,8 +31,11 @@ public class NeoDuck implements Duck {
 
 	@Override
 	public void setPrimaryAuraType(LivingEntity entity, AuraType primaryAuraType) {
-		if(entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability)
+		if(entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability) {
+			System.out.println("Side: " + (entity.level().isClientSide() ? "CLIENT" : "SERVER"));
+			System.out.println("From NeoDuck: " + primaryAuraType);
 			capability.setPrimaryAuraType(primaryAuraType);
+		}
 	}
 
 	@Override

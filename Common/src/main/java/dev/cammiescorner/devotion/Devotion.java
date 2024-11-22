@@ -66,13 +66,13 @@ public class Devotion implements MainEntryPoint {
 		CONFIGURATOR.register(DevotionConfig.class);
 		RegistryService registryService = RegistryService.get();
 		
-		// Registries that add gameplay features (e.g. items, blocks, and entities) //
+		// Registries that add gameplay features (e.g. items, blocks, and entities)
 		DevotionItems.ITEMS.accept(registryService);
 		DevotionBlocks.BLOCKS.accept(registryService);
 		DevotionBlocks.BLOCK_ENTITIES.accept(registryService);
 		DevotionAltarActions.ACTIONS.accept(registryService);
 
-		// Registries that supplement gameplay features (e.g. data components, materials, and recipes //
+		// Registries that supplement gameplay features (e.g. data components, materials, and recipes
 		DevotionCreativeTabs.CREATIVE_TABS.accept(registryService);
 		DevotionMaterials.ARMOR_MATERIALS.accept(registryService);
 		DevotionData.DATA_COMPONENTS.accept(registryService);
@@ -85,7 +85,6 @@ public class Devotion implements MainEntryPoint {
 		Network.registerPacket(ClientboundAuraPacket.TYPE, ClientboundAuraPacket.class, ClientboundAuraPacket.CODEC, ClientboundAuraPacket::handle);
 		Network.registerPacket(ClientboundKnownResearchPacket.TYPE, ClientboundKnownResearchPacket.class, ClientboundKnownResearchPacket.CODEC, ClientboundKnownResearchPacket::handle);
 		Network.registerPacket(ClientboundRefreshResearchScreenPacket.TYPE, ClientboundRefreshResearchScreenPacket.class, ClientboundRefreshResearchScreenPacket.CODEC, ClientboundRefreshResearchScreenPacket::handle);
-
 
 		RegisterCustomLecternMenuEvent.EVENT.register(event -> {
 			event.register((level, pos, player, blockEntity, stack) -> new ResearchMenuProvider(level, stack, pos, blockEntity.bookAccess), DevotionItems.RESEARCH_SCROLL);
