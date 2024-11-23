@@ -25,6 +25,6 @@ public class NeoMain {
 
 	public NeoMain(IEventBus modBus) {
 		ATTACHMENT_TYPES.register(modBus);
-		AuraAttachment.registerAuraProvider(Player.class);
+		AuraAttachment.registerAuraProviders(Player.class);
 	}
 }

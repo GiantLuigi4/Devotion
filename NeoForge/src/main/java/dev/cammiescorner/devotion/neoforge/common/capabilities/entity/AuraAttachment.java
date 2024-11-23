@@ -101,7 +101,7 @@ public class AuraAttachment implements INBTSerializable<CompoundTag> {
 	 * @param clazz The classes for entities that should have aura
 	 */
 	@SafeVarargs
-	public static void registerAuraProvider(Class<? extends Entity>... clazz) {
+	public static void registerAuraProviders(Class<? extends Entity>... clazz) {
 		AURA_PROVIDERS.addAll(Arrays.asList(clazz));
 	}
 
