@@ -1,26 +1,24 @@
 package dev.cammiescorner.devotion.neoforge.common;
 
 import dev.cammiescorner.devotion.Devotion;
-import dev.cammiescorner.devotion.api.research.Research;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraCapability;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.KnownResearchCapability;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraAttachment;
 import dev.cammiescorner.devotion.neoforge.entrypoints.NeoMain;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
-@EventBusSubscriber(modid = Devotion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Devotion.MOD_ID)
 public class CommonEvents {
 	@SubscribeEvent
-	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerEntity(NeoMain.AURA, EntityType.PLAYER, (entity, unused) -> new AuraCapability(entity));
-		event.registerEntity(NeoMain.KNOWN_RESEARCH, EntityType.PLAYER, (player, unused) -> new KnownResearchCapability(player));
-	}
+	public static void registerEntitiesForAttachments(EntityJoinLevelEvent event) {
+		Entity entity = event.getEntity();
 
-	@SubscribeEvent
-	public static void registerDynamicRegistries(DataPackRegistryEvent.NewRegistry event) {
-		event.dataPackRegistry(Devotion.RESEARCH_KEY, Research.DIRECT_CODEC);
+		if(AuraAttachment.isAuraProvider(entity))
+			entity.getData(NeoMain.AURA);
+
+		if(entity instanceof Player)
+			entity.getData(NeoMain.KNOWN_RESEARCH);
 	}
 }

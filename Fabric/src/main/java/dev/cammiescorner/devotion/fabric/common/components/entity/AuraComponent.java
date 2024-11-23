@@ -58,6 +58,10 @@ public class AuraComponent implements AutoSyncedComponent {
 		tag.putString("PrimaryAuraType", primaryAuraType.getSerializedName());
 	}
 
+	public Map<AuraType, Float> getAllAura() {
+		return Map.copyOf(aura);
+	}
+
 	public float getAura(AuraType auraType) {
 		return aura.get(auraType);
 	}

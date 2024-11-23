@@ -2,8 +2,8 @@ package dev.cammiescorner.devotion.neoforge.common.capabilities.entity;
 
 import com.google.common.collect.ImmutableSet;
 import commonnetwork.api.Network;
-import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundKnownResearchPacket;
+import dev.cammiescorner.devotion.neoforge.entrypoints.NeoMain;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -16,13 +16,10 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class KnownResearchCapability implements INBTSerializable<CompoundTag> {
+public class KnownResearchAttachment implements INBTSerializable<CompoundTag> {
 	private final Set<ResourceLocation> researchIds = new HashSet<>();
-	private final Player player;
 
-	public KnownResearchCapability(Player player) {
-		this.player = player;
-	}
+	public KnownResearchAttachment() { }
 
 	@Override
 	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
@@ -50,37 +47,16 @@ public class KnownResearchCapability implements INBTSerializable<CompoundTag> {
 		return ImmutableSet.copyOf(researchIds);
 	}
 
-	public boolean giveResearch(Research research, boolean simulate) {
-		ResourceLocation researchId = research.getId(player.level().registryAccess());
-
-		if(!researchIds.contains(researchId)) {
-			if(!simulate) {
-				researchIds.add(researchId);
-
-				if(player instanceof ServerPlayer serverPlayer)
-					Network.getNetworkHandler().sendToClient(new ClientboundKnownResearchPacket(researchIds), serverPlayer);
-			}
-
-			return true;
-		}
-
-		return false;
+	public void addResearch(ResourceLocation id) {
+		researchIds.add(id);
 	}
 
-	public boolean revokeResearch(Research research, boolean simulate) {
-		ResourceLocation researchId = research.getId(player.level().registryAccess());
+	public void revokeResearch(ResourceLocation id) {
+		researchIds.remove(id);
+	}
 
-		if(researchIds.contains(researchId)) {
-			if(!simulate) {
-				researchIds.remove(researchId);
-
-				if(player instanceof ServerPlayer serverPlayer)
-					Network.getNetworkHandler().sendToClient(new ClientboundKnownResearchPacket(researchIds), serverPlayer);
-			}
-
-			return true;
-		}
-
-		return false;
+	public static void sync(Player player) {
+		if(player instanceof ServerPlayer serverPlayer && serverPlayer.hasData(NeoMain.KNOWN_RESEARCH))
+			Network.getNetworkHandler().sendToClient(new ClientboundKnownResearchPacket(serverPlayer.getData(NeoMain.KNOWN_RESEARCH).getResearchIds()), serverPlayer);
 	}
 }

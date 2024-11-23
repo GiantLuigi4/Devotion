@@ -3,8 +3,8 @@ package dev.cammiescorner.devotion.neoforge.common;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.Duck;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraCapability;
-import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.KnownResearchCapability;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.AuraAttachment;
+import dev.cammiescorner.devotion.neoforge.common.capabilities.entity.KnownResearchAttachment;
 import dev.cammiescorner.devotion.neoforge.entrypoints.NeoMain;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,56 +15,99 @@ import java.util.Set;
 public class NeoDuck implements Duck {
 	@Override
 	public float getAura(LivingEntity entity, AuraType auraType) {
-		return entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability ? capability.getAura(auraType) : 0f;
+		return AuraAttachment.isAuraProvider(entity) ? entity.getData(NeoMain.AURA).getAura(auraType) : 0f;
 	}
 
 	@Override
 	public void setAura(LivingEntity entity, AuraType auraType, float amount) {
-		if(entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability)
-			capability.setAura(auraType, amount);
+		if(!AuraAttachment.isAuraProvider(entity))
+			return;
+
+		entity.getData(NeoMain.AURA).setAura(auraType, amount);
+		AuraAttachment.sync(entity);
 	}
 
 	@Override
 	public AuraType getPrimaryAuraType(LivingEntity entity) {
-		return entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability ? capability.getPrimaryAuraType() : AuraType.NONE;
+		return AuraAttachment.isAuraProvider(entity) ? entity.getData(NeoMain.AURA).getPrimaryAuraType() : AuraType.NONE;
 	}
 
 	@Override
 	public void setPrimaryAuraType(LivingEntity entity, AuraType primaryAuraType) {
-		if(entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability) {
-			System.out.println("Side: " + (entity.level().isClientSide() ? "CLIENT" : "SERVER"));
-			System.out.println("From NeoDuck: " + primaryAuraType);
-			capability.setPrimaryAuraType(primaryAuraType);
-		}
+		if(!AuraAttachment.isAuraProvider(entity))
+			return;
+
+		entity.getData(NeoMain.AURA).setPrimaryAuraType(primaryAuraType);
+		AuraAttachment.sync(entity);
 	}
 
 	@Override
 	public float getAuraAlpha(LivingEntity entity, AuraType auraType) {
-		return entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability ? capability.getAuraAlpha() : 1f;
+		return AuraAttachment.isAuraProvider(entity) ? entity.getData(NeoMain.AURA).getAuraAlpha() : 1f;
 	}
 
 	@Override
 	public boolean drainAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
-		return entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability && capability.drainAura(auraType, amount, simulate);
+		float currentAura = getAura(entity, auraType);
+
+		if(currentAura - amount >= 0) {
+			if(!simulate)
+				setAura(entity, auraType, currentAura - amount);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
 	public boolean regenAura(LivingEntity entity, AuraType auraType, float amount, boolean simulate) {
-		return entity.getCapability(NeoMain.AURA) instanceof AuraCapability capability && capability.regenAura(auraType, amount, simulate);
+		float currentAura = getAura(entity, auraType);
+
+		if(currentAura < AuraAttachment.MAX_AURA) {
+			if(!simulate)
+				setAura(entity, auraType, currentAura + amount);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
 	public Set<ResourceLocation> getResearchIds(Player player) {
-		return player.getCapability(NeoMain.KNOWN_RESEARCH) instanceof KnownResearchCapability capability ? capability.getResearchIds() : Set.of();
+		return player.getData(NeoMain.KNOWN_RESEARCH).getResearchIds();
 	}
 
 	@Override
 	public boolean giveResearch(Player player, Research research, boolean simulate) {
-		return player.getCapability(NeoMain.KNOWN_RESEARCH) instanceof KnownResearchCapability capability && capability.giveResearch(research, simulate);
+		ResourceLocation researchId = research.getId(player.level().registryAccess());
+
+		if(!getResearchIds(player).contains(researchId)) {
+			if(!simulate) {
+				player.getData(NeoMain.KNOWN_RESEARCH).addResearch(researchId);
+				KnownResearchAttachment.sync(player);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
 	public boolean revokeResearch(Player player, Research research, boolean simulate) {
-		return player.getCapability(NeoMain.KNOWN_RESEARCH) instanceof KnownResearchCapability capability && capability.revokeResearch(research, simulate);
+		ResourceLocation researchId = research.getId(player.level().registryAccess());
+
+		if(getResearchIds(player).contains(researchId)) {
+			if(!simulate) {
+				player.getData(NeoMain.KNOWN_RESEARCH).revokeResearch(researchId);
+				KnownResearchAttachment.sync(player);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }
