@@ -12,5 +12,4 @@ void main() {
 	vec4 auraColor = texture(AuraSampler, texCoord);
 
     fragColor = mix(fragColor, auraColor, auraColor.a);
-//	fragColor = fragColor + auraColor * auraColor.a * 1.5;
 }

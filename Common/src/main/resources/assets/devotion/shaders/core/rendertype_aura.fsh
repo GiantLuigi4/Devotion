@@ -16,5 +16,5 @@ void main() {
         discard;
     }
 
-    fragColor = ColorModulator.rgba * vertexColor.rgba;
+    fragColor = ColorModulator * vertexColor;
 }

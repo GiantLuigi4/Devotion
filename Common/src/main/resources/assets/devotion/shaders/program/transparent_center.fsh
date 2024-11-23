@@ -11,10 +11,10 @@ uniform float TransStepGranularity;
 out vec4 fragColor;
 
 void main(){
-    vec4 centre = texture(DiffuseSampler, texCoord);
+    vec4 center = texture(DiffuseSampler, texCoord);
     float distanceToTranparency = 1.0;
 
-    if(centre.a == 0) {
+    if(center.a == 0) {
         fragColor = vec4(0);
         return;
     }
@@ -38,7 +38,7 @@ void main(){
         }
     }
 
-    distanceToTranparency = min(abs(distanceToTranparency), 0.9);
+    distanceToTranparency = clamp(abs(distanceToTranparency), 0.0, 0.9);
 
-    fragColor = vec4(vec3(centre), centre.a * (1 - distanceToTranparency));
+    fragColor = vec4(vec3(center), center.a * (1 - distanceToTranparency));
 }
