@@ -44,6 +44,7 @@ public class DevotionClient implements ClientEntryPoint {
 	private static final ResourceLocation MANIPULATOR_MAGE_ROBES = Devotion.id("textures/entity/armor/manipulator_mage_robes.png");
 	public static final Minecraft client = Minecraft.getInstance();
 	public static float guideBookOffsetX, guideBookOffsetY;
+	public static int clientTicks;
 
 	@Override
 	public void onInitializeClient(ModContainer mod) {

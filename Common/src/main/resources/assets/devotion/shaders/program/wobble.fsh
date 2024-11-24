@@ -14,8 +14,9 @@ uniform vec2 WobbleAmount;
 out vec4 fragColor;
 
 void main() {
-    float xOffset = sin(texCoord.y * Frequency.x + Time * 3.1415926535 * 2.0) * WobbleAmount.x;
-    float yOffset = cos(texCoord.x * Frequency.y + Time * 3.1415926535 * 2.0) * WobbleAmount.y;
+    float speed = Time * 3.1415926535 * 2.0;
+    float xOffset = sin(texCoord.y * Frequency.x + speed) * WobbleAmount.x;
+    float yOffset = cos(texCoord.x * Frequency.y + speed) * WobbleAmount.y;
     vec2 offset = vec2(xOffset, yOffset);
 
     fragColor = texture(DiffuseSampler, texCoord + offset);
