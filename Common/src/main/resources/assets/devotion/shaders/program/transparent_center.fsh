@@ -23,7 +23,7 @@ void main(){
 
     for(float u = 0.0; u <= Radius; u += step) {
         for(float v = 0.0; v <= Radius; v += step) {
-            float distance = sqrt(u * u + v * v) / (Radius);
+            float distance = sqrt(u * u + v * v) / (Radius * 2);
 
             if(distance < distanceToTranparency) {
                 float s0 = texture(DiffuseSampler, texCoord + vec2(-u * oneTexel.x, -v * oneTexel.y)).a;
@@ -38,7 +38,7 @@ void main(){
         }
     }
 
-    distanceToTranparency = clamp(abs(distanceToTranparency), 0.0, 0.9);
+    distanceToTranparency = min(abs(distanceToTranparency), 0.9);
 
     fragColor = vec4(vec3(center), center.a * (1 - distanceToTranparency));
 }
