@@ -46,22 +46,9 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 	@Override
 	public void renderShaderEffects(float tickDelta) {
 		if(auraBufferCleared) {
-			if(tickDelta < lastTickDelta) {
-				time += 1f - lastTickDelta;
-				time += tickDelta;
-			}
-			else {
-				time += tickDelta - lastTickDelta;
-			}
-
-			lastTickDelta = tickDelta;
-
-			while(time > 20f)
-				time -= 20f;
-
 			auraPostShader.setUniformValue("TransStepGranularity", DevotionConfig.Client.auraGradiant);
 			auraPostShader.setUniformValue("BlobsStepGranularity", DevotionConfig.Client.auraSharpness);
-			auraPostShader.setUniformValue("STime", time / 20f);
+			auraPostShader.setUniformValue("STime", getTime(tickDelta));
 			auraPostShader.render(tickDelta);
 			client.getMainRenderTarget().bindWrite(true);
 			RenderSystem.enableBlend();
@@ -141,6 +128,20 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 	 */
 	public static RenderType getRenderType() {
 		return AuraRenderType.DEFAULT_AURA_TYPE;
+	}
+
+	private float getTime(float tickDelta) {
+		if(tickDelta < lastTickDelta)
+			time += (1f - lastTickDelta) + tickDelta;
+		else
+			time += tickDelta - lastTickDelta;
+
+		lastTickDelta = tickDelta;
+
+		while(time > 20f)
+			time -= 20f;
+
+		return time / 20f;
 	}
 
 	/**
