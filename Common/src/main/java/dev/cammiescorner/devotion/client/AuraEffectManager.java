@@ -46,9 +46,9 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 	@Override
 	public void renderShaderEffects(float tickDelta) {
 		if(auraBufferCleared) {
-			auraPostShader.setUniformValue("TransStepGranularity", DevotionConfig.Client.auraGradiant);
-			auraPostShader.setUniformValue("BlobsStepGranularity", DevotionConfig.Client.auraSharpness);
-			auraPostShader.setUniformValue("STime", getTime(tickDelta));
+			auraPostShader.setUniformValue("DevotionTransStepGranularity", DevotionConfig.Client.auraGradiant);
+			auraPostShader.setUniformValue("DevotionBlobsStepGranularity", DevotionConfig.Client.auraSharpness);
+			auraPostShader.setUniformValue("DevotionTime", getTime(tickDelta));
 			auraPostShader.render(tickDelta);
 			client.getMainRenderTarget().bindWrite(true);
 			RenderSystem.enableBlend();

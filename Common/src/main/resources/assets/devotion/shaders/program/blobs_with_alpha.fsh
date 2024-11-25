@@ -6,7 +6,7 @@ in vec2 texCoord;
 in vec2 oneTexel;
 
 uniform float Radius;
-uniform float BlobsStepGranularity;
+uniform float DevotionBlobsStepGranularity;
 
 out vec4 fragColor;
 
@@ -14,7 +14,7 @@ void main(){
     vec4 center = texture(DiffuseSampler, texCoord);
     vec4 maxVal = center;
 
-    float step = max(1, ceil(Radius / BlobsStepGranularity));
+    float step = max(1, ceil(Radius / DevotionBlobsStepGranularity));
     for(float u = 0.0; u <= Radius; u += step) {
         for(float v = 0.0; v <= Radius; v += step) {
             if(maxVal.a <= 0) {

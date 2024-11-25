@@ -6,7 +6,7 @@ in vec2 texCoord;
 in vec2 oneTexel;
 
 uniform float Radius;
-uniform float TransStepGranularity;
+uniform float DevotionTransStepGranularity;
 
 out vec4 fragColor;
 
@@ -19,7 +19,7 @@ void main(){
         return;
     }
 
-    float step = max(1.0, ceil(Radius / TransStepGranularity));
+    float step = max(1.0, ceil(Radius / DevotionTransStepGranularity));
 
     for(float u = 0.0; u <= Radius; u += step) {
         for(float v = 0.0; v <= Radius; v += step) {

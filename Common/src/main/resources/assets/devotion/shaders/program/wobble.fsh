@@ -7,15 +7,15 @@ in vec2 oneTexel;
 
 uniform vec2 InSize;
 
-uniform float STime;
-uniform vec2 Frequency;
-uniform vec2 WobbleAmount;
+uniform float DevotionTime;
+uniform vec2 DevotionFrequency;
+uniform vec2 DevotionWobbleAmount;
 
 out vec4 fragColor;
 
 void main() {
-    float xOffset = sin(texCoord.y * Frequency.x + STime * 3.1415926535 * 2.0) * WobbleAmount.x;
-    float yOffset = cos(texCoord.x * Frequency.y + STime * 3.1415926535 * 2.0) * WobbleAmount.y;
+    float xOffset = sin(texCoord.y * DevotionFrequency.x + DevotionTime * 3.1415926535 * 2.0) * DevotionWobbleAmount.x;
+    float yOffset = cos(texCoord.x * DevotionFrequency.y + DevotionTime * 3.1415926535 * 2.0) * DevotionWobbleAmount.y;
     vec2 offset = vec2(xOffset, yOffset);
 
     fragColor = texture(DiffuseSampler, texCoord + offset);

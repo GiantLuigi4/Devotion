@@ -10,11 +10,11 @@
 			"outtarget": "swap",
 			"uniforms": [
 				{
-					"name": "Frequency",
+					"name": "DevotionFrequency",
 					"values": [ 50, 50 ]
 				},
 				{
-					"name": "WobbleAmount",
+					"name": "DevotionWobbleAmount",
 					"values": [ 0.001 , 0.001 ]
 				}
 			]
