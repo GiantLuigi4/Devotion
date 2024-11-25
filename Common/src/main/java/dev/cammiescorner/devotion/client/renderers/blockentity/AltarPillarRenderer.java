@@ -9,11 +9,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 
 public class AltarPillarRenderer implements BlockEntityRenderer<AltarPillarBlockEntity> {
-	private static final ResourceLocation TEXTURE = Devotion.id("textures/block/altar_pillar.png");
+	public static final Material MATERIAL = new Material(InventoryMenu.BLOCK_ATLAS, Devotion.id("block/altar_pillar"));
 	private final AltarPillarModel model;
 
 	public AltarPillarRenderer(BlockEntityRendererProvider.Context context) {
@@ -31,7 +32,7 @@ public class AltarPillarRenderer implements BlockEntityRenderer<AltarPillarBlock
 		poseStack.translate(-0.5, -1.5, 0.5);
 		poseStack.mulPose(Axis.YP.rotationDegrees(90f));
 		model.claw.yRot = (float) Math.atan2(direction.z, direction.x);
-		model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutout(TEXTURE)), packedLight, packedOverlay, 0xffffff);
+		model.renderToBuffer(poseStack, MATERIAL.buffer(bufferSource, RenderType::entityCutoutNoCull), packedLight, packedOverlay, 0xffffffff);
 		poseStack.popPose();
 	}
 }
