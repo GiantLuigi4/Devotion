@@ -51,7 +51,7 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 			client.getMainRenderTarget().bindWrite(true);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//			auraRenderTarget.draw();
+			auraRenderTarget.draw(client.getWindow().getWidth(), client.getWindow().getHeight(), false);
 			RenderSystem.disableBlend();
 		}
 	}

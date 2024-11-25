@@ -30,23 +30,13 @@
 			"outtarget": "swap"
 		},
 		{
-			"name": "blit",
+			"name": "box_blur",
 			"intarget": "swap",
-			"outtarget": "auras"
-		},
-		{
-			"name": "blit",
-			"intarget": "minecraft:main",
-			"outtarget": "swap"
-		},
-		{
-			"name": "devotion:merge",
-			"intarget": "swap",
-			"outtarget": "minecraft:main",
-			"auxtargets": [
+			"outtarget": "auras",
+			"uniforms": [
 				{
-					"name": "AuraSampler",
-					"id": "auras"
+					"name": "Radius",
+					"values": [ 0.0 ]
 				}
 			]
 		}
