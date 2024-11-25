@@ -54,7 +54,10 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 				time += tickDelta - lastTickDelta;
 			}
 
-			for(lastTickDelta = tickDelta; time > 20f; time -= 20f) { }
+			lastTickDelta = tickDelta;
+
+			while(time > 20f)
+				time -= 20f;
 
 			auraPostShader.setUniformValue("TransStepGranularity", DevotionConfig.Client.auraGradiant);
 			auraPostShader.setUniformValue("BlobsStepGranularity", DevotionConfig.Client.auraSharpness);
