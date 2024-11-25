@@ -35,6 +35,8 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 	private final ManagedShaderEffect auraPostShader = ShaderEffectManager.getInstance().manage(Devotion.id("shaders/post/aura.json"), this::assignDepthTexture);
 	private final ManagedRenderTarget auraRenderTarget = auraPostShader.getTarget("auras");
 	private boolean auraBufferCleared;
+	private float time = 0f;
+	private float lastTickDelta = 0f;
 
 	@Override
 	public void beforeEntitiesRender(Camera camera, Frustum frustum, float tickDelta) {
@@ -43,10 +45,20 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 
 	@Override
 	public void renderShaderEffects(float tickDelta) {
-		if(this.auraBufferCleared) {
+		if(auraBufferCleared) {
+			if(tickDelta < lastTickDelta) {
+				time += 1f - lastTickDelta;
+				time += tickDelta;
+			}
+			else {
+				time += tickDelta - lastTickDelta;
+			}
+
+			for(lastTickDelta = tickDelta; time > 20f; time -= 20f) { }
+
 			auraPostShader.setUniformValue("TransStepGranularity", DevotionConfig.Client.auraGradiant);
 			auraPostShader.setUniformValue("BlobsStepGranularity", DevotionConfig.Client.auraSharpness);
-//			auraPostShader.setUniformValue("STime", 1);
+			auraPostShader.setUniformValue("STime", time / 20f);
 			auraPostShader.render(tickDelta);
 			client.getMainRenderTarget().bindWrite(true);
 			RenderSystem.enableBlend();
