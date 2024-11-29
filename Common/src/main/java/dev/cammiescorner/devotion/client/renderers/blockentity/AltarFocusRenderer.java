@@ -47,7 +47,7 @@ public class AltarFocusRenderer implements BlockEntityRenderer<AltarFocusBlockEn
 
 			if(!blockEntity.completed()) {
 				BlockPos altarPos = blockEntity.getBlockPos();
-				float scale = (float) (0.8125f + (Math.sin(time * 0.075f) * 0.0625f));
+				float scale = (float) (0.85f + (Math.sin(time * 0.075f) * 0.06f));
 
 				for(BlockPos pillarPos : AltarFocusBlockEntity.getPillarOffsets(altarPos, blockEntity.getBlockState())) {
 					poseStack.pushPose();
