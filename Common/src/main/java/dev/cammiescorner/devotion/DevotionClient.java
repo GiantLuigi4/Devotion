@@ -10,6 +10,7 @@ import dev.cammiescorner.devotion.client.models.armor.DeathCultLeaderArmorModel;
 import dev.cammiescorner.devotion.client.models.armor.DeathCultistRobesModel;
 import dev.cammiescorner.devotion.client.models.armor.MageRobesModel;
 import dev.cammiescorner.devotion.client.models.blockentity.AltarPillarModel;
+import dev.cammiescorner.devotion.client.renderers.blockentity.AltarFocusRenderer;
 import dev.cammiescorner.devotion.client.renderers.blockentity.AltarPillarRenderer;
 import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultLeaderArmorRenderer;
 import dev.cammiescorner.devotion.client.renderers.entity.armor.DeathCultistRobesRenderer;
@@ -58,6 +59,7 @@ public class DevotionClient implements ClientEntryPoint {
 		});
 
 		RegisterBlockEntityRenderersEvent.EVENT.register(event -> {
+			event.registerRenderer(DevotionBlocks.ALTAR_FOCUS_ENTITY, AltarFocusRenderer::new);
 			event.registerRenderer(DevotionBlocks.ALTAR_PILLAR_ENTITY, AltarPillarRenderer::new);
 		});
 

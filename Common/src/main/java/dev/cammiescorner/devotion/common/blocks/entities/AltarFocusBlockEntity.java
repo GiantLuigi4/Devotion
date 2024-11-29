@@ -6,7 +6,6 @@ import dev.cammiescorner.devotion.common.blocks.AltarFocusBlock;
 import dev.cammiescorner.devotion.common.blocks.AltarPillarBlock;
 import dev.cammiescorner.devotion.common.recipes.DevotionAltarRecipe;
 import dev.cammiescorner.devotion.common.registries.DevotionBlocks;
-import dev.cammiescorner.devotion.common.registries.DevotionTags;
 import dev.upcraft.sparkweave.api.registry.RegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -30,6 +29,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 
 public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 	private static final int MAX_CRAFTING_TIME = 120;
-	private static final List<BlockPos> RELATIVE_PILLAR_POSITIONS = List.of(
+	private static final List<BlockPos> PILLAR_OFFSETS = java.util.List.of(
 		new BlockPos(0, 0, -4),  // enhancer pillar
 		new BlockPos(4, 0, -1),  // transmuter pillar
 		new BlockPos(-4, 0, -1), // emitter pillar
@@ -53,7 +53,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 	private final Set<BlockPos> inWorldPillarPositions = new HashSet<>();
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
 	private final Map<AuraType, Float> auraCosts = new HashMap<>();
-	private final int tickOffset = new Random().nextInt(20);
+	public final int tickOffset = new Random().nextInt(20);
 	private DevotionAltarRecipe recipe;
 	private ResourceLocation recipeId;
 	private boolean crafting;
@@ -67,7 +67,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 		if(!level.isClientSide()) {
 			if(!altar.completed()) {
 				if((level.getGameTime() + altar.tickOffset) % 10 == 0) {
-					List<BlockPos> posList = RELATIVE_PILLAR_POSITIONS.stream().map(blockPos -> StructureTemplate.transform(blockPos.offset(pos), Mirror.NONE, state.getValue(AltarFocusBlock.ROTATION), pos)).toList();
+					List<BlockPos> posList = getPillarOffsets(pos, state);
 
 					if(posList.stream().allMatch(altar::isPillar)) {
 						BlockState defaultPillarState = DevotionBlocks.ALTAR_PILLAR_BLOCK.get().defaultBlockState();
@@ -94,7 +94,7 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 							});
 
 							altar.inWorldPillarPositions.add(basePos);
-							altar.setChanged();
+							altar.notifyListeners();
 						}
 					}
 				}
@@ -313,12 +313,16 @@ public class AltarFocusBlockEntity extends BlockEntity implements RecipeInput {
 		BlockState middleState = level.getBlockState(pillarPos.above());
 		BlockState capState = level.getBlockState(pillarPos.above(2));
 
-		return baseState.is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()) || (baseState.is(DevotionTags.ALTAR_PILLAR) && middleState.is(DevotionTags.ALTAR_PILLAR) && capState.is(DevotionTags.ALTAR_CAPS));
+		return baseState.is(DevotionBlocks.ALTAR_PILLAR_BLOCK.get()) || (baseState.is(Blocks.STONE) && middleState.is(Blocks.STONE) && capState.is(Blocks.COPPER_BLOCK));
 	}
 
 	public void incrementCraftingTime() {
 		craftingTime++;
 		notifyListeners();
+	}
+
+	public static List<BlockPos> getPillarOffsets(BlockPos pos, BlockState state) {
+		return PILLAR_OFFSETS.stream().map(blockPos -> StructureTemplate.transform(blockPos.offset(pos), Mirror.NONE, state.getValue(AltarFocusBlock.ROTATION), pos)).toList();
 	}
 
 	public boolean completed() {

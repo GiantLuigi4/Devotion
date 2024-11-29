@@ -156,8 +156,7 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 			.add("UV0", VertexFormatElement.UV0)
 			.build();
 		private static final Function<ResourceLocation, RenderType> AURA_TYPE = Util.memoize(id -> RenderType.create("aura", POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, true, CompositeState.builder().setShaderState(new ShaderStateShard(AuraEffectManager.INSTANCE.auraCoreShader::getProgram)).setWriteMaskState(COLOR_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(AURA_TARGET).setTextureState(new TextureStateShard(id, false, false)).createCompositeState(false)));
-		private static final ResourceLocation WHITE_TEXTURE = ResourceLocation.withDefaultNamespace("misc/white.png");
-		private static final RenderType DEFAULT_AURA_TYPE = AURA_TYPE.apply(WHITE_TEXTURE);
+		private static final RenderType DEFAULT_AURA_TYPE = AURA_TYPE.apply(ClientHelper.WHITE_TEXTURE);
 
 		// no need to create instances of this
 		private AuraRenderType(String name, VertexFormat vertexFormat, VertexFormat.Mode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
@@ -172,7 +171,7 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 		 */
 		private static RenderType getRenderTypeWithTextureFrom(RenderType base) {
 			if(base instanceof RenderType.CompositeRenderType compositeRenderType)
-				return AURA_TYPE.apply(compositeRenderType.state().textureState.cutoutTexture().orElse(WHITE_TEXTURE));
+				return AURA_TYPE.apply(compositeRenderType.state().textureState.cutoutTexture().orElse(ClientHelper.WHITE_TEXTURE));
 			else
 				return DEFAULT_AURA_TYPE;
 		}
