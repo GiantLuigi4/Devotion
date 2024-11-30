@@ -1,9 +1,9 @@
-package dev.cammiescorner.devotion;
+package dev.cammiescorner.devotion.client;
 
 import commonnetwork.api.Network;
+import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.api.events.ScriptsOfDevotionScreenCallback;
 import dev.cammiescorner.devotion.api.research.Research;
-import dev.cammiescorner.devotion.client.AuraEffectManager;
 import dev.cammiescorner.devotion.client.gui.screens.ResearchScreen;
 import dev.cammiescorner.devotion.client.gui.widgets.ResearchWidget;
 import dev.cammiescorner.devotion.client.models.armor.DeathCultLeaderArmorModel;

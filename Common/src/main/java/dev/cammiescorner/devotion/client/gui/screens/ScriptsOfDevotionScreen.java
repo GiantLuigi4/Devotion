@@ -3,7 +3,7 @@ package dev.cammiescorner.devotion.client.gui.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import dev.cammiescorner.devotion.Devotion;
-import dev.cammiescorner.devotion.DevotionClient;
+import dev.cammiescorner.devotion.client.DevotionClient;
 import dev.cammiescorner.devotion.api.events.ScriptsOfDevotionScreenCallback;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.client.gui.widgets.ResearchWidget;

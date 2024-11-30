@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-import static dev.cammiescorner.devotion.DevotionClient.client;
+import static dev.cammiescorner.devotion.client.DevotionClient.client;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;

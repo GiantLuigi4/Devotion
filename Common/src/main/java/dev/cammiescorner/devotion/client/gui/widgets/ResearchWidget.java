@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Set;
 
-import static dev.cammiescorner.devotion.DevotionClient.client;
+import static dev.cammiescorner.devotion.client.DevotionClient.client;
 
 public class ResearchWidget extends AbstractButton {
 	public static final ResourceLocation TEXTURE = Devotion.id("textures/gui/scripts_of_devotion_icons.png");

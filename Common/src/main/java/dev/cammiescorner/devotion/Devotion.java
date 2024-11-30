@@ -3,6 +3,8 @@ package dev.cammiescorner.devotion;
 import com.teamresourceful.resourcefulconfig.api.loader.Configurator;
 import commonnetwork.api.Network;
 import dev.cammiescorner.devotion.api.Graph;
+import dev.cammiescorner.devotion.api.research.BookEntry;
+import dev.cammiescorner.devotion.api.research.BookTab;
 import dev.cammiescorner.devotion.api.research.Research;
 import dev.cammiescorner.devotion.api.spells.AuraType;
 import dev.cammiescorner.devotion.common.networking.clientbound.ClientboundAuraPacket;
@@ -38,6 +40,8 @@ public class Devotion implements MainEntryPoint {
 	public static final Configurator CONFIGURATOR = new Configurator(MOD_ID);
 
 	public static final ResourceKey<Registry<Research>> RESEARCH_KEY = ResourceKey.createRegistryKey(id("research"));
+	public static final ResourceKey<Registry<BookTab>> BOOK_TAB_KEY = ResourceKey.createRegistryKey(id("book_tab"));
+	public static final ResourceKey<Registry<BookEntry>> BOOK_ENTRY_KEY = ResourceKey.createRegistryKey(id("book_entry"));
 	public static final List<Supplier<Item>> HOOD_ITEMS = List.of(
 		DevotionItems.BASIC_MAGE_HOOD, DevotionItems.ENHANCER_MAGE_HOOD, DevotionItems.TRANSMUTER_MAGE_HOOD,
 		DevotionItems.EMITTER_MAGE_HOOD, DevotionItems.CONJURER_MAGE_HOOD, DevotionItems.MANIPULATOR_MAGE_HOOD,
