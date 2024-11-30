@@ -12,11 +12,11 @@ import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public record BookTab(ItemStack icon, int priority) {
+public record BookTab(ItemStack icon, int order) {
 	public static final Codec<Holder<BookTab>> CODEC = RegistryFixedCodec.create(Devotion.BOOK_TAB_KEY);
 	public static final Codec<BookTab> DIRECT_CODEC = RecordCodecBuilder.create(tabInstance -> tabInstance.group(
 		ItemStack.CODEC.fieldOf("item_icon").forGetter(BookTab::icon),
-		Codec.INT.optionalFieldOf("priority", 100).forGetter(BookTab::priority)
+		Codec.INT.optionalFieldOf("order", 1000).forGetter(BookTab::order)
 	).apply(tabInstance, BookTab::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BookTab>> STREAM_CODEC = ByteBufCodecs.holderRegistry(Devotion.BOOK_TAB_KEY);
 

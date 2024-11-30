@@ -20,6 +20,8 @@ public record BookEntry(ItemStack icon, Holder<BookTab> tab, Holder<Research> re
 		Research.CODEC.fieldOf("research").forGetter(BookEntry::research),
 		Codec.INT.optionalFieldOf("posX", 0).forGetter(BookEntry::x),
 		Codec.INT.optionalFieldOf("posY", 0).forGetter(BookEntry::y)
+
+		// TODO add page data pain and suffering
 	).apply(tabInstance, BookEntry::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<BookEntry>> STREAM_CODEC = ByteBufCodecs.holderRegistry(Devotion.BOOK_ENTRY_KEY);
 
