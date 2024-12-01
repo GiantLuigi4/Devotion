@@ -41,22 +41,21 @@ void main(){
     vec2 viewportCoord = ndc.xy * 0.5 + 0.5;
     float sceneDepth = texture(DepthSampler, viewportCoord).x;
     vec3 pixelPosition = CalcEyeFromWindow(sceneDepth).xyz + CameraPosition;
-    float d = distance(pixelPosition, Center);
-    float radius = Radius; // Radius / d;
-    float step = max(1.0, ceil(radius / DevotionTransStepGranularity));
+    float distanceFromCamera = distance(pixelPosition, Center);
+    float step = max(1.0, ceil(Radius / DevotionTransStepGranularity));
 
-    for(float u = 0.0; u <= radius; u += step) {
-        for(float v = 0.0; v <= radius; v += step) {
-            float distance = sqrt(u * u + v * v) / radius;
+    for(float u = 0.0; u <= Radius; u += step) {
+        for(float v = 0.0; v <= Radius; v += step) {
+            float distanceFromCenter = sqrt(u * u + v * v) / Radius;
 
-            if(distance < distanceToTransparency) {
+            if(distanceFromCenter < distanceToTransparency) {
                 float s0 = texture(DiffuseSampler, texCoord + vec2(-u * oneTexel.x, -v * oneTexel.y)).a;
                 float s1 = texture(DiffuseSampler, texCoord + vec2(u * oneTexel.x, v * oneTexel.y)).a;
                 float s2 = texture(DiffuseSampler, texCoord + vec2(-u * oneTexel.x, v * oneTexel.y)).a;
                 float s3 = texture(DiffuseSampler, texCoord + vec2(u * oneTexel.x, -v * oneTexel.y)).a;
 
                 if(s0 <= 0 || s1 <= 0 || s2 <= 0 || s3 <= 0) {
-                    distanceToTransparency = distance;
+                    distanceToTransparency = distanceFromCenter;
                 }
             }
         }
