@@ -63,7 +63,7 @@ public class AuraComponent implements AutoSyncedComponent {
 	}
 
 	public float getAura(AuraType auraType) {
-		return aura.get(auraType);
+		return aura.getOrDefault(auraType, 0f);
 	}
 
 	public void setAura(AuraType auraType, float amount) {
