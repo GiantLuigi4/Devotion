@@ -1,6 +1,7 @@
 #version 150
 
 uniform sampler2D DiffuseSampler;
+uniform sampler2D DepthSampler;
 
 in vec2 texCoord;
 in vec2 oneTexel;
@@ -11,10 +12,10 @@ uniform float DevotionBlobsStepGranularity;
 out vec4 fragColor;
 
 void main(){
-    vec4 center = texture(DiffuseSampler, texCoord);
-    vec4 maxVal = center;
-
+    vec4 alpha = texture(DiffuseSampler, texCoord);
+    vec4 maxVal = alpha;
     float step = max(1, ceil(Radius / DevotionBlobsStepGranularity));
+
     for(float u = 0.0; u <= Radius; u += step) {
         for(float v = 0.0; v <= Radius; v += step) {
             if(maxVal.a <= 0) {

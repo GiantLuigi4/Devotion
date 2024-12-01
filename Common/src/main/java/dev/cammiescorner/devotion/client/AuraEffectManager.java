@@ -3,23 +3,33 @@ package dev.cammiescorner.devotion.client;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import dev.cammiescorner.devotion.Devotion;
 import dev.cammiescorner.devotion.DevotionConfig;
 import dev.cammiescorner.velvet.api.event.EntitiesPreRenderCallback;
+import dev.cammiescorner.velvet.api.event.PostWorldRenderCallbackV3;
 import dev.cammiescorner.velvet.api.event.ShaderEffectRenderCallback;
+import dev.cammiescorner.velvet.api.experimental.ReadableDepthRenderTarget;
 import dev.cammiescorner.velvet.api.managed.ManagedCoreShader;
 import dev.cammiescorner.velvet.api.managed.ManagedRenderTarget;
 import dev.cammiescorner.velvet.api.managed.ManagedShaderEffect;
 import dev.cammiescorner.velvet.api.managed.ShaderEffectManager;
+import dev.cammiescorner.velvet.api.managed.uniform.Uniform3f;
+import dev.cammiescorner.velvet.api.managed.uniform.UniformMat4;
+import dev.cammiescorner.velvet.api.util.GlMatrices;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 import java.util.function.Function;
 
@@ -29,11 +39,15 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 
-public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffectRenderCallback {
+public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffectRenderCallback, PostWorldRenderCallbackV3 {
 	public static final AuraEffectManager INSTANCE = new AuraEffectManager();
 	public final ManagedCoreShader auraCoreShader = ShaderEffectManager.getInstance().manageCoreShader(Devotion.id("rendertype_aura"));
 	private final ManagedShaderEffect auraPostShader = ShaderEffectManager.getInstance().manage(Devotion.id("shaders/post/aura.json"), this::assignDepthTexture);
 	private final ManagedRenderTarget auraRenderTarget = auraPostShader.getTarget("auras");
+	private final UniformMat4 uniformInverseTransformMatrix = auraPostShader.findUniformMat4("InverseTransformMatrix");
+	private final Uniform3f uniformCameraPosition = auraPostShader.findUniform3f("CameraPosition");
+	private final Uniform3f uniformCenter = auraPostShader.findUniform3f("Center");
+	private final Matrix4f projectionMatrix = new Matrix4f();
 	private boolean auraBufferCleared;
 	private float time = 0f;
 	private float lastTickDelta = 0f;
@@ -49,6 +63,8 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 			auraPostShader.setUniformValue("DevotionTransStepGranularity", DevotionConfig.Client.auraGradiant);
 			auraPostShader.setUniformValue("DevotionBlobsStepGranularity", DevotionConfig.Client.auraSharpness);
 			auraPostShader.setUniformValue("DevotionTime", getTime(tickDelta));
+			auraPostShader.setUniformValue("DepthSampler", ((ReadableDepthRenderTarget) client.getMainRenderTarget()).getStillDepthMap());
+			auraPostShader.setUniformValue("ViewPort", 0, 0, client.getWindow().getWidth(), client.getWindow().getHeight());
 			auraPostShader.render(tickDelta);
 			client.getMainRenderTarget().bindWrite(true);
 			RenderSystem.enableBlend();
@@ -56,6 +72,16 @@ public class AuraEffectManager implements EntitiesPreRenderCallback, ShaderEffec
 			auraRenderTarget.draw(client.getWindow().getWidth(), client.getWindow().getHeight(), false);
 			RenderSystem.disableBlend();
 		}
+	}
+
+	@Override
+	public void onWorldRendered(PoseStack posingStack, Matrix4f projectionMat, Matrix4f modelViewMat, Camera camera, float tickDelta) {
+		Vec3 cameraPos = camera.getPosition();
+		Entity entity = camera.getEntity();
+
+		uniformInverseTransformMatrix.set(GlMatrices.getInverseTransformMatrix(projectionMatrix));
+		uniformCameraPosition.set((float) cameraPos.x, (float) cameraPos.y, (float) cameraPos.z);
+		uniformCenter.set((float) Mth.lerp(entity.getX(), entity.xo, tickDelta), (float) Mth.lerp(entity.getY(), entity.yo, tickDelta), (float) Mth.lerp(entity.getZ(), entity.zo, tickDelta));
 	}
 
 	/**
