@@ -109,13 +109,13 @@ public class AltarFocusRenderer implements BlockEntityRenderer<AltarFocusBlockEn
 				for(BakedQuad quad : model.getQuads(state, direction, RandomSource.create(42L)))
 					consumer.putBulkData(poseStack.last(), quad, 1f, 1f, 1f, 0.75f, packedLight, packedOverlay);
 		}
-		else if(!level.getBlockState(blockPos).is(blockToRender)) {
+		else if(level.getBlockState(blockPos) instanceof BlockState blockState && !blockState.is(blockToRender)) {
 			poseStack.translate(0.5, 0.5, 0.5);
 			poseStack.scale(1.001f, 1.001f, 1.001f);
 			poseStack.translate(-0.5, -0.5, -0.5);
 
 			VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(ClientHelper.WHITE_TEXTURE));
-			PoseStack.Pose pose = poseStack.last();
+			BakedModel model = dispatcher.getBlockModel(blockState);
 
 			for(Direction direction : Direction.values()) {
 				BlockPos posToSide = blockPos.offset(direction.getNormal());
@@ -124,14 +124,17 @@ public class AltarFocusRenderer implements BlockEntityRenderer<AltarFocusBlockEn
 				if(stateToSide.isFaceSturdy(level, posToSide, direction.getOpposite(), SupportType.FULL))
 					continue;
 
-				switch(direction) {
-					case SOUTH -> renderSide(consumer, pose, Direction.SOUTH, scale, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
-					case NORTH -> renderSide(consumer, pose, Direction.NORTH, scale, 0f, 1f, 1f, 0f, 0f, 0f, 0f, 0f, packedLight, packedOverlay);
-					case EAST -> renderSide(consumer, pose, Direction.EAST, scale, 1f, 1f, 1f, 0f, 0f, 1f, 1f, 0f, packedLight, packedOverlay);
-					case WEST -> renderSide(consumer, pose, Direction.WEST, scale, 0f, 0f, 0f, 1f, 0f, 1f, 1f, 0f, packedLight, packedOverlay);
-					case DOWN -> renderSide(consumer, pose, Direction.DOWN, scale, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, packedLight, packedOverlay);
-					case UP -> renderSide(consumer, pose, Direction.UP, scale, 0f, 1f, 1f, 1f, 1f, 1f, 0f, 0f, packedLight, packedOverlay);
-				}
+				for(BakedQuad quad : model.getQuads(blockState, null, random))
+					consumer.putBulkData(poseStack.last(), quad, 1f, 0f, 0f, 0.5f, packedLight, packedOverlay);
+
+//				switch(direction) {
+//					case SOUTH -> renderSide(consumer, pose, Direction.SOUTH, scale, 0f, 1f, 0f, 1f, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
+//					case NORTH -> renderSide(consumer, pose, Direction.NORTH, scale, 0f, 1f, 1f, 0f, 0f, 0f, 0f, 0f, packedLight, packedOverlay);
+//					case EAST -> renderSide(consumer, pose, Direction.EAST, scale, 1f, 1f, 1f, 0f, 0f, 1f, 1f, 0f, packedLight, packedOverlay);
+//					case WEST -> renderSide(consumer, pose, Direction.WEST, scale, 0f, 0f, 0f, 1f, 0f, 1f, 1f, 0f, packedLight, packedOverlay);
+//					case DOWN -> renderSide(consumer, pose, Direction.DOWN, scale, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 1f, packedLight, packedOverlay);
+//					case UP -> renderSide(consumer, pose, Direction.UP, scale, 0f, 1f, 1f, 1f, 1f, 1f, 0f, 0f, packedLight, packedOverlay);
+//				}
 			}
 		}
 
